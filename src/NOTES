@@ -1,0 +1,213 @@
+18560, sum 12865 tmpW27
+
+16165, sum 33543
+15137, sum 13158
+15129, sum 58419
+15590, sum 24358
+15491, sum 25197
+15246, sum 23899
+15167, sum 24070
+15471, sum 15675
+15563, sum 32026 (oldest)
+
+Don't pass vectors by value
+
+1. Ranks
+2. Length (still necessary?)
+3. MergeSides clever
+
+Segment only has 2 tricks, go by header trick only?
+
+
+20.09.2015
+----------
+DefList:
+* Compare with details, choose shorter of equals
+  LENGTH_NEW_BETTER, LENGTH_OLD_BETTER
+* How to fix ranks?
+* Can we cache header at MoveList level, so not store in DL?
+* MergeSides needs to become quite intelligent (d=10 case)
+
+AltList:
+
+AltMatrix1D:
+* Only have matrix at all when debugging.
+
+TrickList:
+* EES not quite happy with this.
+
+Segment:
+* Try comparing some of them by "trick", not by header
+* Can the comparisons become table lookup?  Should they?  Profile.
+  - One for parallel plays
+  - One for additive plays (Prepend) (last or non-last segment)
+
+Reduction thoughts:
+* Distinguish NT and suit play?!  Seems tough
+* Defense leads to first trick
+* Say we have a move left
+  PA1A + AP1K + BA1T + PP1-
+  This would lose if we also had BA >3
+  So it would lose to AA >3 and PA >3
+  And it would lose to BP >3 and PA >3
+  So we can look for these.
+  13, 0xa4255a.  Solution would become BP58 or PA4T.
+
+Approach:
+* Get max d and max a down some more
+* Get the simple counts down to 0
+* Get the less-simple counts down to 0
+
+SimpleMoves:
+* Move the full-suit stuff before the stopped ones
+  (will the full-suit code then get new cases causing
+  it to fail?)
+* SimpleMove loop into a function that can be called separately,
+  returning a histogram.  Only in some cases do we then twiddle
+  or otherwise expand
+* Does loop have to be over declLen, or can we go to 2 loops, not 3?
+
+LoopHold:
+* Split full-suit combos out of the 64 functions into
+  64 other functions
+* Have a single central dispatch function which returns
+  one of three histogram codes if it works
+* Check that all branches are still active; renumber
+
+
+General:
+* Profile Guided Optimization, blogs.msdn.com/b/vcblog/archive/2008/11/12/pogo.aspx
+  msdn.microsoft.com/en-us/library/fsk896zz.aspx
+* No more const #define's
+* Also compile with g++
+
+
+Specific combinations:
+* 12, 26c15a
+* 13, a65642 (why ever yield 5 tricks?)
+* 13, b28c3f
+
+
+-------
+
+
+20.06.2015
+----------
+Stopped28(): Rewrite with pa, pl, pp, pr
+
+Call it HIST_STOPPED
+Think about a HIST_SYMM (EQUAL and also DIFF)
+
+25.05.15
+--------
+CashoutPard() must also deal with one-sided cashes.
+So it must return something that enables BAnr.
+
+Move issues
+-----------
+6, 0x92
+    AKT
+-         J
+    Q9
+Currently yields BA3K or AB3Q (right),
+BB3Q by table (wrong -- why not flagged?)
+
+7, 0xe0f
+   AJT
+K98     -
+   Q
+Currently yields (d0) AA1A or PA3T, (d1) BA1A or PP1Q + AA1-.
+In (d1) it should be PP1J(!).
+
+9, 0xa252
+    AJ7
+-         98
+    KQT6
+BB4Q by solver, BB4K by table (right, I think).
+
+10, 0x81aa
+    AKJT
+-        9
+    Q8765
+Currently yields
+AP5Q or
+PB5J or
+PA1A + AP4Q
+Should just be BB5Q.
+21.09.15: Currently actually fails!!
+
+10, 0x212a9
+    AQT
+-         J5
+    K9876
+Currently yields BB5Q directly (which is right),
+BB5K by table.
+
+11, 0xa4f3
+    AKQ85
+764       9
+    JT
+Currently yields BA5Q or AB5J (right),
+but no table -- why?
+Currently fails (kind of)!!
+
+13, 2e630
+    AKQJ532
+94        7
+    T86
+Currently yields BA7Q or AB7T (right),
+BB7T by table (wrong)
+
+13, 0xba33f
+    AKQ75
+T6432     -
+    J98
+Currently yields
+AB4J or
+AP39 + AA2- or
+BP1J + PA49
+
+13, 0x222e1
+    AKQJ973
+5        2
+    T864
+Currently yields BA7K or AB7T directly,
+BB7T by complex table(?).  Why is this not flagged as diff?
+
+
+
+Hashing
+-------
+a. Trick (maxTricks 4 bits, cashTricks 2*4 bits)
+b. Rank (maxRanks 4 bits, cashRanks 2*4 bits)
+c. Case (something with d and a)
+d. Minrank (b with minRanks, 4 bits more)
+
+        Bits    Reduced rbits   Buckets Avg length
+a       12      132      8       132    210.94  Trick
+b       12      399      9                      Rank
+c                20      5                      Case
+d       16      593     10                      Minrank
+
+a*b                     17      1859     17.64
+a*c                     13       371    100.50
+b*c                     14       907     54.64  RankCase
+a*d                     18      2384     11.68
+c*d
+
+a*(b*c)                 18      3100      9.90
+a*(c*d)                 19?     3725      7.11
+a*(c*d)                 19?     3442      6.72  With fix
+
+The move structs have now gotten so large that they take a long 
+time to copy around.
+
+
+Output files
+------------
+Loop over NUMBOTTOMS to see when low ranks matter.
+determine overall size of two file tables
+output the moves (how many) as code to compile, or as third table?
+functions for writing and reading them
+time the lookup of all individual suits (no caching)
+choose a sensible cutoff between file size and speed

@@ -1,0 +1,16 @@
+At issue are AA, AB; PA, PB moves below the highest rank.
+
+Ranks that are highest WHEN THEY ARE PLAYED are valid as is.
+
+Otherwise go down 1 level within same rank, if we have it.
+Exclude lowest card from LHO and from RHO.
+
+
+In 11, 3983f, AA1A + PP19 seems odd -- checking Holding generator.
+
+
+Start with AA and PP, and see what happens.
+These are new len-1 segments.
+holding is available.
+So take out current trick.
+Go down 1 level within current rank if possible, otherwise stay.

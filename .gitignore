@@ -21,8 +21,13 @@
 *.la
 *.a
 *.lib
+*.res
+*.exp
 
 # Executables
 *.exe
 *.out
 *.app
+*.swp
+*.bak
+*.pdb
