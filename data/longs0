@@ -1,0 +1,72 @@
+sl 5 c cb
+        AQ          
+KT              -           
+        J           
+NEWDEF1: 1
+NEWALT: 1
+NEWALT: 2
+-----------------
+
+sl 5 c e3
+        AJ          
+KT              -           
+        Q           
+NEWDEF2: 2
+-----------------
+
+sl 7 c c8f
+        AQT         
+K98             -           
+        J           
+NEWALT: 3
+-----------------
+
+sl 9 c 1b2f
+        AK9         
+T76             Q           
+        J8          
+NEWALT: 4
+-----------------
+
+sl 11 c e925f
+        A9          
+K54             T76         
+        QJ8         
+NEWDEF2: 3
+-----------------
+
+sl 11 c 31a3f
+        AKJ7        
+Q654            T           
+        98          
+NEWDEF2: 4
+-----------------
+
+sl 11 c 3928f
+        AK96        
+Q54             T           
+        J87         
+NEWALT: 5
+-----------------
+
+sl 13 c 324e3f
+        AKJ85       
+Q7432           9           
+        T6          
+NEWDEF2: 5
+NEWDEF2: 6
+-----------------
+sl 13 c 92485a
+        AJ86        
+-               Q954        
+        KT732       
+NEWALT: 6
+-----------------
+
+sl 13 c b0b83f
+        AJT65       
+Q8432           -           
+        K97         
+NEWDEF2: 7
+-----------------
+

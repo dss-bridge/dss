@@ -116,10 +116,6 @@ unsigned int Segment::GetLength() const
 bool Segment::FirstRankExceeds(const unsigned lhoRank) const
 {
   assert(len >= 1);
-  // unsigned r = list[len-1].trick.ranks;
-  // if (r > lhoRank)
-    // cout << "FRE fits, " << r << " " << lhoRank << "\n";
-  // return (r > lhoRank);
   return(list[len-1].trick.ranks > lhoRank);
 }
 
@@ -178,7 +174,6 @@ const Trick& Segment::GetHeaderTrick()
   posType start = list[len-1].GetStart();
 
   posType end;
-  // switch{}
   if (reach == SDS_SIDE_ACE)
     end = QT_ACE;
   else if (reach == SDS_SIDE_PARD)
@@ -371,12 +366,6 @@ posType Segment::Connect(
   headerDirty = true;
   posType pend = sPrepend.list[0].trick.end;
 
-// cout << "SCONN pend " << SDS_POS_NAMES[pend] << "\n";
-// Segment::Print(cout);
-// cout << "\n";
-// sPrepend.Print(cout);
-// cout << endl;
-
   list[0].trick.start = pend;
   if (len == 2)
   {
@@ -388,15 +377,7 @@ posType Segment::Connect(
     len = 1;
   }
 
-// cout << "Before PS\n";
-// Segment::Print(cout);
-// cout << "\n";
-
   Segment::PrependSimple(sPrepend.list[0]);
-
-// cout << "After PS\n";
-// Segment::Print(cout);
-// cout << "\n";
 
   // A third move must be prependable.
   if (sPrepend.len == 1)
@@ -425,8 +406,6 @@ bool Segment::PrependSpecial(
     // AAnr + PA1s = AA(n+1)min(r,s).
     // PAnr + PA1s = PA(n+1)min(r,s).
     // It is always also possible to cash the last trick from A.
-// return false;
-// cout << "HIT1\n";
 
     list[0].trick.start = mergingMove.trick.start;
     list[0].trick.cashing += mergingMove.trick.cashing;
@@ -440,9 +419,9 @@ bool Segment::PrependSpecial(
       list[0].trick.start == QT_ACE &&
       list[0].trick.end == QT_ACE)
   {
-// cout << "HIT2\n";
     // PPnr + AAms = PB(n+m)min(r,s).
     // It is always also possible to cash the last trick from P.
+
     list[0].trick.start = QT_PARD;
     list[0].trick.end = QT_BOTH;
     list[0].trick.cashing += mergingMove.trick.cashing;
@@ -474,14 +453,7 @@ void Segment::PrependDeep(
         list[1].trick.ranks = mergingMove.trick.ranks;
     }
     else
-    {
-      cout << "mergingMove\n";
-      mergingMove.Print(cout);
-      cout << "Segment\n";
-      Segment::Print(cout);
-      cout << endl;
       assert(false);
-    }
   }
   else if (mergingMove.trick.start == list[1].trick.end)
   {
@@ -531,14 +503,7 @@ void Segment::PrependDeep(
       list[1].trick.ranks = mergingMove.trick.ranks;
   }
   else
-  {
-    cout << "mergingMove\n";
-    mergingMove.Print(cout);
-    cout << "Segment\n";
-    Segment::Print(cout);
-    cout << endl;
     assert(false);
-  }
 }
 
 
@@ -562,9 +527,6 @@ void Segment::PrependFix(const bool lastFlag)
     else
     {
       // Keep separate.
-// cout << "SPF\n";
-// Segment::Print(cout);
-// cout << endl;
       list[0].trick.start = QT_BOTH;
     }
   }
@@ -605,9 +567,9 @@ bool Segment::Fix11(
      (new, t2)
 
   */
+
   Trick& t1 = list[0];
   Trick& t2 = seg2.list[0];
-
 
   if (t1.trick.start != QT_BOTH && t2.trick.start != QT_BOTH)
   {
@@ -1032,10 +994,6 @@ bool Segment::Fix1nSpecial(
       t201.trick.end == t200.trick.start &&
       (t1.trick.end == QT_BOTH || t1.trick.end == t200.trick.end))
   {
-    unsigned char m = t200.trick.cashing + t201.trick.cashing;
-    unsigned char s = Min(t200.trick.cashing, t201.trick.cashing);
-
-    // if (m < t1.trick.cashing)
     if (t200.trick.cashing < t1.trick.cashing)
     {
       t201.trick.start = t200.trick.start;

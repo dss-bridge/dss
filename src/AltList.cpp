@@ -11,13 +11,10 @@
 
 #include "cst.h"
 #include "AltList.h"
-// #include "portab.h"
 
 extern bool debugAltList;
 extern unsigned highestAltNo;
 
-
-bool AltListMulti = false;
 
 
 AltList::AltList()
@@ -116,22 +113,15 @@ cmpDetailType AltList::Compare(
       comp.SetValue(lOld, lNew, list[lOld].Compare(aNew.list[lNew]));
 
   cmpDetailType c = comp.Compare();
-  // return c;
   if (c != SDS_HEADER_PLAY_DIFFERENT && c != SDS_HEADER_RANK_DIFFERENT)
     return c;
 
-// cout << "CMS attempting\n";
-// AltList::Print(cout, "own");
-// cout << "CMS new partner\n";
-// aNew.Print(cout, "new");
-  /* */
   if (AltList::CompareMultiSide(QT_PARD, comp, aNew))
     return SDS_HEADER_PLAY_OLD_BETTER;
   else if (aNew.CompareMultiSide(QT_ACE, comp, * this))
     return SDS_HEADER_PLAY_NEW_BETTER;
   else
     return c;
-  /* */
 }
 
 
@@ -592,9 +582,6 @@ void AltList::PurgeMulti()
   if (len < 3)
     return;
 
-if (AltListMulti)
-  AltList::Print(cout, "PrePurgeMulti");
-
   AltList aRed;
   TrickList tlist;
   vector<bool> purgeList(len, false);
@@ -621,9 +608,6 @@ bool AltList::CompareMulti(const TrickList& tref)
 {
   if (len < 2)
     return false;
-
-if (AltListMulti)
-  AltList::Print(cout, "PreCompMulti");
 
   AltList aRed;
   TrickList tlist;
@@ -656,25 +640,16 @@ bool AltList::CompareMultiSide(
 {
   bool use[SDS_MAX_ALT];
   if (! comp.CandList(sideToLose, use))
-{
-// cout << "CMS no candidates\n";
     return false;
-}
 
   for (unsigned a = 0; a < altToLose.len; a++)
   {
     if (! use[a])
       continue;
-// cout << "CMS try a " << a << "\n";
 
     if (! AltList::CompareMulti(altToLose.list[a]))
-{
-// cout << "CMS failed\n";
       return false;
-}
   }
-// cout << "CMS succeeded\n";
-  // return false;
   return true;
 }
 
@@ -690,50 +665,14 @@ bool AltList::operator >= (TrickList& tlist)
 
   unsigned int tlen = tlist.GetLength();
 
-if (AltListMulti)
-{
-  cout << "AltGE tlen " << len << "\n";
-  AltList::Print(cout, "aRed");
-  cout << "\n";
-  tlist.Print(cout);
-  cout << "\n";
-}
-
   for (unsigned s = 0; s < tlen; s++)
   {
-if (AltListMulti)
-  cout << "s " << s << endl;
     if (! AltList::FrontIsGE(tlist))
       return false;
-if (AltListMulti)
-  cout << "ISGE so far" << endl;
     
     posType pend = tlist.ConnectFirst();
-if (AltListMulti)
-{
-  cout << "pend " << SDS_POS_NAMES[pend] << "\n";
-  tlist.Print(cout);
-  cout << endl;
-}
     AltList::ConnectFirst(pend);
-if (AltListMulti)
-{
-  AltList::Print(cout, "aRed");
-  cout << endl;
-  cout << "After connects\n";
-}
   }
-
-if (AltListMulti)
-{
-  cout << "AltR HIT\n";
-  AltList::Print(cout, "aOrig");
-  cout << "\n";
-  tlist.Print(cout);
-  cout << endl;
-  // assert(false);
-}
-
   return true;
 }
 
@@ -742,11 +681,6 @@ bool AltList::FrontIsGE(
   TrickList& tlist)
 {
   Trick htrick = tlist.GetFirstHeaderTrick();
-if (AltListMulti)
-{
-  cout << "AL FIGE\n";
-  htrick.Print(cout);
-}
   if (htrick.GetEnd() == QT_BOTH)
   {
     htrick.SetEnd(QT_ACE);

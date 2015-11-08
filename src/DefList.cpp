@@ -247,8 +247,6 @@ void DefList::operator += (
   if (debugDefList)
     DefList::Print(cout, "DefList::MergeDefender after merge");
 
-// DefList::FixRanks(maxOppRank);
-
   DefList::RegisterSize("NEWDEF3");
 }
 
@@ -304,8 +302,6 @@ void DefList::operator *= (
 
   if (debugDefList)
     DefList::Print(cout, "DefList::MergeDeclarer after Merge");
-
-// DefList::FixRanks(maxOppRank);
 
   DefList::RegisterSize("NEWDEF4");
 }

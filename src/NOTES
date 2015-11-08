@@ -1,16 +1,47 @@
 16600, sum 23977
 
-18560, sum 12865 tmpW27
+Ideas for complexity
+====================
 
-16165, sum 33543
-15137, sum 13158
-15129, sum 58419
-15590, sum 24358
-15491, sum 25197
-15246, sum 23899
-15167, sum 24070
-15471, sum 15675
-15563, sum 32026 (oldest)
+9, 1b2f
+
+    AK9
+T76      Q
+    J8
+
+One step is MergeDeclarer for:
+(a) AA2K or AA1A + PA29
+(b) AA1A + BP1J + AA1-
+In (b), "AB2J" beats (a).
+But (b) needs a PA0- move, (a) needs an AP0- move to complete.
+So maybe this shouldn't win after all?
+
+Arguably the solution should be:
+side 0
+AA1A + BP1J + AA1-,
+AA2K
+AA1A + PA29
+side 2 unchanged
+PA2K 
+PA1A + PA29
+PP2J + AA1-
+
+This can become
+BA2K
+BA1A + PA29
+AA1A + BP1J + AA1-
+PP2J        + AA1-
+
+--------------------
+
+11, 31a3f
+
+     AKJ7
+Q654      T
+     9
+
+In principle just a simple cross 2 x 2 defs which explodes.
+
 
 Don't pass vectors by value
 

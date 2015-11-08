@@ -246,9 +246,6 @@ void TrickList::operator += (
     {
       // Essentially AKx / - / Qx / xx.  Conservative.
       // Never start with AA.
-
-      // cout << "TLINCR\n";
-      // TrickList::Print(cout);
       TrickList::Set1(holding.GetTrick());
     }
     return;
@@ -262,7 +259,6 @@ void TrickList::operator += (
     // available.  If there isn't, we'll just have to cash from A.
     // So we can always consider this to be AA1A.
 
-// cout << "HIT3\n";
     TrickList::Set1(holding.GetTrick());
     return;
   }
@@ -271,7 +267,6 @@ void TrickList::operator += (
   {
     // Similar, but LHO only has to be below the first rank to
     // win the next trick.  Can probably combine these two...
-// cout << "HIT4\n";
     TrickList::Set1(holding.GetTrick());
     return;
   }
@@ -422,11 +417,6 @@ bool TrickList::operator >= (
 {
   assert(len > 0);
   Trick ltrick = TrickList::GetFirstHeaderTrick();
-// cout << "TL GE\n";
-// ltrick.Print(cout);
-// cout << "\n";
-// trick.Print(cout);
-// cout << endl;
   return (ltrick >= trick);
 }
 

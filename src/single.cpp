@@ -92,7 +92,7 @@ int main(int argc, char * argv[])
 
 setTTlist();
 
-#if 1
+#if 0
 
 cout << "sizeof(def) " << sizeof(DefList) << "\n";
 cout << "sizeof(Header) " << sizeof(Header) << "\n";
@@ -103,7 +103,7 @@ cout << "sizeof(Trick) " << sizeof(Trick) << "\n";
 cout << "sizeof(bool) " << sizeof(bool) << "\n";
 
   LoopHold holding;
-  holding.Set(9, 0x1b2f);
+  holding.Set(13, 0xb0b83f);
 
   holding.PrintNew(cout);
   cout.flush();

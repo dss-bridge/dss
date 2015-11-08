@@ -253,16 +253,6 @@ cmpDetailType AltMatrix2D::ComparePartial(
     }
   }
 
-/*
-AltMatrix2D::Print();
-cout << "hasX diff " << hasXsum[diff] << 
-  " winX " << hasXsum[winX] <<
-  " winY " << hasXsum[winY] << "\n";
-cout << "hasY diff " << hasYsum[diff] <<
-  " winX " << hasYsum[winX] <<
-  " winY " << hasYsum[winY] << "\n";
-*/
-
   if (hasXsum[diff] && hasYsum[diff])
     return diff;
   else if (hasYsum[diff])
@@ -312,10 +302,8 @@ bool AltMatrix2D::CandList(
   if (sideToLose == QT_ACE)
   {
     if ((cval == SDS_HEADER_PLAY_DIFFERENT &&
-        // hasXsum[SDS_HEADER_PLAY_NEW_BETTER] &&
         ! hasXsum[SDS_HEADER_PLAY_OLD_BETTER]) ||
         (cval == SDS_HEADER_RANK_DIFFERENT &&
-        // hasXsum[SDS_HEADER_RANK_NEW_BETTER] &&
         ! hasXsum[SDS_HEADER_RANK_OLD_BETTER]))
     {
       bool usedFlag = false;
@@ -341,10 +329,8 @@ bool AltMatrix2D::CandList(
   else if (sideToLose == QT_PARD)
   {
     if ((cval == SDS_HEADER_PLAY_DIFFERENT &&
-        // hasYsum[SDS_HEADER_PLAY_OLD_BETTER] &&
         ! hasYsum[SDS_HEADER_PLAY_NEW_BETTER]) ||
         (cval == SDS_HEADER_RANK_DIFFERENT &&
-        // hasYsum[SDS_HEADER_RANK_OLD_BETTER] &&
         ! hasYsum[SDS_HEADER_RANK_NEW_BETTER]))
     {
       bool usedFlag = false;
