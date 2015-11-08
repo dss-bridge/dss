@@ -61,6 +61,11 @@ class Segment
       fixType& fix1,
       fixType& fix2);
 
+    bool Fix1nSpecial(
+      Segment& seg20,
+      fixType& fix1,
+      fixType& fix2);
+
   public:
 
     Segment();
@@ -76,8 +81,7 @@ class Segment
     void PunchOut(const unsigned no);
 
     void SetStart(
-      const posType start,
-      const bool lastSegFlag);
+      const posType start);
 
     posType GetStart() const;
 
@@ -121,6 +125,11 @@ class Segment
     bool Fix12(
       Segment& seg20,
       Segment& seg21,
+      fixType& fix1,
+      fixType& fix2);
+    
+    bool Fix1n(
+      Segment& seg20,
       fixType& fix1,
       fixType& fix2);
     

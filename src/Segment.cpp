@@ -81,15 +81,14 @@ void Segment::PunchOut(
 
 
 void Segment::SetStart(
-  const posType start,
-  const bool lastSegFlag)
+  const posType start)
 {
   assert(len > 0);
 
   headerDirty = true;
   list[len-1].SetStart(start);
 
-  if (len > 1 && list[len-2].ReduceBoth(list[len-1], lastSegFlag))
+  if (len > 1 && list[len-2].ReduceBoth(list[len-1]))
     len--;
 }
 
@@ -679,6 +678,8 @@ bool Segment::Fix11(
           fix2 = SDS_FIX_UNCHANGED;
           headerDirty = true;
           return true;
+        default:
+          break;
       }
     }
     // C6, C7 don't happen:  BB+BA with BA better etc.
@@ -713,6 +714,7 @@ bool Segment::Fix11_OneB(
     // C8: BAnr or P*ms equals BAnr if t1 >= t2.
     // Similarly for BPnr or A*ms.
 
+    fix1 = SDS_FIX_UNCHANGED;
     fix2 = SDS_FIX_PURGED;
     seg2.headerDirty = true;
     return true;
@@ -829,10 +831,12 @@ bool Segment::Fix12(
   */
 
   if (len == 1 && seg20.len == 2 && seg21.len == 1 &&
-    Segment::Fix12Special(seg20, seg21, fix1, fix2))
-  {
+      Segment::Fix12Special(seg20, seg21, fix1, fix2))
     return true;
-  }
+
+  if (len == 1 && seg20.len == 2 &&
+      Segment::Fix1nSpecial(seg20, fix1, fix2))
+    return true;
 
   if (len > 1 || seg20.len > 1 || seg21.len > 1)
     return false;
@@ -927,6 +931,19 @@ bool Segment::Fix12(
 }
 
 
+bool Segment::Fix1n(
+  Segment& seg20,
+  fixType& fix1,
+  fixType& fix2)
+{
+  if (len == 1 && seg20.len == 2 &&
+      Segment::Fix1nSpecial(seg20, fix1, fix2))
+    return true;
+  else
+  return false;
+}
+
+
 bool Segment::Fix12Special(
   Segment& seg20,
   Segment& seg21,
@@ -969,7 +986,6 @@ bool Segment::Fix12Special(
     {
       if (t1.trick.end == QT_BOTH)
       {
-cout << "FIX12COLLAPSE-full\n";
         seg20.headerDirty = true; // Is removed
         seg21.headerDirty = true; // Is removed
         fix1 = SDS_FIX_UNCHANGED;
@@ -986,11 +1002,51 @@ cout << "FIX12COLLAPSE-full\n";
         seg20.headerDirty = true;
         seg21.headerDirty = true; // Is removed
 
-cout << "FIX12COLLAPSE-partial\n";
         fix1 = SDS_FIX_UNCHANGED;
         fix2 = SDS_FIX_COLLAPSE;
         return true;
       }
+    }
+  }
+  return false;
+}
+
+
+bool Segment::Fix1nSpecial(
+  Segment& seg20,
+  fixType& fix1,
+  fixType& fix2)
+{
+  // APnr or AP-m1-s1 + PA-m2-s2 + P...
+  // PAnr or PA-m1-s1 + AP-m2-s2 + A...
+  // Will combine to AA if the AP move in itself is inferior.
+  // We could do it anyway (losing more information), but this is
+  // what we're comfortable with.
+  // Same for ABnr rather than APnr.
+
+  Trick& t1 = list[0];
+  Trick& t200 = seg20.list[1];
+  Trick& t201 = seg20.list[0];
+
+  if (t200.trick.start == t1.trick.start &&
+      t201.trick.end == t200.trick.start &&
+      (t1.trick.end == QT_BOTH || t1.trick.end == t200.trick.end))
+  {
+    unsigned char m = t200.trick.cashing + t201.trick.cashing;
+    unsigned char s = Min(t200.trick.cashing, t201.trick.cashing);
+
+    // if (m < t1.trick.cashing)
+    if (t200.trick.cashing < t1.trick.cashing)
+    {
+      t201.trick.start = t200.trick.start;
+      t201.trick.cashing += t200.trick.cashing;
+      if (t200.trick.ranks < t201.trick.ranks)
+        t201.trick.ranks = t200.trick.ranks;
+      seg20.len = 1;
+      seg20.headerDirty = true;
+      fix1 = SDS_FIX_UNCHANGED;
+      fix2 = SDS_FIX_WEAKER;
+      return true;
     }
   }
   return false;

@@ -103,27 +103,7 @@ cout << "sizeof(Trick) " << sizeof(Trick) << "\n";
 cout << "sizeof(bool) " << sizeof(bool) << "\n";
 
   LoopHold holding;
-  // holding.Set(7, 0xc8f);
-  // holding.Set(10, 0x2cb0f);
-  // holding.Set(7, 0x18a);
-
-  // A favorite complex test case:
-  // holding.Set(13, 0xb28c3f);
-
-  // holding.Set(12, 0x241682);
-
-  // Fails?
-  // holding.Set(11, 0x2c8bf);
-  // holding.Set(11, 0x9ca56);
-  // holding.Set(13, 0x91e83f);
-  // holding.Set(13, 0x9002aa);
-  // holding.Set(13, 0xee38f);
-  // holding.Set(13, 0x3218af);
-  // holding.Set(13, 0x2e323f);
-  // holding.Set(13, 0x2f08bf);
-  // holding.Set(8, 0x2e3b);
-  // holding.Set(11, 0x3983f);
-  holding.Set(13, 0x2e383f);
+  holding.Set(9, 0x1b2f);
 
   holding.PrintNew(cout);
   cout.flush();

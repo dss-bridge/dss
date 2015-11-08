@@ -255,8 +255,7 @@ appendType Trick::Prepend(
 
 
 bool Trick::ReduceBoth(
-  Trick& t1,
-  const bool lastSegFlag)
+  Trick& t1)
 {
   if (t1.trick.start == QT_BOTH &&
     t1.trick.end != QT_BOTH &&
@@ -296,8 +295,8 @@ bool Trick::operator >= (
 
 
 cmpType Trick::CashRankOrder(
-  const unsigned c,
-  const unsigned r)
+  const unsigned char c,
+  const unsigned char r)
 {
   if (trick.cashing > c)
     return SDS_OLD_BETTER;

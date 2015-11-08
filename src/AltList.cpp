@@ -116,18 +116,22 @@ cmpDetailType AltList::Compare(
       comp.SetValue(lOld, lNew, list[lOld].Compare(aNew.list[lNew]));
 
   cmpDetailType c = comp.Compare();
-  return c;
-  // if (c != SDS_HEADER_PLAY_DIFFERENT && c != SDS_HEADER_RANK_DIFFERENT)
-    // return c;
+  // return c;
+  if (c != SDS_HEADER_PLAY_DIFFERENT && c != SDS_HEADER_RANK_DIFFERENT)
+    return c;
 
-  /*
+// cout << "CMS attempting\n";
+// AltList::Print(cout, "own");
+// cout << "CMS new partner\n";
+// aNew.Print(cout, "new");
+  /* */
   if (AltList::CompareMultiSide(QT_PARD, comp, aNew))
     return SDS_HEADER_PLAY_OLD_BETTER;
   else if (aNew.CompareMultiSide(QT_ACE, comp, * this))
     return SDS_HEADER_PLAY_NEW_BETTER;
   else
     return c;
-  */
+  /* */
 }
 
 
@@ -653,7 +657,7 @@ bool AltList::CompareMultiSide(
   bool use[SDS_MAX_ALT];
   if (! comp.CandList(sideToLose, use))
 {
-cout << "CMS no candidates\n";
+// cout << "CMS no candidates\n";
     return false;
 }
 
@@ -661,15 +665,16 @@ cout << "CMS no candidates\n";
   {
     if (! use[a])
       continue;
-cout << "CMS try a " << a << "\n";
+// cout << "CMS try a " << a << "\n";
 
     if (! AltList::CompareMulti(altToLose.list[a]))
 {
-cout << "CMS failed\n";
+// cout << "CMS failed\n";
       return false;
 }
   }
-cout << "CMS succeeded\n";
+// cout << "CMS succeeded\n";
+  // return false;
   return true;
 }
 

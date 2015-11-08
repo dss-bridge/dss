@@ -1,0 +1,119 @@
+CC		= g++
+
+# Use this one to get Windows multi-threading
+CC_FLAGS	= -O3 -flto -mtune=generic -fno-use-linker-plugin
+# Use this one to get OpenMP multi-threading
+# CC_FLAGS	= -O3 -flto -fopenmp -mtune=generic -fno-use-linker-plugin
+
+LD_FLAGS	= 		\
+	-Wl,--subsystem,windows \
+	-Wl,--output-def,$(DLLBASE).def	\
+	-Wl,--dynamicbase 	\
+	-Wl,--nxcompat 		\
+	-Wl,--no-seh 		\
+	-Wl,--enable-stdcall-fixup
+
+# These flags are not turned on be default, but DDS should pass them.
+# Turn them on below.
+WARN_FLAGS	= 		\
+	-Wshadow 		\
+	-Wsign-conversion 	\
+	-pedantic -Wall -Wextra  \
+	-Wcast-align -Wcast-qual \
+	-Wctor-dtor-privacy 	\
+	-Wdisabled-optimization \
+	-Wformat=2 		\
+	-Winit-self 		\
+	-Wlogical-op 		\
+	-Wmissing-declarations 	\
+	-Wmissing-include-dirs 	\
+	-Wnoexcept 		\
+	-Wold-style-cast 	\
+	-Woverloaded-virtual 	\
+	-Wredundant-decls 	\
+	-Wsign-promo 		\
+	-Wstrict-null-sentinel 	\
+	-Wstrict-overflow=1 	\
+	-Wswitch-default -Wundef \
+	-Werror 		\
+	-Wno-unused 		\
+	-Wno-unknown-pragmas 	\
+	-Wno-long-long
+
+# Here you can turn on warnings.
+# CC_FULL_FLAGS	= $(CC_FLAGS)
+CC_FULL_FLAGS	= $(CC_FLAGS) $(WARN_FLAGS)
+
+LIB_FLAGS	= -shared
+
+WINDRES_FLAG	= 
+
+SOURCE_FILES 	=		\
+        Stats.cpp               \
+        DefList.cpp             \
+        MoveList.cpp            \
+        Trick.cpp               \
+        Segment.cpp             \
+        TrickList.cpp           \
+        AltList.cpp             \
+        AltMatrix1D.cpp         \
+        AltMatrix2D.cpp         \
+        Holding.cpp             \
+        LoopHold.cpp            \
+        SimpleMoves.cpp         \
+        ComplexMoves.cpp        \
+        Header.cpp              \
+        Twiddle.cpp             \
+        Dist.cpp                \
+        single.cpp
+
+O_FILES 	= $(subst .cpp,.o,$(SOURCE_FILES))
+
+ifeq ($(DDS_THREADS),none)
+DDS_THR		= -DDDS_THREADS_SINGLE
+else
+DDS_THR		= 
+endif
+
+
+cygwin:	$(O_FILES)
+	$(CC) $(CC_FULL_FLAGS) $(O_FILES) $(LD_FLAGS) -o single.exe
+
+%.o:	%.cpp
+	$(CC) $(CC_FULL_FLAGS) $(DDS_THR) -c $<
+
+depend:
+	makedepend -Y -- $(CC_FLAGS) -- $(SOURCE_FILES)
+
+clean:
+	rm -f $(O_FILES) $(DLL) $(DLLBASE).{lib,def,exp,res}
+
+# DO NOT DELETE
+
+Stats.o: portab.h Stats.h
+DefList.o: cst.h DefList.h AltList.h TrickList.h Segment.h Trick.h Holding.h
+DefList.o: Header.h
+MoveList.o: portab.h cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
+MoveList.o: TrickList.h Segment.h Header.h
+Trick.o: cst.h Trick.h Holding.h
+Segment.o: cst.h Segment.h Trick.h Holding.h Header.h
+TrickList.o: cst.h TrickList.h Segment.h Trick.h Holding.h Header.h
+AltList.o: cst.h AltList.h TrickList.h Segment.h Trick.h Holding.h Header.h
+AltList.o: portab.h
+Holding.o: cst.h Holding.h Trick.h
+LoopHold.o: cst.h LoopHold.h DefList.h AltList.h TrickList.h Segment.h
+LoopHold.o: Trick.h Holding.h Header.h
+SimpleMoves.o: cst.h DefList.h AltList.h TrickList.h Segment.h Trick.h
+SimpleMoves.o: Holding.h Header.h MoveList.h SimpleMoves.h ComplexMoves.h
+SimpleMoves.o: Twiddle.h Dist.h LoopHold.h
+ComplexMoves.o: portab.h cst.h DefList.h AltList.h TrickList.h Segment.h
+ComplexMoves.o: Trick.h Holding.h Header.h MoveList.h SimpleMoves.h
+ComplexMoves.o: ComplexMoves.h Stats.h
+Header.o: cst.h Header.h
+Twiddle.o: cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h TrickList.h
+Twiddle.o: Segment.h Header.h SimpleMoves.h Twiddle.h
+Dist.o: Holding.h cst.h Trick.h DefList.h AltList.h TrickList.h Segment.h
+Dist.o: Header.h SimpleMoves.h
+single.o: portab.h cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
+single.o: TrickList.h Segment.h Header.h SimpleMoves.h ComplexMoves.h Stats.h
+single.o: Twiddle.h Dist.h LoopHold.h

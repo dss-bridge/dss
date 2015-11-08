@@ -312,23 +312,26 @@ bool AltMatrix2D::CandList(
   if (sideToLose == QT_ACE)
   {
     if ((cval == SDS_HEADER_PLAY_DIFFERENT &&
-        hasXsum[SDS_HEADER_PLAY_NEW_BETTER] &&
+        // hasXsum[SDS_HEADER_PLAY_NEW_BETTER] &&
         ! hasXsum[SDS_HEADER_PLAY_OLD_BETTER]) ||
         (cval == SDS_HEADER_RANK_DIFFERENT &&
-        hasXsum[SDS_HEADER_RANK_NEW_BETTER] &&
+        // hasXsum[SDS_HEADER_RANK_NEW_BETTER] &&
         ! hasXsum[SDS_HEADER_RANK_OLD_BETTER]))
     {
       bool usedFlag = false;
       for (unsigned a = 0; a < numX; a++)
       {
-        if (hasX[a][SDS_HEADER_RANK_DIFFERENT] ||
-            hasX[a][SDS_HEADER_PLAY_DIFFERENT])
-        {
-          usedFlag = true;
-          use[a] = true;
-        }
-        else
-          use[a] = false;
+        use[a] = false;
+        if (! activeX[a])
+          continue;
+
+        if (hasX[a][SDS_HEADER_SAME] ||
+            hasX[a][SDS_HEADER_PLAY_NEW_BETTER] ||
+            hasX[a][SDS_HEADER_RANK_NEW_BETTER])
+          continue;
+           
+        usedFlag = true;
+        use[a] = true;
       }
       return usedFlag;
     }
@@ -338,23 +341,26 @@ bool AltMatrix2D::CandList(
   else if (sideToLose == QT_PARD)
   {
     if ((cval == SDS_HEADER_PLAY_DIFFERENT &&
-        hasYsum[SDS_HEADER_PLAY_OLD_BETTER] &&
+        // hasYsum[SDS_HEADER_PLAY_OLD_BETTER] &&
         ! hasYsum[SDS_HEADER_PLAY_NEW_BETTER]) ||
         (cval == SDS_HEADER_RANK_DIFFERENT &&
-        hasYsum[SDS_HEADER_RANK_OLD_BETTER] &&
+        // hasYsum[SDS_HEADER_RANK_OLD_BETTER] &&
         ! hasYsum[SDS_HEADER_RANK_NEW_BETTER]))
     {
       bool usedFlag = false;
       for (unsigned a = 0; a < numY; a++)
       {
-        if (hasY[a][SDS_HEADER_RANK_DIFFERENT] ||
-            hasY[a][SDS_HEADER_PLAY_DIFFERENT])
-        {
-          usedFlag = true;
-          use[a] = true;
-        }
-        else
-          use[a] = false;
+        use[a] = false;
+        if (! activeY[a])
+          continue;
+
+        if (hasY[a][SDS_HEADER_SAME] ||
+            hasY[a][SDS_HEADER_PLAY_OLD_BETTER] ||
+            hasY[a][SDS_HEADER_RANK_OLD_BETTER])
+          continue;
+
+        usedFlag = true;
+        use[a] = true;
       }
       return usedFlag;
     }
@@ -370,14 +376,14 @@ bool AltMatrix2D::CandList(
 
 
 void AltMatrix2D::Print(
-  const char text[])
+  const char text[]) const
 {
   cout << "AltMatrix2D " << text << "\n";
   AltMatrix2D::Print();
 }
 
 
-void AltMatrix2D::Print()
+void AltMatrix2D::Print() const
 {
   cout << setw(4) << left << "D1" << setw(4) << "D2";
   for (unsigned j = 0; j < numY; j++)
@@ -413,7 +419,7 @@ void AltMatrix2D::Print()
 void AltMatrix2D::PrintVector(
   const char text[],
   const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
-  const unsigned len)
+  const unsigned len) const
 {
   cout << setw(10) << text;
   AltMatrix2D::PrintVector(cvec, len);
@@ -422,7 +428,7 @@ void AltMatrix2D::PrintVector(
 
 void AltMatrix2D::PrintVector(
   const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
-  const unsigned len)
+  const unsigned len) const
 {
   for (unsigned i = 0; i < SDS_HEADER_CMP_SIZE; i++)
     cout << setw(10) << CMP_DETAIL_NAMES[i];

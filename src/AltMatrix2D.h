@@ -48,11 +48,11 @@ class AltMatrix2D
       const cmpDetailType winX,
       const cmpDetailType winY);
 
-    void Print();
+    void Print() const;
 
     void PrintVector(
       const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
-      const unsigned len);
+      const unsigned len) const;
 
   public:
 
@@ -92,12 +92,12 @@ class AltMatrix2D
       bool use[]) const;
 
     void Print(
-      const char text[]);
+      const char text[]) const;
 
     void PrintVector(
       const char text[],
       const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
-      const unsigned len);
+      const unsigned len) const;
 };
 
 #endif

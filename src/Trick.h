@@ -88,12 +88,11 @@ class Trick
       const bool lastFlag);
 
     bool ReduceBoth(
-      Trick& t1,
-      const bool lastSegFlag);
+      Trick& t1);
 
     cmpType CashRankOrder(
-      const unsigned c,
-      const unsigned r);
+      const unsigned char c,
+      const unsigned char r);
 
     bool operator >= (
       const Trick& t1);

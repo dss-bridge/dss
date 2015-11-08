@@ -68,7 +68,7 @@ void TrickList::SetStart(
 {
   assert(len > 0);
   headerDirty = true;
-  list[len-1].SetStart(start, len == 1);
+  list[len-1].SetStart(start);
 }
 
 
@@ -325,7 +325,7 @@ bool TrickList::Fix(
 
   if (TrickList::EqualsExceptStart(lOther))
   {
-    list[len-1].SetStart(QT_BOTH, len == 1);
+    list[len-1].SetStart(QT_BOTH);
     fix1 = SDS_FIX_STRONGER;
     fix2 = SDS_FIX_PURGED;
   }
@@ -370,6 +370,10 @@ bool TrickList::Fix(
       }
     }
   }
+  else if (len == 1 && lOther.len >= 3)
+    list[0].Fix1n(lOther.list[lOther.len-1], fix1, fix2);
+  else if (len >= 3 && lOther.len == 1)
+    lOther.list[0].Fix1n(list[len-1], fix2, fix1);
 
   if (fix1 == SDS_FIX_UNCHANGED && fix2 == SDS_FIX_UNCHANGED)
     return false;
