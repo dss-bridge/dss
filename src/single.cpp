@@ -92,7 +92,7 @@ int main(int argc, char * argv[])
 
 setTTlist();
 
-#if 0
+#if 1
 
 cout << "sizeof(def) " << sizeof(DefList) << "\n";
 cout << "sizeof(Header) " << sizeof(Header) << "\n";
@@ -122,9 +122,9 @@ cout << "sizeof(bool) " << sizeof(bool) << "\n";
   // holding.Set(13, 0x2e323f);
   // holding.Set(13, 0x2f08bf);
   // holding.Set(8, 0x2e3b);
-  holding.Set(13, 0x2e383f);
   // holding.Set(11, 0x3983f);
-  
+  holding.Set(13, 0x2e383f);
+
   holding.PrintNew(cout);
   cout.flush();
 

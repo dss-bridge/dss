@@ -318,15 +318,19 @@ bool AltMatrix2D::CandList(
         hasXsum[SDS_HEADER_RANK_NEW_BETTER] &&
         ! hasXsum[SDS_HEADER_RANK_OLD_BETTER]))
     {
+      bool usedFlag = false;
       for (unsigned a = 0; a < numX; a++)
       {
         if (hasX[a][SDS_HEADER_RANK_DIFFERENT] ||
             hasX[a][SDS_HEADER_PLAY_DIFFERENT])
+        {
+          usedFlag = true;
           use[a] = true;
+        }
         else
           use[a] = false;
       }
-      return true;
+      return usedFlag;
     }
     else
       return false;
@@ -340,15 +344,19 @@ bool AltMatrix2D::CandList(
         hasYsum[SDS_HEADER_RANK_OLD_BETTER] &&
         ! hasYsum[SDS_HEADER_RANK_NEW_BETTER]))
     {
+      bool usedFlag = false;
       for (unsigned a = 0; a < numY; a++)
       {
         if (hasY[a][SDS_HEADER_RANK_DIFFERENT] ||
             hasY[a][SDS_HEADER_PLAY_DIFFERENT])
+        {
+          usedFlag = true;
           use[a] = true;
+        }
         else
           use[a] = false;
       }
-      return true;
+      return usedFlag;
     }
     else
       return false;

@@ -348,10 +348,28 @@ bool TrickList::Fix(
   }
   else if (len == 1 && lOther.len == 2)
   {
-    list[0].Fix12(lOther.list[1], lOther.list[0], fix1, fix2);
+    if (list[0].Fix12(lOther.list[1], lOther.list[0], fix1, fix2))
+    {
+      if (fix2 == SDS_FIX_COLLAPSE)
+      {
+        lOther.list[0] = lOther.list[1];
+        lOther.len = 1;
+        fix2 = SDS_FIX_WEAKER;
+      }
+    }
   }
   else if (len == 2 && lOther.len == 1)
-    lOther.list[0].Fix12(list[1], list[0], fix2, fix1);
+  {
+    if (lOther.list[0].Fix12(list[1], list[0], fix2, fix1))
+    {
+      if (fix1 == SDS_FIX_COLLAPSE)
+      {
+        list[0] = list[1];
+        len = 1;
+        fix1 = SDS_FIX_WEAKER;
+      }
+    }
+  }
 
   if (fix1 == SDS_FIX_UNCHANGED && fix2 == SDS_FIX_UNCHANGED)
     return false;

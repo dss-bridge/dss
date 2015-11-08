@@ -122,7 +122,8 @@ enum fixType
   SDS_FIX_STRONGER = 2,
   SDS_FIX_WEAKER = 3,
   SDS_FIX_SPLIT = 4,
-  SDS_FIX_SIZE = 5
+  SDS_FIX_COLLAPSE = 5,
+  SDS_FIX_SIZE = 6
 
 };
 

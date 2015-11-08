@@ -828,6 +828,12 @@ bool Segment::Fix12(
      We use PP <= BA and AA <= BP in several places.  Think! :-)
   */
 
+  if (len == 1 && seg20.len == 2 && seg21.len == 1 &&
+    Segment::Fix12Special(seg20, seg21, fix1, fix2))
+  {
+    return true;
+  }
+
   if (len > 1 || seg20.len > 1 || seg21.len > 1)
     return false;
 
@@ -917,6 +923,76 @@ bool Segment::Fix12(
     return true;
   }
 
+  return false;
+}
+
+
+bool Segment::Fix12Special(
+  Segment& seg20,
+  Segment& seg21,
+  fixType& fix1,
+  fixType& fix2)
+{
+  // xAnr or xA-m1-s1 + BP-m2-s2 + AA-m3-s3,
+  // with m1+m2+m3 and min(s1,s2,s3) <= n, r).
+  // xPnr or xP-m1-s1 + BA-m2-s2 + PP-m3-s3 similarly.
+  // (a) If we stop after the first segment, we get xB-(m1+m2)-min(s1,s2)
+  // which simplifies to xP.
+  // (b) If we have a move of PA0-, then
+  // xA-m1-s1 + BP-m2-s2 + PA-m3-s3 = xA-m1-s1 + BA-(m1+m2)-min(s1,s2)
+  // which is xA(m1+m2+m3)-min(s1,s2,s3) which is worse than xAnr.
+  // This is following our usual rules which do throw away some
+  // information, but as we don't mind this in general, we don't mind
+  // it here either.
+  // If we have xBnr, not xAnr, then (a) loses as well.
+
+  Trick& t1 = list[0];
+  Trick& t200 = seg20.list[1];
+  Trick& t201 = seg20.list[0];
+  Trick& t21 = seg21.list[0];
+
+  if (t1.trick.start != QT_BOTH &&
+      (t1.trick.end == QT_BOTH || t1.trick.end == t21.trick.end) &&
+      t200.trick.start == t1.trick.start &&
+      t200.trick.end == t21.trick.end &&
+      t201.trick.start == QT_BOTH &&
+      t201.trick.end == SDS_PARTNER[t200.trick.end] &&
+      t21.trick.end == t21.trick.start)
+  {
+    unsigned char m = t200.trick.cashing + t201.trick.cashing +
+      t21.trick.cashing;
+    unsigned char s = Min(t200.trick.cashing, t201.trick.cashing);
+    if (t21.trick.cashing < s)
+      s = t21.trick.cashing;
+
+    if (m <= t1.trick.cashing && s <= t1.trick.ranks)
+    {
+      if (t1.trick.end == QT_BOTH)
+      {
+cout << "FIX12COLLAPSE-full\n";
+        seg20.headerDirty = true; // Is removed
+        seg21.headerDirty = true; // Is removed
+        fix1 = SDS_FIX_UNCHANGED;
+        fix2 = SDS_FIX_PURGED;
+        return true;
+      }
+      else
+      {
+        t201.trick.start = t200.trick.start;
+        t201.trick.cashing += t200.trick.cashing;
+        if (t200.trick.ranks < t201.trick.ranks)
+          t201.trick.ranks = t200.trick.ranks;
+        seg20.len = 1;
+        seg20.headerDirty = true;
+        seg21.headerDirty = true; // Is removed
+
+cout << "FIX12COLLAPSE-partial\n";
+        fix1 = SDS_FIX_UNCHANGED;
+        fix2 = SDS_FIX_COLLAPSE;
+        return true;
+      }
+    }
+  }
   return false;
 }
 

@@ -117,6 +117,8 @@ cmpDetailType AltList::Compare(
 
   cmpDetailType c = comp.Compare();
   return c;
+  // if (c != SDS_HEADER_PLAY_DIFFERENT && c != SDS_HEADER_RANK_DIFFERENT)
+    // return c;
 
   /*
   if (AltList::CompareMultiSide(QT_PARD, comp, aNew))
@@ -626,6 +628,9 @@ if (AltListMulti)
     tlist = tref;
     posType pstart = tlist.GetFirstStart();
     if (tlist.GetLength() == 1 || pstart == QT_BOTH)
+      //
+      // Can probably just return false here?
+      //
       continue;
 
     aRed.PunchOut(this, pstart);
@@ -647,16 +652,24 @@ bool AltList::CompareMultiSide(
 {
   bool use[SDS_MAX_ALT];
   if (! comp.CandList(sideToLose, use))
+{
+cout << "CMS no candidates\n";
     return false;
+}
 
-  for (unsigned a = 0; a < len; a++)
+  for (unsigned a = 0; a < altToLose.len; a++)
   {
     if (! use[a])
       continue;
+cout << "CMS try a " << a << "\n";
 
     if (! AltList::CompareMulti(altToLose.list[a]))
+{
+cout << "CMS failed\n";
       return false;
+}
   }
+cout << "CMS succeeded\n";
   return true;
 }
 

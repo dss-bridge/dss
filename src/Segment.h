@@ -55,6 +55,12 @@ class Segment
       fixType& fix1,
       fixType& fix2);
 
+    bool Fix12Special(
+      Segment& seg20,
+      Segment& seg21,
+      fixType& fix1,
+      fixType& fix2);
+
   public:
 
     Segment();
