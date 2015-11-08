@@ -377,7 +377,7 @@ void DefList::MergeSides(
 
 
 void DefList::Purge(
-  const vector<bool> skip)
+  const vector<bool>& skip)
 {
   unsigned p = 0;
   for (unsigned d = 0; d < len; d++)
@@ -396,6 +396,7 @@ void DefList::Purge(
 void DefList::FixRanks(
   const unsigned m)
 {
+assert(false);
   if (len <= 1)
     return;
 

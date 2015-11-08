@@ -280,7 +280,7 @@ void AltList::Backtrack1D(
   AltMatrix1D& comp, 
   const unsigned dimFixed, 
   const unsigned dimVar, 
-  vector<fixType> fixVector)
+  vector<fixType>& fixVector)
 {
   fixType fix1, fix2;
   cmpDetailType c;
@@ -400,8 +400,8 @@ void AltList::FillMatrix2D(
   AltList& aNew,
   AltMatrix1D& compX,
   AltMatrix1D& compY,
-  vector<bool> softX,
-  vector<bool> softY)
+  vector<bool>& softX,
+  vector<bool>& softY)
 {
   // The soft lists are true for those entries that have just
   // been weakened or strengthened.
@@ -464,7 +464,7 @@ void AltList::FillMatrix2D(
 
 
 bool AltList::AllFalse(
-  vector<bool> vec, 
+  const vector<bool>& vec, 
   const unsigned vlen) const
 {
   for (unsigned i = 0; i < vlen; i++)
@@ -496,7 +496,7 @@ void AltList::PurgeList(
 
 
 void AltList::PurgeList(
-  vector<bool>& purgeList)
+  const vector<bool>& purgeList)
 {
   // Later think of a way to have only one PurgeList function.
 
@@ -619,7 +619,8 @@ bool AltList::CompareMulti(const TrickList& tref)
       //
       // Can probably just return false here?
       //
-      continue;
+      // continue;
+      return false;
 
     aRed.PunchOut(this, pstart);
     if (aRed.len < 2)
@@ -718,6 +719,7 @@ bool AltList::FixRanks(
   const unsigned maxOppRank,
   const unsigned hrank)
 {
+assert(false);
   bool fixed = false;
 
   for (unsigned a = 0; a < len; a++)

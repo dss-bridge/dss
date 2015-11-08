@@ -35,7 +35,7 @@ class AltList
       AltMatrix1D& comp,
       const unsigned dimFixed,
       const unsigned dimVar,
-      vector<fixType> fixVector);
+      vector<fixType>& fixVector);
 
     void FillMatrix1D(
       AltMatrix1D& comp);
@@ -44,18 +44,18 @@ class AltList
       AltList& aNew,
       AltMatrix1D& compX,
       AltMatrix1D& compY,
-      vector<bool> softX,
-      vector<bool> softY);
+      vector<bool>& softX,
+      vector<bool>& softY);
 
     bool AllFalse(
-      vector<bool> vec,
+      const vector<bool>& vec,
       const unsigned vlen) const;
 
     void PurgeList(
       AltMatrix1D& comp);
 
     void PurgeList(
-      vector<bool>& purgeList);
+      const vector<bool>& purgeList);
 
     void PunchOut(
       const AltList * alist,

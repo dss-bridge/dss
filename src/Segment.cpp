@@ -244,6 +244,7 @@ bool Segment::FixRanks(
   const unsigned maxOppRank,
   const unsigned hrank)
 {
+assert(false);
   // See comment in DefList.cpp.
   // Ranks above maxOppRank cannot be affected by opponents' choice,
   // so we leave those alone.

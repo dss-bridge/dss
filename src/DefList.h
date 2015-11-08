@@ -34,7 +34,7 @@ class DefList
       AltList& alt);
 
     void Purge(
-      const vector<bool> skip);
+      const vector<bool>& skip);
 
     void FixRanks(
       const unsigned maxOppRank);

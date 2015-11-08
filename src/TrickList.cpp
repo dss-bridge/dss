@@ -210,6 +210,7 @@ bool TrickList::FixRanks(
   const unsigned maxOppRank,
   const unsigned hrank)
 {
+assert(false);
   bool fixed = false;
 
   for (unsigned i = 0; i < len; i++)

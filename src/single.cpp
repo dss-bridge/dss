@@ -103,7 +103,7 @@ cout << "sizeof(Trick) " << sizeof(Trick) << "\n";
 cout << "sizeof(bool) " << sizeof(bool) << "\n";
 
   LoopHold holding;
-  holding.Set(13, 0xb0b83f);
+  holding.Set(13, 0x222e1);
 
   holding.PrintNew(cout);
   cout.flush();
