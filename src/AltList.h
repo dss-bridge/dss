@@ -138,10 +138,6 @@ class AltList
 
     bool MergeSides(AltList& aNew);
 
-    bool FixRanks(
-      const unsigned maxOppRank,
-      const unsigned hrank);
-
     void Print(
       std::ostream& pout,
       const string text,

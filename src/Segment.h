@@ -93,10 +93,6 @@ class Segment
 
     const Trick& GetHeaderTrick();
 
-    bool FixRanks(
-      const unsigned maxOppRank,
-      const unsigned hrank);
-
     cmpDetailType CompareHeader(Segment& seg2);
 
     bool EqualsExceptStart(Segment& seg2);

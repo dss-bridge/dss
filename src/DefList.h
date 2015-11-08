@@ -28,16 +28,12 @@ class DefList
     unsigned len;
     Header header;
     bool headerDirty;
-    int maxOppRank;
 
     void operator += (
       AltList& alt);
 
     void Purge(
       const vector<bool>& skip);
-
-    void FixRanks(
-      const unsigned maxOppRank);
 
     bool Reduce();
 
@@ -51,9 +47,6 @@ class DefList
     ~DefList();
 
     void Reset();
-
-    void SetMaxOppRank(
-      const int r);
 
     bool Set1(
       const Trick& trick);

@@ -1,13 +1,4 @@
-Changes made
-------------
-Cut size of MAXALT and MAXDEF to 7d 6a
-Don't pass vectors by value
-FixRanks unused
-SetMaxOppRank can then go, too
-AltList::CompareMulti change
-
 16600, sum 23977
-
 
 Algorithm bugs
 --------------
@@ -35,6 +26,30 @@ Should just be BB5Q.
 Currently yields BA5Q or AB5J (right),
 but no table -- why?
 Currently fails (kind of)!!
+
+
+Algorithm code
+--------------
+Header:
+* Header.cpp has a lot of functions...
+
+DefList:
+* Can we cache header at MoveList level, so not store in DL?
+* MergeSides needs to become quite intelligent (d=10 case)
+
+AltList:
+
+AltMatrix1D:
+* Only have matrix at all when debugging.
+
+TrickList:
+* EES not quite happy with this.
+
+Segment:
+* Try comparing some of them by "trick", not by header
+* Can the comparisons become table lookup?  Should they?  Profile.
+  - One for parallel plays
+  - One for additive plays (Prepend) (last or non-last segment)
 
 
 Table issues
@@ -74,27 +89,8 @@ Currently yields BA7K or AB7T directly,
 BB7T by complex table(?).  Why is this not flagged as diff?
 
 
-
 20.09.2015
 ----------
-DefList:
-* Can we cache header at MoveList level, so not store in DL?
-* MergeSides needs to become quite intelligent (d=10 case)
-
-AltList:
-
-AltMatrix1D:
-* Only have matrix at all when debugging.
-
-TrickList:
-* EES not quite happy with this.
-
-Segment:
-* Try comparing some of them by "trick", not by header
-* Can the comparisons become table lookup?  Should they?  Profile.
-  - One for parallel plays
-  - One for additive plays (Prepend) (last or non-last segment)
-
 Reduction thoughts:
 * Distinguish NT and suit play?!  Seems tough
 * Defense leads to first trick

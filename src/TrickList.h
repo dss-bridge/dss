@@ -60,10 +60,6 @@ class TrickList
 
     const Trick& GetFirstHeaderTrick();
 
-    bool FixRanks(
-      const unsigned maxOppRank,
-      const unsigned hrank);
-
     cmpDetailType Compare(
       TrickList& lNew);
 

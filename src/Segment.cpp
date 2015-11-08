@@ -240,44 +240,6 @@ bool Segment::operator != (const Segment& t2) const
 }
 
 
-bool Segment::FixRanks(
-  const unsigned maxOppRank,
-  const unsigned hrank)
-{
-assert(false);
-  // See comment in DefList.cpp.
-  // Ranks above maxOppRank cannot be affected by opponents' choice,
-  // so we leave those alone.
-
-  bool used = false;
-
-  for (unsigned l = 0; l < len; l++)
-  {
-    unsigned i = len-1 - l;
-
-    unsigned r = list[i].GetRanks();
-    if (r < maxOppRank)
-    {
-      if (used)
-      {
-        if (r >= hrank)
-          list[i].SetRanks(SDS_VOID);
-      }
-      else if (r > hrank)
-      {
-        list[i].SetRanks(hrank);
-        used = true;
-      }
-    }
-  }
-
-  if (used)
-    headerDirty = true;
-  
-  return used;
-}
-
-
 void Segment::Localize(const Holding& holding)
 {
   headerDirty = true;

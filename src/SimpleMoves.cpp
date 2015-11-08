@@ -63,7 +63,6 @@ void MakeMovesSimple()
         continue;
 
       holding.Set(sl, c);
-      def.SetMaxOppRank(holding.GetMaxOppRank());
 
       unsigned lenAce = holding.GetLength(QT_ACE);
       unsigned lenPard = holding.GetLength(QT_PARD);
@@ -285,7 +284,6 @@ if (! singles[8][0x8af].defp)
             continue;
 
           hNew.SetDetails(hdetNew);
-          def.SetMaxOppRank(hNew.GetMaxOppRank());
 
           posType blocked, bend, cend;
           hNew.SolveCrashTricks(hdetNew, oppBest, bend, cend,
@@ -461,7 +459,6 @@ void CompareRecurse(
 {
 #ifdef DEBUG_SIMPLE
   DefList defCmp;
-  defCmp.SetMaxOppRank(holding.GetMaxOppRank());
 
   MakeComplexSingleMove(holding, defCmp);
 
@@ -478,7 +475,6 @@ void CompareRecurse(
 
 // debugComplex = true;
 // DefList deft;
-// deft.SetMaxOppRank(holding.GetMaxOppRank());
     // fflush(stdout);
 // MakeComplexSingleMove(holding, deft);
 

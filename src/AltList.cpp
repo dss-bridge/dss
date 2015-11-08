@@ -616,10 +616,6 @@ bool AltList::CompareMulti(const TrickList& tref)
     tlist = tref;
     posType pstart = tlist.GetFirstStart();
     if (tlist.GetLength() == 1 || pstart == QT_BOTH)
-      //
-      // Can probably just return false here?
-      //
-      // continue;
       return false;
 
     aRed.PunchOut(this, pstart);
@@ -712,30 +708,6 @@ void AltList::ConnectFirst(
 {
   for (unsigned a = 0; a < len; a++)
     list[a].ConnectFirst(pend);
-}
-
-
-bool AltList::FixRanks(
-  const unsigned maxOppRank,
-  const unsigned hrank)
-{
-assert(false);
-  bool fixed = false;
-
-  for (unsigned a = 0; a < len; a++)
-  {
-    if (list[a].FixRanks(maxOppRank, hrank))
-      fixed = true;
-  }
-
-  if (! fixed)
-    return false;
-
-  headerDirty = true;
-
-  AltList::Reduce();
-
-  return fixed;
 }
 
 

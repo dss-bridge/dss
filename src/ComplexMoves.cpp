@@ -121,7 +121,6 @@ void MakeComplexMoves()
 // setw(3) << sl << setw(3) << hex << c << dec << endl;
         holding.Set(sl, c);
         DefList sm;
-        sm.SetMaxOppRank(holding.GetMaxOppRank());
 
         MakeComplexSingleMove(holding, sm);
 
@@ -173,8 +172,6 @@ assert(false);
   {
 // cout << "MCSM4" << endl;
     DefList def1, def2;
-    def1.SetMaxOppRank(holding.GetMaxOppRank());
-    def2.SetMaxOppRank(holding.GetMaxOppRank());
 
     holding.SetSide(QT_ACE);
     BestMoveAfterSide(holding, def1);
@@ -461,7 +458,6 @@ void BestMoveAfterSide(
   DefList& def)
 {
   DefList defNew;
-  defNew.SetMaxOppRank(holding.GetMaxOppRank());
 
   def.Reset();
   bool seen = false;
@@ -491,7 +487,6 @@ void BestMoveAfterLead(
   DefList& def)
 {
   DefList defNew;
-  defNew.SetMaxOppRank(holding.GetMaxOppRank());
 
   def.Reset();
   bool seen = false;
@@ -521,7 +516,6 @@ void BestMoveAfterLho(
   DefList& def)
 {
   DefList defNew;
-  defNew.SetMaxOppRank(holding.GetMaxOppRank());
 
   bool seen = false;
 
@@ -582,7 +576,6 @@ bool BestMoveAfterPard(
     }
 
     DefList stmp;
-    stmp.SetMaxOppRank(tmpHolding.GetMaxOppRank());
       
     bool newFlag;
     MakeComplexSingleMove(tmpHolding, stmp);
@@ -600,7 +593,6 @@ bool BestMoveAfterPard(
 
   assert(singles[slNew][cNew].defp != nullptr);
   def = * singles[slNew][cNew].defp;
-  def.SetMaxOppRank(holding.GetMaxOppRank());
 
   if (debugComplex)
   {
@@ -628,7 +620,7 @@ void DumpStatus(
   const char text[])
 {
   cout << text << "\n";
-  def.GetHeader().PrintNew(cout);
+  def.GetHeader().Print(cout);
   def.Print(cout);
   cout.flush();
 }
@@ -640,7 +632,7 @@ void DumpStatus(
   const int val)
 {
   cout << text << " " << val << "\n";
-  def.GetHeader().PrintNew(cout);
+  def.GetHeader().Print();
   def.Print(cout);
   cout.flush();
 }
@@ -653,7 +645,8 @@ void DumpStatus(
   const int val2)
 {
   cout << text  << " " << val1 << " 0x" << hex << val2 << dec << "\n";
-  def.GetHeader().PrintNew(cout);
+  def.GetHeader().Print();
   def.Print(cout);
   cout.flush();
 }
+

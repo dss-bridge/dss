@@ -109,7 +109,6 @@ cout << "sizeof(bool) " << sizeof(bool) << "\n";
   cout.flush();
 
   DefList def0;
-  def0.SetMaxOppRank(holding.GetMaxOppRank());
 
   debugComplex = true;
   debugDefList = true;
@@ -125,13 +124,11 @@ cout << "sizeof(bool) " << sizeof(bool) << "\n";
   /// if (holding.SolveStopped(move))
   int tricks, rank, rankB;
   DefList def2;
-  def2.SetMaxOppRank(holding.GetMaxOppRank());
 
   if (holding.SolveStopped(move))
   {
     cout << "Stopped\n";
     DefList def;
-    def.SetMaxOppRank(holding.GetMaxOppRank());
 
     Trick trick;
     trick.Set(move.start, move.end, move.rank, move.tricks);
@@ -184,7 +181,6 @@ debugAltList = true;
     else
     {
       DefList def;
-      def.SetMaxOppRank(holding2.GetMaxOppRank());
 
       MakeComplexSingleMove(holding2, def);
     }

@@ -206,26 +206,6 @@ bool TrickList::operator != (
 }
 
 
-bool TrickList::FixRanks(
-  const unsigned maxOppRank,
-  const unsigned hrank)
-{
-assert(false);
-  bool fixed = false;
-
-  for (unsigned i = 0; i < len; i++)
-  {
-    if (list[i].FixRanks(maxOppRank, hrank))
-      fixed = true;
-  }
-
-  if (fixed)
-    headerDirty = true;
-  
-  return fixed;
-}
-
-
 void TrickList::operator += (
   const Holding& holding)
 {

@@ -35,26 +35,6 @@ void DefList::Reset()
 }
 
 
-void DefList::SetMaxOppRank(
-  const int r)
-{
-  /*
-     This is necessary in order to know how to fix the ranks later 
-     in certain cases.  It happens for instance when declarer leads
-     the J from JT from a finesse, and the defender does not cover,
-     even though he could.  The trick is won with the J, but the
-     defender would cover if declarer didn't have the T.  This comes
-     out of an optimization, probably evil, where declarer only leads
-     one of the cards in this program, and then we figure out 
-     after the trick which card it was...
-  */
-
-  // If FixRanks goes, then this might go, too.
-
-  maxOppRank = r;
-}
-
-
 bool DefList::Set1(
   const Trick& trick)
 {
@@ -390,39 +370,6 @@ void DefList::Purge(
     }
   }
   len = p;
-}
-
-
-void DefList::FixRanks(
-  const unsigned m)
-{
-assert(false);
-  if (len <= 1)
-    return;
-
-  DefList::GetHeader();
-  unsigned hrank = header.GetMaxRank();
-  bool fixed = false;
-
-  for (unsigned d = 0; d < len; d++)
-  {
-    if (list[d].FixRanks(m, hrank))
-      fixed = true;
-  }
-
-  if (! fixed)
-    return;
-
-  headerDirty = true;
-
-  if (debugDefList)
-    DefList::Print(cout, "After FixRanks");
-
-  if (! DefList::Reduce())
-    return;
-
-  if (debugDefList)
-    DefList::Print(cout, "After Reduce");
 }
 
 

@@ -14,9 +14,6 @@
 
 using namespace std;
 
-// #include <stdio.h>
-// #include <string.h>
-// #include <stdlib.h>
 #include <assert.h>
 
 #include "cst.h"
@@ -365,6 +362,7 @@ cmpType Header::CompareFirstAll(
   const Header& newHeader,
   const posType side)
 {
+assert(false);
   cmpType runningScore = Header::CompareFirstPlay(newHeader, side);
   if (runningScore != SDS_SAME)
     return runningScore;
@@ -453,13 +451,6 @@ cmpDetailType Header::CompareDetail(const Header& newHeader)
   }
     
   return cmpRanksToDetail[rankScore];
-}
-
-
-cmpType Header::CompareNew(const Header& newHeader)
-{
-  cmpDetailType c = Header::CompareDetail(newHeader);
-  return cmpDetailToShort[c];
 }
 
 
@@ -647,12 +638,6 @@ unsigned Header::GetMaxRank()
 }
 
 
-void Header::Print() const
-{
-assert(false);
-}
-
-
 void Header::ToText(std::ostringstream& out) const
 {
   out <<
@@ -669,15 +654,13 @@ void Header::ToText(std::ostringstream& out) const
 }
 
 
-void Header::PrintNew(
+void Header::Print(
   std::ostream& out) const
 {
-  /* --- */
   out << "maxTricks " << static_cast<unsigned>(maxTricks) <<
     ", maxRanks '" << SDS_RANK_NAMES[maxRanks] <<
     "' start '" << POS_NAMES[start] <<
     "' reach '" << REACH_NAMES[reach] << "'\n";
-  /* --- */
 
   out <<
     setw(10) << "cashTricks" <<

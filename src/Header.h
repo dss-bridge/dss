@@ -65,8 +65,6 @@ class Header
 
     cmpType Compare(const Header& newHeader);
 
-    cmpType CompareNew(const Header& newHeader);
-
     cmpDetailType CompareDetail(const Header& newHeader);
 
     cmpType CompareFirstPlay(
@@ -95,10 +93,8 @@ class Header
 
     unsigned GetMaxRank();
 
-    void Print() const;
-
-    void PrintNew(
-      std::ostream& pout) const;
+    void Print(
+      std::ostream& out = cout) const;
 
     void ToText(
       std::ostringstream& out) const;
