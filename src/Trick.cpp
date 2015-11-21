@@ -278,18 +278,40 @@ bool Trick::operator >= (
 {
   assert(trick.start != SDS_PARTNER[t1.trick.start]);
 
+/* 
+cmpDetailType c = Trick::Compare(t1);
+bool b;
+cmpType d = cmpDetailToShort[c];
+if (d == SDS_SAME || d == SDS_OLD_BETTER)
+  b = true;
+else
+  b = false;
+*/
+
   if (t1.trick.end == QT_BOTH && trick.end != QT_BOTH)
+  {
     return false;
+  }
   else if (t1.trick.end != QT_BOTH && trick.end == SDS_PARTNER[t1.trick.end])
+  {
     return false;
+  }
   else if (t1.trick.cashing > trick.cashing)
+  {
     return false;
+  }
   else if (t1.trick.cashing < trick.cashing)
+  {
     return true;
+  }
   else if (t1.trick.ranks <= trick.ranks)
+  {
     return true;
+  }
   else
+  {
     return false;
+  }
 }
 
 
@@ -308,6 +330,77 @@ cmpType Trick::CashRankOrder(
     return SDS_NEW_BETTER;
   else
     return SDS_SAME;
+}
+
+
+cmpType Trick::ComparePlay(
+  const Trick& t1,
+  const posType side)
+{
+  reachType oldReach = posToReach[trick.end];
+  reachType newReach = posToReach[t1.trick.end];
+
+  if (trick.start == QT_BOTH)
+    oldReach = reachMap[oldReach][side];
+
+  if (t1.trick.start == QT_BOTH)
+    newReach = reachMap[newReach][side];
+
+  cmpType runningScore = reachMatrix[oldReach][newReach];
+  if (runningScore == SDS_DIFFERENT)
+    return SDS_DIFFERENT;
+
+  cmpType trickScore;
+  if (trick.cashing > t1.trick.cashing)
+    trickScore = SDS_OLD_BETTER;
+  else if (trick.cashing < t1.trick.cashing)
+    trickScore = SDS_NEW_BETTER;
+  else
+    trickScore = SDS_SAME;
+
+  return cmpMergeMatrix[runningScore][trickScore];
+}
+
+
+cmpDetailType Trick::Compare(
+  const Trick& t1)
+{
+  cmpType sideScore =
+    reachMatrix[posToReach[trick.start]][posToReach[t1.trick.start]];
+  cmpType runningScore = sideScore;
+  if (runningScore == SDS_DIFFERENT)
+    return SDS_HEADER_PLAY_DIFFERENT;
+
+  cmpType playScore;
+  if (sideScore == SDS_OLD_BETTER)
+    playScore = Trick::ComparePlay(t1, t1.trick.start);
+  else if (sideScore == SDS_NEW_BETTER)
+    playScore = Trick::ComparePlay(t1, trick.start);
+  else if (trick.start != QT_BOTH)
+    playScore = Trick::ComparePlay(t1, trick.start);
+  else
+  {
+    cmpType playScore1 = Trick::ComparePlay(t1, QT_ACE);
+    cmpType playScore2 = Trick::ComparePlay(t1, QT_PARD);
+    playScore = cmpMergeMatrix[playScore1][playScore2];
+  }
+
+  if (playScore == SDS_DIFFERENT)
+    return SDS_HEADER_PLAY_DIFFERENT;
+
+  runningScore = cmpMergeMatrix[runningScore][playScore];
+  if (runningScore != SDS_SAME)
+    return cmpPlayToDetail[runningScore];
+
+  cmpType rankScore;
+  if (trick.ranks > t1.trick.ranks)
+    rankScore = SDS_OLD_BETTER;
+  else if (trick.ranks < t1.trick.ranks)
+    rankScore = SDS_NEW_BETTER;
+  else
+    rankScore = SDS_SAME;
+
+  return cmpRanksToDetail[rankScore];
 }
 
 

@@ -39,6 +39,10 @@ class Trick
 
     void Reset();
 
+    cmpType ComparePlay(
+      const Trick& t1,
+      const posType side);
+
   public:
 
     friend class Segment;
@@ -89,6 +93,9 @@ class Trick
 
     bool ReduceBoth(
       Trick& t1);
+
+    cmpDetailType Compare(
+      const Trick& t1);
 
     cmpType CashRankOrder(
       const unsigned char c,

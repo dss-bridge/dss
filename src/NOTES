@@ -1,5 +1,12 @@
 16600, sum 23977
 
+PLAN
+====
+* Get the algorithmic parts completely clean and solid
+* Fix MergeSides, data for storing moves from all 2(4) sides
+
+
+
 Algorithm bugs
 --------------
 13, a65642 (why ever yield 5 tricks?)
@@ -32,25 +39,27 @@ Algorithm code
 --------------
 Header:
 * Header.cpp has a lot of functions...
+* Check at what levels it is good to cache the header
 
 DefList:
 * Can we cache header at MoveList level, so not store in DL?
 * MergeSides needs to become quite intelligent (d=10 case)
 
-AltList:
-
 AltMatrix1D:
-* Only have matrix at all when debugging.
+**** Only have matrix at all when debugging.
 
 TrickList:
 * EES not quite happy with this.
 
 Segment:
-* Try comparing some of them by "trick", not by header
-* Can the comparisons become table lookup?  Should they?  Profile.
+**** Try comparing some of them by "trick", not by header
+**** Can the comparisons become table lookup?  Should they?  Profile.
   - One for parallel plays
   - One for additive plays (Prepend) (last or non-last segment)
 
+Trick:
+**** Check whether it is faster to move from enum to unsigned char
+     (does save memory size)
 
 Table issues
 ------------
@@ -87,6 +96,12 @@ BB7T by table (wrong)
     T864
 Currently yields BA7K or AB7T directly,
 BB7T by complex table(?).  Why is this not flagged as diff?
+
+Other code
+----------
+
+**** Think about storage for QT_ACE and QT_PARD separately,
+     and also LHO/RHO (single 32b field, at least A/P?)
 
 
 20.09.2015
