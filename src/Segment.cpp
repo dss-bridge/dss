@@ -28,14 +28,12 @@ Segment::~Segment()
 
 void Segment::Reset()
 {
-  // headerDirty = true;
   len = 0;
 }
 
 
 bool Segment::Set1(const Trick& trick)
 {
-  // headerDirty = true;
   len = 1;
   list[0] = trick;
   return true;
@@ -46,7 +44,6 @@ bool Segment::Set2(
   const Trick& trick1,
   const Trick& trick2)
 {
-  // headerDirty = true;
   len = 2;
   list[1] = trick1;
   list[0] = trick2;
@@ -66,9 +63,6 @@ void Segment::PunchOut(
   assert(len > 1);
 
   unsigned realNo = len - 1 - no;
-
-  // headerDirty = true;
-
   for (unsigned i = realNo+1; i < len; i++)
     list[i-1] = list[i];
   
@@ -82,8 +76,6 @@ void Segment::SetStart(
   const posType start)
 {
   assert(len > 0);
-
-  // headerDirty = true;
   list[len-1].SetStart(start);
 
   if (len > 1 && list[len-2].ReduceBoth(list[len-1]))
@@ -127,7 +119,6 @@ void Segment::GetSummaryTrick(Trick& summaryTrick) const
   }
 
   assert(len == 2);
-  // headerDirty = false;
 
   summaryTrick = list[1];
   summaryTrick.trick.cashing += list[0].trick.cashing;
@@ -179,7 +170,6 @@ bool Segment::operator != (
 void Segment::Localize(
   const Holding& holding)
 {
-  // headerDirty = true;
   for (unsigned p = 0; p < len; p++)
     list[p].Localize(holding);
 }
@@ -207,7 +197,6 @@ bool Segment::Prepend(
 
   assert(len > 0);
 
-  // headerDirty = true;
   const Trick& mergingMove = holding.GetTrick();
   bool lastFlag = (lastSegFlag && (len == 1));
   const bool mergeSpecialFlag = holding.GetMergeType();
@@ -403,7 +392,6 @@ posType Segment::Connect(
   // This arises when we collapse the first two segments in a TrickList.
   // It only works for segments of 1 or 2 tricks, which is the case.
 
-  // headerDirty = true;
   posType pend = sPrepend.list[0].trick.end;
 
   list[0].trick.start = pend;
@@ -483,7 +471,6 @@ bool Segment::Fix11(
         // C0: AA+AB = AA+AP, AP+AB = AP+AA, PA+PB = PA+PP, PA+PB = PA+PP.
         t1.trick.end = SDS_PARTNER[t2.trick.end];
         fix1 = SDS_FIX_WEAKER;
-        // headerDirty = true;
         return true;
       }
       else if (t1.trick.end != QT_BOTH && 
@@ -493,7 +480,6 @@ bool Segment::Fix11(
         // C1: AB+AA = AP+AA, AB+AP = AA+AP, PB+PA = PP+PA, PB+PA = PP+PA.
         t2.trick.end = SDS_PARTNER[t1.trick.end];
         fix2 = SDS_FIX_WEAKER;
-        // seg2.headerDirty = true;
         return true;
       }
     }
@@ -506,7 +492,6 @@ bool Segment::Fix11(
       t1.trick.end = QT_BOTH;
       fix1 = SDS_FIX_STRONGER;
       fix2 = SDS_FIX_PURGED;
-      // headerDirty = true;
       return true;
     }
   }
@@ -523,20 +508,17 @@ bool Segment::Fix11(
           t1.trick.end = QT_BOTH;
           fix1 = SDS_FIX_STRONGER;
           fix2 = SDS_FIX_PURGED;
-          // headerDirty = true;
           return true;
         case SDS_OLD_BETTER:
           t2.trick.start = t1.trick.end;
           fix1 = SDS_FIX_UNCHANGED;
           fix2 = SDS_FIX_WEAKER;
-          // seg2.headerDirty = true;
           return true;
         case SDS_NEW_BETTER:
           // break;
           t1.trick.start = t2.trick.end;
           fix1 = SDS_FIX_WEAKER;
           fix2 = SDS_FIX_UNCHANGED;
-          // headerDirty = true;
           return true;
         default:
           break;
@@ -576,7 +558,6 @@ bool Segment::Fix11_OneB(
 
     fix1 = SDS_FIX_UNCHANGED;
     fix2 = SDS_FIX_PURGED;
-    // seg2.headerDirty = true;
     return true;
   }
   else
@@ -621,7 +602,6 @@ bool Segment::Fix11_12(
   if (list[0] == seg2.list[1])
   {
     // seg2 clearly better.
-    // headerDirty = true;
     fix1 = SDS_FIX_PURGED;
     fix2 = SDS_FIX_UNCHANGED;
     return true;
@@ -650,7 +630,6 @@ bool Segment::Fix11_12(
   {
     // C1: AB / AP+PA or AB+PA, PB / PA+AP or PB+AP.
     t1.trick.end = t21.trick.start;
-    // headerDirty = true;
     fix1 = SDS_FIX_WEAKER;
     fix2 = SDS_FIX_UNCHANGED;
     return true;
@@ -718,7 +697,6 @@ bool Segment::Fix12(
     if (t1.trick.start == QT_BOTH)
       t1.trick.start = t20.trick.end;
     t1.trick.end = SDS_PARTNER[t20.trick.end];
-    // headerDirty = true;
     fix1 = SDS_FIX_WEAKER;
     fix2 = SDS_FIX_UNCHANGED;
     return true;
@@ -730,7 +708,6 @@ bool Segment::Fix12(
   {
     // AB / BA+Px or BP+Ax, PB / BA+Px or BP+Ax.
     t1.trick.end = SDS_PARTNER[t20.trick.end];
-    // headerDirty = true;
     fix1 = SDS_FIX_WEAKER;
     fix2 = SDS_FIX_UNCHANGED;
     return true;
@@ -745,7 +722,6 @@ bool Segment::Fix12(
       // BAnr (r > s) or _B_Pms+AA(n-m)-  equals  BAnr or _A_Pms+AA(n-m)-.
       // BPnr (r > s) or _B_Ams+PP(n-m)-  equals  BPnr or _P_Ams+PP(n-m)-.
       t20.trick.start = t21.trick.start;
-      // seg20.headerDirty = true;
       fix1 = SDS_FIX_UNCHANGED;
       fix2 = SDS_FIX_WEAKER;
       return true;
@@ -754,7 +730,6 @@ bool Segment::Fix12(
     {
       // BA2K or BP3T + AA1-  equals  PA2K or same.
       t1.trick.start = t20.trick.end;
-      // headerDirty = true;
       fix1 = SDS_FIX_WEAKER;
       fix2 = SDS_FIX_UNCHANGED;
       return true;
@@ -781,7 +756,6 @@ bool Segment::Fix12(
   {
     // PAnr  ">="  AA1A + PAms (r <= s, n >= m+1).
     // APnr  ">="  PP1A + APms (r <= s, n >= m+1).
-    // seg20.headerDirty = true;
     fix1 = SDS_FIX_UNCHANGED;
     fix2 = SDS_FIX_PURGED;
     return true;
@@ -846,8 +820,6 @@ bool Segment::Fix12Special(
     {
       if (t1.trick.end == QT_BOTH)
       {
-        // seg20.headerDirty = true; // Is removed
-        // seg21.headerDirty = true; // Is removed
         fix1 = SDS_FIX_UNCHANGED;
         fix2 = SDS_FIX_PURGED;
         return true;
@@ -859,8 +831,6 @@ bool Segment::Fix12Special(
         if (t200.trick.ranks < t201.trick.ranks)
           t201.trick.ranks = t200.trick.ranks;
         seg20.len = 1;
-        // seg20.headerDirty = true;
-        // seg21.headerDirty = true; // Is removed
 
         fix1 = SDS_FIX_UNCHANGED;
         fix2 = SDS_FIX_COLLAPSE;
@@ -899,7 +869,6 @@ bool Segment::Fix1nSpecial(
       if (t200.trick.ranks < t201.trick.ranks)
         t201.trick.ranks = t200.trick.ranks;
       seg20.len = 1;
-      // seg20.headerDirty = true;
       fix1 = SDS_FIX_UNCHANGED;
       fix2 = SDS_FIX_WEAKER;
       return true;
@@ -910,7 +879,7 @@ bool Segment::Fix1nSpecial(
 
 
 void Segment::Print(
-  std::ostream& out) const
+  ostream& out) const
 {
   for (unsigned p = 0; p < len; p++)
     list[len-1-p].Print(out);
@@ -918,7 +887,7 @@ void Segment::Print(
 
 
 void Segment::Print(
-  std::ostream& out,
+  ostream& out,
   const unsigned d,
   const unsigned a,
   unsigned& offset) const
