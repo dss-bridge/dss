@@ -77,7 +77,7 @@ void AltMatrix1D::SetDimension(
 
 
 bool AltMatrix1D::IsPurged(
-  const unsigned x)
+  const unsigned x) const
 {
   return ! active[x];
 }

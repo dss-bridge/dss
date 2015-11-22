@@ -12,11 +12,11 @@
 #include "cst.h"
 #include "AltList.h"
 
+using namespace std;
+
+
 extern bool debugAltList;
 extern unsigned highestAltNo;
-
-#include <vector>
-extern vector<unsigned> holdCtr;
 
 
 AltList::AltList()
@@ -90,14 +90,14 @@ Header& AltList::GetHeader()
 }
 
 
-unsigned AltList::GetLen() const
+unsigned AltList::GetLength() const
 {
   return len;
 }
 
 
 cmpDetailType AltList::Compare(
-  AltList& aNew)
+  const AltList& aNew) const
 {
   unsigned numOld = len;
   unsigned numNew = aNew.len;
@@ -172,7 +172,8 @@ void AltList::operator += (
 }
 
 
-AltList AltList::operator + (const AltList& aRight)
+AltList AltList::operator + (
+  const AltList& aRight) const
 {
   // We might change the alts, so we have to copy them (ugh).
   AltList aOld = * this;
@@ -215,7 +216,8 @@ AltList AltList::operator + (const AltList& aRight)
 }
 
 
-bool AltList::MergeSides(AltList& aNew)
+bool AltList::MergeSides(
+  const AltList& aNew) 
 {
   if (len != aNew.len)
     return false;
@@ -392,8 +394,8 @@ void AltList::FillMatrix2D(
   AltList& aNew,
   AltMatrix1D& compX,
   AltMatrix1D& compY,
-  vector<bool>& softX,
-  vector<bool>& softY)
+  const vector<bool>& softX,
+  const vector<bool>& softY)
 {
   // The soft lists are true for those entries that have just
   // been weakened or strengthened.
@@ -468,7 +470,7 @@ bool AltList::AllFalse(
 
 
 void AltList::PurgeList(
-  AltMatrix1D& comp)
+  const AltMatrix1D& comp)
 {
   unsigned p = 0;
   for (unsigned a1 = 0; a1 < len; a1++)
@@ -592,7 +594,8 @@ void AltList::PurgeMulti()
 }
 
 
-bool AltList::CompareMulti(const TrickList& tref)
+bool AltList::CompareMulti(
+  const TrickList& tref) const
 {
   if (len < 2)
     return false;
@@ -621,7 +624,7 @@ bool AltList::CompareMulti(const TrickList& tref)
 bool AltList::CompareMultiSide(
   const posType sideToLose,
   const AltMatrix2D& comp,
-  const AltList& altToLose)
+  const AltList& altToLose) const
 {
   bool use[SDS_MAX_ALT];
   if (! comp.CandList(sideToLose, use))
@@ -639,7 +642,8 @@ bool AltList::CompareMultiSide(
 }
 
 
-bool AltList::operator >= (TrickList& tlist)
+bool AltList::operator >= (
+  TrickList& tlist)
 {
   // Both AltList and tlist are modified in this call!
   // They should be temporary to the caller.
@@ -663,7 +667,7 @@ bool AltList::operator >= (TrickList& tlist)
 
 
 bool AltList::FrontIsGE(
-  TrickList& tlist)
+  const TrickList& tlist) const
 {
   Trick htrick;
   tlist.GetFirstSummaryTrick(htrick);
@@ -681,7 +685,7 @@ bool AltList::FrontIsGE(
 
 
 bool AltList::FrontIsGE(
-  const Trick& trick)
+  const Trick& trick) const
 {
   for (unsigned a = 0; a < len; a++)
   {

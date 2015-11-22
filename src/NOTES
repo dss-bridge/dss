@@ -47,6 +47,7 @@ Algorithm code
 Header:
 * Header.cpp has a lot of functions...
 * Check at what levels it is good to cache the header
+* Error fix in Trick.cpp -- reflect here as well
 
 DefList:
 * Can we cache header at MoveList level, so not store in DL?

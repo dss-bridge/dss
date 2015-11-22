@@ -32,7 +32,7 @@ void Header::Set(
   start = trick.GetStart();
   end = trick.GetEnd();
   maxTricks = trick.GetCashing();
-  maxRanks =  trick.GetRanks();
+  maxRanks = trick.GetRanks();
 
   for (int h = 0; h < DDS_HANDS; h++)
   {

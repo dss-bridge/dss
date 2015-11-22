@@ -47,7 +47,7 @@ class AltMatrix1D
       const int actX[]);
 
     bool IsPurged(
-      const unsigned x);
+      const unsigned x) const;
     
     void SetValue(
       const unsigned x,

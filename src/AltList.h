@@ -11,11 +11,7 @@
 #define SDS_ALTLIST_H
 
 #include <iostream>
-#include <iomanip>
-#include <string>
 #include <vector>
-
-using namespace std;
 
 #include "TrickList.h"
 #include "AltMatrix1D.h"
@@ -34,7 +30,7 @@ class AltList
       AltMatrix1D& comp,
       const unsigned dimFixed,
       const unsigned dimVar,
-      vector<fixType>& fixVector);
+      std::vector<fixType>& fixVector);
 
     void FillMatrix1D(
       AltMatrix1D& comp);
@@ -43,23 +39,23 @@ class AltList
       AltList& aNew,
       AltMatrix1D& compX,
       AltMatrix1D& compY,
-      vector<bool>& softX,
-      vector<bool>& softY);
+      const std::vector<bool>& softX,
+      const std::vector<bool>& softY);
 
     bool AllFalse(
-      const vector<bool>& vec,
+      const std::vector<bool>& vec,
       const unsigned vlen) const;
 
     void PurgeList(
-      AltMatrix1D& comp);
+      const AltMatrix1D& comp);
 
     void PurgeList(
-      const vector<bool>& purgeList);
+      const std::vector<bool>& purgeList);
 
     void PunchOut(
       const AltList * alist,
       const unsigned int purgeNo,
-      const vector<bool>& purgeList,
+      const std::vector<bool>& purgeList,
       const int pstart);
 
     void PunchOut(
@@ -71,27 +67,27 @@ class AltList
     void PurgeMulti();
 
     bool CompareMulti(
-      const TrickList& tref);
+      const TrickList& tref) const;
 
     bool CompareMultiSide(
       const posType sideToLose,
       const AltMatrix2D& comp,
-      const AltList& altToLose);
+      const AltList& altToLose) const;
 
     bool operator >= (
       TrickList& tlist);
 
     bool FrontIsGE(
-      TrickList& tlist);
+      const TrickList& tlist) const;
 
     bool FrontIsGE(
-      const Trick& trick);
+      const Trick& trick) const;
 
     void ConnectFirst(
       const posType pend);
 
     void RegisterSize(
-      const string& text);
+      const std::string& text);
 
 
   public:
@@ -120,9 +116,10 @@ class AltList
 
     Header& GetHeader();
 
-    unsigned GetLen() const;
+    unsigned GetLength() const;
 
-    cmpDetailType Compare(AltList& aNew);
+    cmpDetailType Compare(
+      const AltList& aNew) const;
 
     bool operator == (
       const AltList& alt2) const;
@@ -133,13 +130,15 @@ class AltList
     void operator += (
       const Holding& holding);
 
-    AltList operator + (const AltList& aRight);
+    AltList operator + (
+      const AltList& aRight) const;
 
-    bool MergeSides(AltList& aNew);
+    bool MergeSides(
+      const AltList& aNew);
 
     void Print(
       std::ostream& pout,
-      const string text,
+      const std::string text,
       const unsigned d = 0) const;
 };
 

@@ -95,7 +95,7 @@ unsigned DefList::GetKey()
 {
   unsigned sum = 0;
   for (unsigned d = 0; d < len; d++)
-    sum += list[d].GetLen();
+    sum += list[d].GetLength();
   
   return (len-1) + (sum << 4);
 }
