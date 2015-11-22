@@ -175,6 +175,17 @@ const cmpType cmpDetailToShort[SDS_HEADER_CMP_SIZE] =
   SDS_DIFFERENT
 };
 
+const bool cmpDetailToGE[SDS_HEADER_CMP_SIZE] =
+{
+  true,
+  false,
+  true,
+  false,
+  false,
+  true,
+  false
+};
+
 const cmpType reachMatrix[SDS_SIDE_SIZE][SDS_SIDE_SIZE] =
 {
   // NONE            ACE             PARD            BOTH

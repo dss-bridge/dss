@@ -31,3 +31,10 @@
 *.swp
 *.bak
 *.pdb
+
+# Visual Studio stuff
+*.vcxproj
+*.user
+*.sdf
+*.sln
+*.log

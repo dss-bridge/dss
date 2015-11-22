@@ -56,13 +56,6 @@ void Trick::SetEnd(
 }
 
 
-void Trick::SetRanks(
-  const unsigned ranks)
-{
-  trick.ranks = ranks;
-}
-
-
 posType Trick::GetStart() const
 {
   return trick.start;
@@ -278,7 +271,6 @@ bool Trick::operator >= (
 {
   assert(trick.start != SDS_PARTNER[t1.trick.start]);
 
-/* 
 cmpDetailType c = Trick::Compare(t1);
 bool b;
 cmpType d = cmpDetailToShort[c];
@@ -286,39 +278,32 @@ if (d == SDS_SAME || d == SDS_OLD_BETTER)
   b = true;
 else
   b = false;
-*/
 
   if (t1.trick.end == QT_BOTH && trick.end != QT_BOTH)
-  {
-    return false;
-  }
+    return b;
   else if (t1.trick.end != QT_BOTH && trick.end == SDS_PARTNER[t1.trick.end])
   {
+    return b;
+    if (b != false)
+    {
+      cout << "Place 1\n";
+      Trick::Print(cout);
+      cout << "\n";
+      t1.Print(cout);
+      cout << endl;
+      // assert(false);
+    }
     return false;
-  }
-  else if (t1.trick.cashing > trick.cashing)
-  {
-    return false;
-  }
-  else if (t1.trick.cashing < trick.cashing)
-  {
-    return true;
-  }
-  else if (t1.trick.ranks <= trick.ranks)
-  {
-    return true;
   }
   else
-  {
-    return false;
-  }
+    return b;
 }
 
 
 
 cmpType Trick::CashRankOrder(
   const unsigned char c,
-  const unsigned char r)
+  const unsigned char r) const
 {
   if (trick.cashing > c)
     return SDS_OLD_BETTER;
@@ -335,7 +320,7 @@ cmpType Trick::CashRankOrder(
 
 cmpType Trick::ComparePlay(
   const Trick& t1,
-  const posType side)
+  const posType side) const
 {
   reachType oldReach = posToReach[trick.end];
   reachType newReach = posToReach[t1.trick.end];
@@ -363,7 +348,7 @@ cmpType Trick::ComparePlay(
 
 
 cmpDetailType Trick::Compare(
-  const Trick& t1)
+  const Trick& t1) const
 {
   cmpType sideScore =
     reachMatrix[posToReach[trick.start]][posToReach[t1.trick.start]];
@@ -389,7 +374,10 @@ cmpDetailType Trick::Compare(
     return SDS_HEADER_PLAY_DIFFERENT;
 
   runningScore = cmpMergeMatrix[runningScore][playScore];
-  if (runningScore != SDS_SAME)
+  if (runningScore == SDS_DIFFERENT)
+    return SDS_HEADER_PLAY_DIFFERENT;
+
+  if (runningScore != SDS_SAME && trick.cashing != t1.trick.cashing)
     return cmpPlayToDetail[runningScore];
 
   cmpType rankScore;
@@ -400,12 +388,16 @@ cmpDetailType Trick::Compare(
   else
     rankScore = SDS_SAME;
 
-  return cmpRanksToDetail[rankScore];
+  if (runningScore == SDS_SAME)
+    return cmpRanksToDetail[rankScore];
+
+  runningScore = cmpMergeMatrix[runningScore][rankScore];
+  return cmpPlayToDetail[runningScore];
 }
 
 
 void Trick::Print(
-  std::ostream& out) const
+  ostream& out) const
 {
   out <<
     setw(6) << SDS_POS_NAMES[trick.start] <<
@@ -416,7 +408,7 @@ void Trick::Print(
 
 
 void Trick::Print(
-  std::ostream& out,
+  ostream& out,
   const unsigned d,
   const unsigned a,
   const unsigned p) const

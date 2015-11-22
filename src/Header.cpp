@@ -284,12 +284,6 @@ cmpType Header::CompareFirstPlay(
   const posType side)
 {
   // side can only be QT_ACE or QT_PARD here.
-if (side != QT_ACE && side != QT_PARD)
-{
-  Header::Print();
-  newHeader.Print();
-  cout.flush();
-}
   assert(side != QT_BOTH);
 
   reachType oldReach = reach;

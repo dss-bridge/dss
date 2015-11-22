@@ -41,7 +41,7 @@ class Trick
 
     cmpType ComparePlay(
       const Trick& t1,
-      const posType side);
+      const posType side) const;
 
   public:
 
@@ -62,9 +62,6 @@ class Trick
 
     void SetEnd(
       const posType end);
-
-    void SetRanks(
-      const unsigned ranks);
 
     posType GetStart() const;
 
@@ -95,17 +92,17 @@ class Trick
       Trick& t1);
 
     cmpDetailType Compare(
-      const Trick& t1);
+      const Trick& t1) const;
 
     cmpType CashRankOrder(
       const unsigned char c,
-      const unsigned char r);
+      const unsigned char r) const;
 
     bool operator >= (
       const Trick& t1);
 
     void Print(
-      std::ostream& out) const;
+      std::ostream& out = cout) const;
 
     void Print(
       std::ostream& out,

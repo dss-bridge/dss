@@ -1,4 +1,8 @@
-EXPORTER	= Exports.def
+CC       	= cl
+CC_FLAGS        = /O2 /Oi /Ot /Oy /GL /Zi /EHsc
+CC_LINK_DEBUG   = /INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF
+LD_FLAGS	= 
+
 
 SOURCE_FILES 	=		\
         Stats.cpp               \
@@ -16,67 +20,28 @@ SOURCE_FILES 	=		\
         ComplexMoves.cpp        \
         Header.cpp              \
         Twiddle.cpp             \
-        Dist.cpp
+        Dist.cpp                \
+        single.cpp
 
-TEST		= single
-ITEST		= single
-
-# Compilers
-
-CC_VS     	= cl
-
-# Compiler and linker flags
-
-CC_FLAGS_VS     = /O2 /Oi /Ot /Oy /GL /Zi
-CC_LINK_DEBUG   = /INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF
-
-LD_FLAGS_VS	= 
-LD_FLAGS_LINUX	=
-LD_FLAGS_MACOS	=
-
-ifeq ($(DDS_THREADS),none)
-DDS_THR		= -DDDS_THREADS_SINGLE
-else
-DDS_THR		= 
-endif
-
-WINDRES_FLAG	= -F pe-i386
-
-CC		= $(CC_VS)
-CC_FLAGS	= $(CC_FLAGS_VS)
-LD_FLAGS	= $(LD_FLAGS_VS)
-
-O_FILES 	= $(subst .cpp,.o,$(SOURCE_FILES))
-
-OBJ_FILES 	= $(subst .cpp,.obj,$(SOURCE_FILES))
-
-TEST_SOURCE_FILES = $(TEST).cpp
-TEST_O_FILES 	= $(subst .cpp,.o,$(TEST_SOURCE_FILES)) Stats.o
-TEST_OBJ_FILES 	= $(subst .cpp,.obj,$(TEST_SOURCE_FILES)) Stats.obj
-
-ITEST_SOURCE_FILES = $(ITEST).cpp
-ITEST_O_FILES 	= $(subst .cpp,.o,$(ITEST_SOURCE_FILES))
-ITEST_OBJ_FILES = $(subst .cpp,.obj,$(ITEST_SOURCE_FILES))
-
-# Linking directly.
-
-test:	$(OBJ_FILES) $(ITEST_OBJ_FILES)
-	link /LTCG $(CC_LINK_DEBUG) $(OBJ_FILES) $(ITEST_OBJ_FILES) /out:$(ITEST).exe
+# OBJ_FILES 	= $(subst .cpp,.obj,$(SOURCE_FILES))
+OBJ_FILES 	= $(SOURCE_FILES:.cpp=.obj)
 
 
-%.o:	%.cpp
-	$(CC) $(CC_FLAGS) $(DDS_THR) -c $<
+test:	$(OBJ_FILES) 
+	link /LTCG $(CC_LINK_DEBUG) $(OBJ_FILES) /out:single.exe
+
+
+.cpp.obj:
+	$(CC) $(CC_FLAGS) /c /EHsc $<
 
 %.obj:	%.cpp
-	$(CC_VS) $(CC_FLAGS) $(DDS_THR) /c /EHsc $<
-
+	$(CC) $(CC_FLAGS) /c /EHsc $<
 
 depend:
-	makedepend -Y -o.obj -- $(CC_FLAGS) -- $(SOURCE_FILES) $(TEST).cpp
+	makedepend -Y -o.obj -- $(CC_FLAGS) -- $(SOURCE_FILES)
 
 clean:
-	rm -f $(OBJ_FILES) $(TEST_O_FILES) $(TEST_OBJ_FILES) $(TEST).o $(ITEST).o $(TEST).obj $(ITEST).obj $(DLL) $(TEST).exe $(ITEST).exe $(DLLBASE).lib $(DLLBASE).exp $(DLLBASE).def $(TEST).exp $(DLLBASE).o $(DLLBASE).obj $(DLLBASE).res
-
+	rm -f $(OBJ_FILES) single.exe single.exp 
 
 # DO NOT DELETE
 
