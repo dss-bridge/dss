@@ -83,9 +83,13 @@ Header& DefList::GetHeader()
 
   assert(len > 0);
 
-  header = list[0].GetHeader();
+  list[0].GetHeader(header);
+  Header headerNew;
   for (unsigned d = 1; d < len; d++)
-    header.MergeMin(list[d].GetHeader());
+  {
+    list[d].GetHeader(headerNew);
+    header.MergeMin(headerNew);
+  }
 
   return header;
 }

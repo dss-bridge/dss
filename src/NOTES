@@ -1,11 +1,17 @@
 16487, 20845 10094
-16600, sum 23977
 
 DONE
 ====
 TrickList.{cpp,h}
 Trick.{cpp,h}
 Segment.{cpp,h}
+
+TODO (core)
+====
+AltList.{cpp,h}
+AltMatrix1D.{cpp,h}
+AltMatrix2D.{cpp,h}
+DefList.{cpp,h}
 
 PLAN
 ====

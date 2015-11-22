@@ -74,19 +74,20 @@ bool AltList::Set12(
 }
 
 
-Header& AltList::GetHeader()
+void AltList::GetHeader(Header& hdr)
 {
   assert(len > 0);
 
+  // Header header;
   list[0].GetHeader(header);
+  Header hNew;
   for (unsigned a = 1; a < len; a++)
   {
-    Header hNew;
     list[a].GetHeader(hNew);
     header.MergeMax(hNew);
   }
 
-  return header;
+  hdr = header;
 }
 
 

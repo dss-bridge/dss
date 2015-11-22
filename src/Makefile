@@ -50,12 +50,11 @@ DefList.obj: cst.h DefList.h AltList.h TrickList.h Segment.h Trick.h
 DefList.obj: Holding.h Header.h AltMatrix1D.h AltMatrix2D.h
 MoveList.obj: portab.h cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
 MoveList.obj: TrickList.h Segment.h Header.h AltMatrix1D.h AltMatrix2D.h
-Trick.obj: cst.h Trick.h Holding.h portab.h
-Segment.obj: cst.h Segment.h Trick.h Holding.h Header.h portab.h
+Trick.obj: cst.h Trick.h Holding.h
+Segment.obj: cst.h Segment.h Trick.h Holding.h
 TrickList.obj: cst.h TrickList.h Segment.h Trick.h Holding.h Header.h
-TrickList.obj: portab.h
 AltList.obj: cst.h AltList.h TrickList.h Segment.h Trick.h Holding.h Header.h
-AltList.obj: AltMatrix1D.h AltMatrix2D.h portab.h
+AltList.obj: AltMatrix1D.h AltMatrix2D.h
 AltMatrix1D.obj: cst.h AltMatrix1D.h portab.h
 AltMatrix2D.obj: cst.h AltMatrix2D.h portab.h
 Holding.obj: cst.h Holding.h Trick.h
@@ -67,7 +66,7 @@ SimpleMoves.obj: SimpleMoves.h ComplexMoves.h Twiddle.h Dist.h LoopHold.h
 ComplexMoves.obj: portab.h cst.h DefList.h AltList.h TrickList.h Segment.h
 ComplexMoves.obj: Trick.h Holding.h Header.h AltMatrix1D.h AltMatrix2D.h
 ComplexMoves.obj: MoveList.h SimpleMoves.h ComplexMoves.h Stats.h
-Header.obj: cst.h Header.h Trick.h Holding.h
+Header.obj: Header.h cst.h Trick.h Holding.h
 Twiddle.obj: cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
 Twiddle.obj: TrickList.h Segment.h Header.h AltMatrix1D.h AltMatrix2D.h
 Twiddle.obj: SimpleMoves.h Twiddle.h

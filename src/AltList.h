@@ -114,7 +114,7 @@ class AltList
       const Trick& trick20,
       const Trick& trick21);
 
-    Header& GetHeader();
+    void GetHeader(Header& hdr);
 
     unsigned GetLength() const;
 
