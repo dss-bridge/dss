@@ -398,7 +398,6 @@ bool TrickList::operator >= (
 {
   assert(len > 0);
   Trick ltrick = TrickList::GetFirstHeaderTrick();
-  // return (ltrick >= trick);
   return cmpDetailToGE[ltrick.Compare(trick)];
 }
 

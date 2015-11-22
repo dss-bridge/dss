@@ -130,7 +130,7 @@ class Segment
       fixType& fix2);
     
     void Print(
-      std::ostream& pout) const;
+      std::ostream& out = cout) const;
 
     void Print(
       std::ostream& out,

@@ -11,8 +11,6 @@
 #define SDS_TRICK_H
 
 #include <iostream>
-#include <iomanip>
-#include <string>
 
 using namespace std;
 
@@ -97,9 +95,6 @@ class Trick
     cmpType CashRankOrder(
       const unsigned char c,
       const unsigned char r) const;
-
-    // bool operator >= (
-      // const Trick& t1);
 
     void Print(
       std::ostream& out = cout) const;

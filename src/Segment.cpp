@@ -150,11 +150,26 @@ reachType Segment::GetReach() const
 
 const Trick& Segment::GetHeaderTrick()
 {
+  if (len == 1)
+  {
+    headerTrick = list[0];
+    return headerTrick;
+  }
+
+  assert(len > 0);
+
+  /*
+  holdCtr[950]++;
+  if (! headerDirty)
+    holdCtr[951]++;
+  else
+    holdCtr[952]++;
+    */
+
   if (! headerDirty)
     return headerTrick;
   headerDirty = false;
 
-  assert(len > 0);
 
   unsigned maxTricks = 0;
   unsigned short maxRanks = SDS_VOID;
@@ -195,15 +210,10 @@ const Trick& Segment::GetHeaderTrick()
 
 cmpDetailType Segment::CompareHeader(Segment& seg2)
 {
-  assert(len > 0);
-  assert(seg2.len > 0);
+  const Trick& t1 = Segment::GetHeaderTrick();
+  const Trick& t2 = seg2.GetHeaderTrick();
 
-  Header header;
-  header.SetWithTrick(Segment::GetHeaderTrick());
-  Header header2;
-  header2.SetWithTrick(seg2.GetHeaderTrick());
-
-  return header.CompareDetail(header2);
+  return t1.Compare(t2);
 }
 
 
@@ -211,6 +221,7 @@ bool Segment::EqualsExceptStart(Segment& seg2)
 {
   Header header;
   header.SetWithTrick(Segment::GetHeaderTrick());
+
   Header hNew;
   hNew.SetWithTrick(seg2.GetHeaderTrick());
 
@@ -588,14 +599,12 @@ bool Segment::Fix11(
           fix2 = SDS_FIX_PURGED;
           headerDirty = true;
           return true;
-          // break;
         case SDS_OLD_BETTER:
           t2.trick.start = t1.trick.end;
           fix1 = SDS_FIX_UNCHANGED;
           fix2 = SDS_FIX_WEAKER;
           seg2.headerDirty = true;
           return true;
-          // break;
         case SDS_NEW_BETTER:
           // break;
           t1.trick.start = t2.trick.end;
