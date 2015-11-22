@@ -26,8 +26,6 @@ class TrickList
 
     Segment list[TRICKLIST_MAXSEGS];
     unsigned len;
-    Header header;
-    bool headerDirty;
 
   void Split();
 
@@ -55,7 +53,8 @@ class TrickList
 
     unsigned int GetLength() const;
 
-    const Header& GetHeader(
+    const void GetHeader(
+      Header& header,
       const unsigned startNo = 0);
 
     const Trick& GetFirstHeaderTrick();

@@ -85,9 +85,13 @@ Header& AltList::GetHeader()
 
   assert(len > 0);
 
-  header = list[0].GetHeader();
+  list[0].GetHeader(header);
   for (unsigned a = 1; a < len; a++)
-    header.MergeMax(list[a].GetHeader());
+  {
+    Header hNew;
+    list[a].GetHeader(hNew);
+    header.MergeMax(hNew);
+  }
 
   return header;
 }

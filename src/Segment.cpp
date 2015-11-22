@@ -114,7 +114,7 @@ unsigned int Segment::GetLength() const
 
 bool Segment::FirstRankExceeds(const unsigned lhoRank) const
 {
-  assert(len >= 1);
+  assert(len > 0);
   return(list[len-1].trick.ranks > lhoRank);
 }
 
@@ -155,22 +155,26 @@ const Trick& Segment::GetHeaderTrick()
     return headerTrick;
   }
 
-  assert(len > 0);
+  assert(len == 2);
 
-  /*
-  holdCtr[950]++;
-  if (! headerDirty)
-    holdCtr[951]++;
-  else
-    holdCtr[952]++;
-    */
-
-  if (! headerDirty)
-  {
-    return headerTrick;
-  }
+  // if (! headerDirty)
+    // return headerTrick;
   headerDirty = false;
 
+  headerTrick = list[1];
+  headerTrick.trick.cashing += list[0].trick.cashing;
+  if (list[0].trick.ranks < headerTrick.trick.ranks)
+    headerTrick.trick.ranks = list[0].trick.ranks;
+
+  posType e = list[0].trick.end;
+  if (e == QT_BOTH)
+    headerTrick.trick.end = QT_BOTH;
+  else if (list[0].trick.start == QT_BOTH && list[1].trick.end != e)
+    headerTrick.trick.end = QT_BOTH;
+  else
+    headerTrick.trick.end = e;
+    
+  return headerTrick;
 
   unsigned maxTricks = 0;
   unsigned short maxRanks = SDS_VOID;

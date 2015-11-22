@@ -12,6 +12,10 @@
 #include "cst.h"
 #include "TrickList.h"
 
+
+#include <vector>
+extern vector<unsigned> holdCtr;
+
 unsigned debugTrickList = false;
 
 
@@ -28,7 +32,6 @@ TrickList::~TrickList()
 
 void TrickList::Reset()
 {
-  headerDirty = true;
   len = 0;
 }
 
@@ -36,7 +39,6 @@ void TrickList::Reset()
 bool TrickList::Set1(
   const Trick& trick)
 {
-  headerDirty = true;
   len = 1;
   list[0].Set1(trick);
   return true;
@@ -47,7 +49,6 @@ bool TrickList::Set2(
   const Trick& trick1,
   const Trick& trick2)
 {
-  headerDirty = true;
   if (trick2.Extends(trick1))
   {
     list[0].Set2(trick1, trick2);
@@ -67,7 +68,6 @@ void TrickList::SetStart(
   const posType start)
 {
   assert(len > 0);
-  headerDirty = true;
   list[len-1].SetStart(start);
 }
 
@@ -92,14 +92,10 @@ unsigned int TrickList::GetLength() const
 }
 
 
-const Header& TrickList::GetHeader(
+const void TrickList::GetHeader(
+  Header& header,
   const unsigned startNo)
 {
-  if (startNo > 0)
-    headerDirty = true;
-  else if (! headerDirty)
-    return header;
-
   assert(len > startNo);
 
   header.SetWithTrick(list[len-1-startNo].GetHeaderTrick());
@@ -110,8 +106,6 @@ const Header& TrickList::GetHeader(
     hLater.SetWithTrick(list[len-1-l].GetHeaderTrick());
     header.Increase(hLater);
   }
-
-  return header;
 }
 
 
@@ -141,9 +135,11 @@ cmpDetailType TrickList::Compare(
         c == SDS_HEADER_PLAY_NEW_BETTER ||
         c == SDS_HEADER_PLAY_OLD_BETTER)
     {
-      (void) TrickList::GetHeader(s);
-      (void) lNew.GetHeader(s);
-      return header.CompareDetail(lNew.header);
+      Header header;
+      TrickList::GetHeader(header, s);
+      Header newHeader;
+      lNew.GetHeader(newHeader, s);
+      return header.CompareDetail(newHeader);
     }
     else if (c == SDS_HEADER_SAME)
       continue;
@@ -170,8 +166,10 @@ bool TrickList::EqualsExceptStart(TrickList& lNew)
 {
   // Not entirely happy with this.
 
-  (void) TrickList::GetHeader();
-  const Header& hNew = lNew.GetHeader();
+  Header header;
+  (void) TrickList::GetHeader(header);
+  Header hNew;
+  lNew.GetHeader(hNew);
 
   if (! header.EqualsExceptPerhapsStart(hNew, true))
     return false;
@@ -210,8 +208,6 @@ void TrickList::operator += (
   const Holding& holding)
 {
   // Add a move in front of the first segment.
-
-  headerDirty = true;
 
   assert(len > 0);
   for (unsigned p = 0; p < len; p++)
@@ -353,12 +349,6 @@ bool TrickList::Fix(
 
   if (fix1 == SDS_FIX_UNCHANGED && fix2 == SDS_FIX_UNCHANGED)
     return false;
-
-  if (fix1 == SDS_FIX_WEAKER || fix1 == SDS_FIX_STRONGER)
-    headerDirty = true;
-
-  if (fix2 == SDS_FIX_WEAKER || fix2 == SDS_FIX_STRONGER)
-    lOther.headerDirty = true;
 
   return true;
 }
