@@ -29,7 +29,6 @@ class AltList
     TrickList list[SDS_MAX_ALT];
     unsigned len;
     Header header;
-    bool headerDirty;
 
     void Backtrack1D(
       AltMatrix1D& comp,

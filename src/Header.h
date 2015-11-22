@@ -20,23 +20,23 @@ class Header
 {
   private:
 
+    posType start;
+    posType end;
     unsigned char maxTricks;
     unsigned char maxRanks;
     unsigned char minRanks;
     unsigned char cashTricks[DDS_HANDS];
     unsigned char cashRanks[DDS_HANDS];
-    posType start;
-    reachType reach;
+
+    cmpType CompareFirstPlay(
+      const Header& newHeader,
+      const posType side) const;
 
     cmpType ComparePlay(
       const Header& newHeader,
       const posType side) const;
 
     cmpType CompareRanks(
-      const Header& newHeader,
-      const posType side) const;
-
-    cmpType CompareFirstPlay(
       const Header& newHeader,
       const posType side) const;
 
@@ -52,27 +52,26 @@ class Header
     void Increase(
       const Trick& tLater);
 
-    cmpDetailType Compare(
-      const Header& newHeader) const;
-
     void MergeMax(
       const Header& newHeader);
 
     void MergeMin(
       const Header& newHeader);
 
+    cmpDetailType Compare(
+      const Header& newHeader) const;
+
     bool EqualsExceptStart(
       const Header& newHeader) const;
 
-    int GetKey();
-    int GetTrickKey();
-    int GetRankKey();
-
-    void KeyToText(
-      std::ostringstream& out,
-      int key);
-
+    int GetKey() const;
+    int GetTrickKey() const;
+    int GetRankKey() const;
     unsigned GetMaxRank() const;
+
+    void PrintKey(
+      std::ostream& out,
+      const int key) const;
 
     void Print(
       std::ostream& out = std::cout,

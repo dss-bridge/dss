@@ -291,13 +291,7 @@ void MoveList::PrintMoveListByKeys(std::ostream& fout)
     if (lp == nullptr)
       continue;
 
-    int trickKey = lp->defp->GetHeader().GetKey();
-    ostringstream out;
-    h.KeyToText(out, trickKey);
-    fout << "\n\nKey " << 
-      setw(6) << key <<
-      " (" << 
-      out.str() << ")\n";
+    lp->defp->GetHeader().PrintKey(fout, key);
     fout << "====================================================\n\n";
 
     while (lp)
@@ -326,11 +320,8 @@ void MoveList::PrintMove(
   holding.ToText(out);
   fout << out.str() << "\n";
 
-  // ostringstream out2;
   Header& hp = list[n].def.GetHeader();
   hp.Print(fout, true);
-  // hp.ToText(out2);
-  // fout << out2.str() << "\n";
   fout << "\n";
 
   list[n].def.Print(fout);

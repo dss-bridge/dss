@@ -32,7 +32,6 @@ AltList::~AltList()
 
 void AltList::Reset()
 {
-  headerDirty = true;
   len = 0;
 }
 
@@ -40,7 +39,6 @@ void AltList::Reset()
 bool AltList::Set1(
   const Trick& trick)
 {
-  headerDirty = true;
   len = 1;
   return list[0].Set1(trick);
 }
@@ -50,7 +48,6 @@ bool AltList::Set2(
   const Trick& trick10,
   const Trick& trick11)
 {
-  headerDirty = true;
   len = 1;
   return list[0].Set2(trick10, trick11);
 }
@@ -60,7 +57,6 @@ bool AltList::Set11(
   const Trick& trick1,
   const Trick& trick2)
 {
-  headerDirty = true;
   len = 2;
   (void) list[0].Set1(trick1);
   return list[1].Set1(trick2);
@@ -72,7 +68,6 @@ bool AltList::Set12(
   const Trick& trick20,
   const Trick& trick21)
 {
-  headerDirty = true;
   len = 2;
   (void) list[0].Set1(trick1);
   return list[1].Set2(trick20, trick21);
@@ -81,10 +76,6 @@ bool AltList::Set12(
 
 Header& AltList::GetHeader()
 {
-  // if (! headerDirty)
-    // return header;
-  // headerDirty = false;
-
   assert(len > 0);
 
   list[0].GetHeader(header);
@@ -174,8 +165,6 @@ bool AltList::operator != (
 void AltList::operator += (
   const Holding& holding)
 {
-  headerDirty = true;
-
   for (unsigned a = 0; a < len; a++)
     list[a] += holding;
   
@@ -218,8 +207,6 @@ AltList AltList::operator + (const AltList& aRight)
   aOld.RegisterSize("NEWALT");
 
   aOld.PurgeMulti();
-
-  headerDirty = true;
 
   if (debugAltList)
     aOld.Print(cout, "AltList::++ result");
@@ -269,7 +256,6 @@ bool AltList::MergeSides(AltList& aNew)
   if (count != len)
     return false;
 
-  headerDirty = true;
   for (unsigned a = 0; a < len; a++)
   {
     if (oldFix[a])
@@ -529,7 +515,6 @@ void AltList::PunchOut(
   const vector<bool>& purgeList,
   const int pstart)
 {
-  headerDirty = true;
   len = 0;
   for (unsigned int a = 0; a < alist->len; a++)
   {
@@ -547,7 +532,6 @@ void AltList::PunchOut(
   const AltList * alist,
   const int pstart)
 {
-  headerDirty = true;
   len = 0;
   for (unsigned int a = 0; a < alist->len; a++)
   {
@@ -575,8 +559,6 @@ void AltList::Reduce()
   AltList::PurgeList(comp);
 
   AltList::PurgeMulti();
-
-  headerDirty = true;
 
   if (debugAltList)
     AltList::Print(cout, "AltList::Reduce after");
