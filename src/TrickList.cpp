@@ -14,9 +14,6 @@
 
 using namespace std;
 
-#include <vector>
-extern vector<unsigned> holdCtr;
-
 
 TrickList::TrickList()
 {
@@ -99,7 +96,7 @@ const void TrickList::GetHeader(
 
   Trick t;
   list[len-1-startNo].GetSummaryTrick(t);
-  header.SetWithTrick(t);
+  header.Set(t);
 
   for (unsigned l = startNo+1; l < len; l++)
   {
@@ -140,7 +137,7 @@ cmpDetailType TrickList::Compare(
       TrickList::GetHeader(header, s);
       Header newHeader;
       lNew.GetHeader(newHeader, s);
-      return header.CompareDetail(newHeader);
+      return header.Compare(newHeader);
     }
     else if (c == SDS_HEADER_SAME)
       continue;
@@ -224,31 +221,18 @@ void TrickList::operator += (
       // Essentially AKx / - / Qx / xx.  Conservative.
       // Never start with AA.
       TrickList::Set1(holding.GetTrick());
-holdCtr[950]++;
     }
     return;
   }
-
-
-  // if (holding.LHOIsVoid() && holding.IsAATrick())
-  // {
-    // Rather special case: AA1A + Pxyz, where LHO is void.
+  else if (holding.IsAATrick() &&
+      list[len-1].GetRanks() > holding.GetLHOMaxRank())
+  {
+    // Rather special case: AA1A + Pxyz, where LHO is either void
+    // or is below the first rank to win the next trick.
     // There is no reason ever to start from A if there is a PA move
     // available.  If there isn't, we'll just have to cash from A.
     // So we can always consider this to be AA1A.
-
-    // TrickList::Set1(holding.GetTrick());
-// holdCtr[951]++;
-    // return;
-  // }
-  // else 
-  if (holding.IsAATrick() &&
-      list[len-1].GetRanks() > holding.GetLHOMaxRank())
-  {
-    // Similar, but LHO only has to be below the first rank to
-    // win the next trick.  Can probably combine these two...
     TrickList::Set1(holding.GetTrick());
-holdCtr[952]++;
     return;
   }
 

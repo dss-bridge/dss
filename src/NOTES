@@ -3,6 +3,7 @@
 
 DONE
 ====
+TrickList.{cpp,h}
 Trick.{cpp,h}
 Segment.{cpp,h}
 

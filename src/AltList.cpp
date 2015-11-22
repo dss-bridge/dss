@@ -15,6 +15,8 @@
 extern bool debugAltList;
 extern unsigned highestAltNo;
 
+#include <vector>
+extern vector<unsigned> holdCtr;
 
 
 AltList::AltList()
@@ -79,9 +81,9 @@ bool AltList::Set12(
 
 Header& AltList::GetHeader()
 {
-  if (! headerDirty)
-    return header;
-  headerDirty = false;
+  // if (! headerDirty)
+    // return header;
+  // headerDirty = false;
 
   assert(len > 0);
 

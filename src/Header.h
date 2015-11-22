@@ -10,9 +10,6 @@
 #define SDS_HEADER_H
 
 #include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <string>
 
 #include "cst.h"
 
@@ -31,20 +28,17 @@ class Header
     posType start;
     reachType reach;
 
-    cmpType CompareSide(
+    cmpType ComparePlay(
       const Header& newHeader,
       const posType side) const;
 
-    cmpType CompareReach(
-      const Header& newHeader) const;
-
-    cmpType ComparePlay(
-      const Header& newHeader,
-      const posType side);
-
     cmpType CompareRanks(
       const Header& newHeader,
-      const posType side);
+      const posType side) const;
+
+    cmpType CompareFirstPlay(
+      const Header& newHeader,
+      const posType side) const;
 
   public:
 
@@ -53,32 +47,19 @@ class Header
     ~Header();
 
     void Set(
-      const int maxTricks,
-      const unsigned short maxRanks,
-      const int cashTricks[],
-      const unsigned short cashRanks[],
-      const posType start,
-      const reachType reach);
+      const Trick& trick);
 
-    void SetWithTrick(const Trick& tr);
+    void Increase(
+      const Trick& tLater);
 
-    void Increase(const Trick& tLater);
+    cmpDetailType Compare(
+      const Header& newHeader) const;
 
-    cmpType Compare(const Header& newHeader) const;
+    void MergeMax(
+      const Header& newHeader);
 
-    cmpDetailType CompareDetail(const Header& newHeader);
-
-    cmpType CompareFirstPlay(
-      const Header& newHeader,
-      const posType side);
-
-    cmpType CompareFirstAll(
-      const Header& newHeader,
-      const posType side);
-
-    void MergeMax(const Header& newHeader);
-
-    void MergeMin(const Header& newHeader);
+    void MergeMin(
+      const Header& newHeader);
 
     bool EqualsExceptStart(
       const Header& newHeader) const;
@@ -91,13 +72,11 @@ class Header
       std::ostringstream& out,
       int key);
 
-    unsigned GetMaxRank();
+    unsigned GetMaxRank() const;
 
     void Print(
-      std::ostream& out = std::cout) const;
-
-    void ToText(
-      std::ostringstream& out) const;
+      std::ostream& out = std::cout,
+      const bool skipMax = false) const;
 };
 
 #endif

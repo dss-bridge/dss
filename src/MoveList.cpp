@@ -326,10 +326,12 @@ void MoveList::PrintMove(
   holding.ToText(out);
   fout << out.str() << "\n";
 
-  ostringstream out2;
+  // ostringstream out2;
   Header& hp = list[n].def.GetHeader();
-  hp.ToText(out2);
-  fout << out2.str() << "\n";
+  hp.Print(fout, true);
+  // hp.ToText(out2);
+  // fout << out2.str() << "\n";
+  fout << "\n";
 
   list[n].def.Print(fout);
 }
