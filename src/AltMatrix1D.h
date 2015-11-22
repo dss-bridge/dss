@@ -42,10 +42,6 @@ class AltMatrix1D
     void SetDimension(
       const unsigned x);
 
-    void SetDimension(
-      const unsigned x,
-      const int actX[]);
-
     bool IsPurged(
       const unsigned x) const;
     
@@ -60,9 +56,6 @@ class AltMatrix1D
     void Verify();
 
     void Print(
-      const char text[]);
-
-    void PrintSymm(
       const char text[]);
 
     void PrintVector(

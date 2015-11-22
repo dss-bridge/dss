@@ -24,7 +24,6 @@ class AltList
 
     TrickList list[SDS_MAX_ALT];
     unsigned len;
-    Header header;
 
     void Backtrack1D(
       AltMatrix1D& comp,
@@ -114,7 +113,7 @@ class AltList
       const Trick& trick20,
       const Trick& trick21);
 
-    void GetHeader(Header& hdr);
+    void GetHeader(Header& header);
 
     unsigned GetLength() const;
 

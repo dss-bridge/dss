@@ -59,23 +59,6 @@ void AltMatrix1D::SetDimension(
 }
 
 
-void AltMatrix1D::SetDimension(
-  const unsigned x,
-  const int actX[])
-{
-  assert(x < SDS_MAX_ALT);
-
-  num = x;
-
-  for (unsigned i = 0; i < num; i++)
-    active[i] = actX[i];
-
-  for (unsigned i = 0; i < num; i++)
-    for (unsigned j = 0; j < num; j++)
-      matrix[i][j] = SDS_HEADER_SAME;
-}
-
-
 bool AltMatrix1D::IsPurged(
   const unsigned x) const
 {

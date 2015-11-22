@@ -5,13 +5,14 @@ DONE
 TrickList.{cpp,h}
 Trick.{cpp,h}
 Segment.{cpp,h}
+AltList.{cpp,h}
 
 TODO (core)
 ====
-AltList.{cpp,h}
 AltMatrix1D.{cpp,h}
 AltMatrix2D.{cpp,h}
 DefList.{cpp,h}
+Header.{cpp,h}
 
 PLAN
 ====
@@ -54,6 +55,7 @@ Header:
 * Header.cpp has a lot of functions...
 * Check at what levels it is good to cache the header
 * Error fix in Trick.cpp -- reflect here as well
+* Look at using a Trick as a storage unit (Trick functions, then)
 
 DefList:
 * Can we cache header at MoveList level, so not store in DL?
