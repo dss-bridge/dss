@@ -266,41 +266,6 @@ bool Trick::ReduceBoth(
 }
 
 
-bool Trick::operator >= (
-  const Trick& t1)
-{
-  assert(trick.start != SDS_PARTNER[t1.trick.start]);
-
-cmpDetailType c = Trick::Compare(t1);
-bool b;
-cmpType d = cmpDetailToShort[c];
-if (d == SDS_SAME || d == SDS_OLD_BETTER)
-  b = true;
-else
-  b = false;
-
-  if (t1.trick.end == QT_BOTH && trick.end != QT_BOTH)
-    return b;
-  else if (t1.trick.end != QT_BOTH && trick.end == SDS_PARTNER[t1.trick.end])
-  {
-    return b;
-    if (b != false)
-    {
-      cout << "Place 1\n";
-      Trick::Print(cout);
-      cout << "\n";
-      t1.Print(cout);
-      cout << endl;
-      // assert(false);
-    }
-    return false;
-  }
-  else
-    return b;
-}
-
-
-
 cmpType Trick::CashRankOrder(
   const unsigned char c,
   const unsigned char r) const

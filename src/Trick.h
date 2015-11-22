@@ -98,8 +98,8 @@ class Trick
       const unsigned char c,
       const unsigned char r) const;
 
-    bool operator >= (
-      const Trick& t1);
+    // bool operator >= (
+      // const Trick& t1);
 
     void Print(
       std::ostream& out = cout) const;

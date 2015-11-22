@@ -38,3 +38,5 @@
 *.sdf
 *.sln
 *.log
+*.filters
+*.suo
