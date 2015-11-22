@@ -33,9 +33,10 @@ class Header
 
     cmpType CompareSide(
       const Header& newHeader,
-      const posType side);
+      const posType side) const;
 
-    cmpType CompareReach(const Header& newHeader);
+    cmpType CompareReach(
+      const Header& newHeader) const;
 
     cmpType ComparePlay(
       const Header& newHeader,
@@ -61,9 +62,9 @@ class Header
 
     void SetWithTrick(const Trick& tr);
 
-    void Increase(const Header& hLater);
+    void Increase(const Trick& tLater);
 
-    cmpType Compare(const Header& newHeader);
+    cmpType Compare(const Header& newHeader) const;
 
     cmpDetailType CompareDetail(const Header& newHeader);
 
@@ -79,9 +80,8 @@ class Header
 
     void MergeMin(const Header& newHeader);
 
-    bool EqualsExceptPerhapsStart(
-      const Header& newHeader,
-      const bool skipFlag);
+    bool EqualsExceptStart(
+      const Header& newHeader) const;
 
     int GetKey();
     int GetTrickKey();

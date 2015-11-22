@@ -1,4 +1,10 @@
+16487, 20845 10094
 16600, sum 23977
+
+DONE
+====
+Trick.{cpp,h}
+Segment.{cpp,h}
 
 PLAN
 ====
@@ -48,18 +54,6 @@ DefList:
 AltMatrix1D:
 **** Only have matrix at all when debugging.
 
-TrickList:
-* EES not quite happy with this.
-
-Segment:
-**** Try comparing some of them by "trick", not by header
-**** Can the comparisons become table lookup?  Should they?  Profile.
-  - One for parallel plays
-  - One for additive plays (Prepend) (last or non-last segment)
-
-Trick:
-**** Check whether it is faster to move from enum to unsigned char
-     (does save memory size)
 
 Table issues
 ------------

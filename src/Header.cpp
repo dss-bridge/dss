@@ -92,16 +92,19 @@ void Header::SetWithTrick(
 }
 
 
-void Header::Increase(const Header& hLater)
+void Header::Increase(
+  const Trick& tLater)
 {
-  this->maxTricks += hLater.maxTricks;
-  this->maxRanks = Min(this->maxRanks, hLater.maxRanks);
+  this->maxTricks += tLater.GetCashing();
+  unsigned mr = tLater.GetRanks();
+  if (mr < this->maxRanks)
+    this->maxRanks = mr;
 }
 
 
 cmpType Header::CompareSide(
   const Header& newHeader,
-  const posType side)
+  const posType side) const
 {
   // This is a partial comparison function.  It only considers
   // cashTricks and cashRanks for a specific side.
@@ -154,7 +157,8 @@ cmpType Header::CompareSide(
 }
 
 
-cmpType Header::CompareReach(const Header& newHeader)
+cmpType Header::CompareReach(
+  const Header& newHeader) const
 {
   // This is a partial comparison function.  It only considers
   // the sides reached by the trick list.
@@ -181,7 +185,7 @@ cmpType Header::CompareReach(const Header& newHeader)
 }
 
 
-cmpType Header::Compare(const Header& newHeader)
+cmpType Header::Compare(const Header& newHeader) const
 {
   /*
      There is no natural order of comparison for two trick lists
@@ -513,19 +517,17 @@ void Header::MergeMin(const Header& newHeader)
 }
 
 
-bool Header::EqualsExceptPerhapsStart(
-  const Header& newHeader,
-  bool skipFlag)
+bool Header::EqualsExceptStart(
+  const Header& newHeader) const
 {
   bool bothOld = false, bothNew = false;
   bool emptyOld = true, emptyNew = true;
   posType sideOld = QT_ACE, sideNew = QT_ACE; // Keeps g++ happy
 
   // Must be different!
-  if (skipFlag && 
-      (start == newHeader.start ||
+  if (start == newHeader.start ||
       start == QT_BOTH ||
-      newHeader.start == QT_BOTH))
+      newHeader.start == QT_BOTH)
     return false;
 
   if (cashTricks[QT_ACE])
@@ -570,10 +572,6 @@ bool Header::EqualsExceptPerhapsStart(
 
   if (sideOld == sideNew)
     return (Header::Compare(newHeader) == SDS_SAME ? true : false);
-  
-  // Is this the right place for it?
-  if (! skipFlag)
-    return false;
   
   if (maxTricks != newHeader.maxTricks)
     return false;
@@ -644,7 +642,7 @@ void Header::ToText(std::ostringstream& out) const
     setw(3) << SDS_RANK_NAMES[cashRanks[0]] <<
     setw(3) << SDS_RANK_NAMES[cashRanks[1]] <<
     setw(3) << SDS_RANK_NAMES[cashRanks[2]] <<
-    setw(3) << SDS_RANK_NAMES[cashRanks[3]] <<"\n";
+    setw(3) << SDS_RANK_NAMES[cashRanks[3]] << "\n";
 }
 
 

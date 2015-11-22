@@ -12,11 +12,10 @@
 #include "cst.h"
 #include "TrickList.h"
 
+using namespace std;
 
-// #include <vector>
-// extern vector<unsigned> holdCtr;
-
-unsigned debugTrickList = false;
+#include <vector>
+extern vector<unsigned> holdCtr;
 
 
 TrickList::TrickList()
@@ -94,7 +93,7 @@ unsigned int TrickList::GetLength() const
 
 const void TrickList::GetHeader(
   Header& header,
-  const unsigned startNo)
+  const unsigned startNo) const
 {
   assert(len > startNo);
 
@@ -104,15 +103,14 @@ const void TrickList::GetHeader(
 
   for (unsigned l = startNo+1; l < len; l++)
   {
-    Header hLater;
     list[len-1-l].GetSummaryTrick(t);
-    hLater.SetWithTrick(t);
-    header.Increase(hLater);
+    header.Increase(t);
   }
 }
 
 
-void TrickList::GetFirstHeaderTrick(Trick& t)
+void TrickList::GetFirstSummaryTrick(
+  Trick& t) const
 {
   assert(len > 0);
   list[len-1].GetSummaryTrick(t);
@@ -120,7 +118,7 @@ void TrickList::GetFirstHeaderTrick(Trick& t)
 
 
 cmpDetailType TrickList::Compare(
-  TrickList& lNew)
+  const TrickList& lNew) const
 {
   assert(len > 0);
   assert(lNew.len > 0);
@@ -165,16 +163,15 @@ cmpDetailType TrickList::Compare(
 }
 
 
-bool TrickList::EqualsExceptStart(TrickList& lNew)
+bool TrickList::EqualsExceptStart(
+  const TrickList& lNew) const
 {
-  // Not entirely happy with this.
-
   Header header;
-  (void) TrickList::GetHeader(header);
+  TrickList::GetHeader(header);
   Header hNew;
   lNew.GetHeader(hNew);
 
-  if (! header.EqualsExceptPerhapsStart(hNew, true))
+  if (! header.EqualsExceptStart(hNew))
     return false;
 
   if (len == 1 && lNew.len == 1)
@@ -227,27 +224,31 @@ void TrickList::operator += (
       // Essentially AKx / - / Qx / xx.  Conservative.
       // Never start with AA.
       TrickList::Set1(holding.GetTrick());
+holdCtr[950]++;
     }
     return;
   }
 
 
-  if (holding.LHOIsVoid() && holding.IsAATrick())
-  {
+  // if (holding.LHOIsVoid() && holding.IsAATrick())
+  // {
     // Rather special case: AA1A + Pxyz, where LHO is void.
     // There is no reason ever to start from A if there is a PA move
     // available.  If there isn't, we'll just have to cash from A.
     // So we can always consider this to be AA1A.
 
-    TrickList::Set1(holding.GetTrick());
-    return;
-  }
-  else if (holding.IsAATrick() &&
+    // TrickList::Set1(holding.GetTrick());
+// holdCtr[951]++;
+    // return;
+  // }
+  // else 
+  if (holding.IsAATrick() &&
       list[len-1].GetRanks() > holding.GetLHOMaxRank())
   {
     // Similar, but LHO only has to be below the first rank to
     // win the next trick.  Can probably combine these two...
     TrickList::Set1(holding.GetTrick());
+holdCtr[952]++;
     return;
   }
 
@@ -255,6 +256,16 @@ void TrickList::operator += (
   assert(len < TRICKLIST_MAXSEGS);
   len++;
   list[len-1].Set1(holding.GetTrick());
+}
+
+
+bool TrickList::operator >= (
+  const Trick& trick) const
+{
+  assert(len > 0);
+  Trick ltrick;
+  TrickList::GetFirstSummaryTrick(ltrick);
+  return cmpDetailToGE[ltrick.Compare(trick)];
 }
 
 
@@ -386,18 +397,8 @@ posType TrickList::ConnectFirst()
 }
 
 
-bool TrickList::operator >= (
-  const Trick& trick)
-{
-  assert(len > 0);
-  Trick ltrick;
-  TrickList::GetFirstHeaderTrick(ltrick);
-  return cmpDetailToGE[ltrick.Compare(trick)];
-}
-
-
 void TrickList::Print(
-  std::ostream& out,
+  ostream& out,
   const unsigned d,
   const unsigned a) const
 {

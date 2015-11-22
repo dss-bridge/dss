@@ -27,7 +27,12 @@ class TrickList
     Segment list[TRICKLIST_MAXSEGS];
     unsigned len;
 
-  void Split();
+    bool Fix(
+      TrickList& lOther,
+      fixType& fix1,
+      fixType& fix2);
+    
+    void Split();
 
   public:
 
@@ -55,15 +60,16 @@ class TrickList
 
     const void GetHeader(
       Header& header,
-      const unsigned startNo = 0);
+      const unsigned startNo = 0) const;
 
-    void GetFirstHeaderTrick(Trick& t);
+    void GetFirstSummaryTrick(
+      Trick& t) const;
 
     cmpDetailType Compare(
-      TrickList& lNew);
+      const TrickList& lNew) const;
 
     bool EqualsExceptStart(
-      TrickList& lNew);
+      const TrickList& lNew) const;
 
     bool operator == (
       const TrickList& t2) const;
@@ -74,19 +80,14 @@ class TrickList
     void operator += (
       const Holding& holding);
 
+    bool operator >= (
+      const Trick& trick) const;
+
     cmpDetailType FixOrCompare(
       TrickList& lOther,
       fixType& fix1,
       fixType& fix2);
     
-    bool Fix(
-      TrickList& lOther,
-      fixType& fix1,
-      fixType& fix2);
-    
-    bool operator >= (
-      const Trick& trick);
-
     posType ConnectFirst(
       const posType pend);
 
