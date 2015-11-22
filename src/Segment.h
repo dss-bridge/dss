@@ -11,9 +11,6 @@
 #define SDS_SEGMENT_H
 
 #include <iostream>
-#include <vector>
-
-using namespace std;
 
 #include "Trick.h"
 #include "Holding.h"
@@ -27,20 +24,21 @@ class Segment
 
     Trick list[SEGMENT_MAXMOVES];
     unsigned len;
-    Trick headerTrick;
-    bool headerDirty;
 
     void Reset();
 
-    reachType GetReach() const;
+    void PrependSimple(
+      const Trick& tPrep);
 
     bool PrependSpecial(
       const Trick& mergingMove,
       const Holding& holding);
 
-    void PrependDeep(const Trick& mergingMove);
+    void PrependDeep(
+      const Trick& mergingMove);
 
-    void PrependFix(const bool lastFlag);
+    void PrependFix(
+      const bool lastFlag);
 
     bool Fix11_12(
       Segment& seg2,
@@ -75,7 +73,8 @@ class Segment
       const Trick& trick1,
       const Trick& trick2);
 
-    void PunchOut(const unsigned no);
+    void PunchOut(
+      const unsigned no);
 
     void SetStart(
       const posType start);
@@ -84,26 +83,28 @@ class Segment
 
     posType GetEnd() const;
 
+    unsigned int GetRanks() const;
+
     unsigned int GetLength() const;
 
-    bool FirstRankExceeds(const unsigned lhoRank) const;
+    void GetSummaryTrick(
+      Trick& summaryTrick) const;
 
-    const Trick& GetHeaderTrick();
+    cmpDetailType Compare(
+      const Segment& seg2) const;
 
-    cmpDetailType Compare(Segment& seg2);
+    bool operator == (
+      const Segment& seg2) const;
 
-    void Localize(const Holding& holding);
+    bool operator != (
+      const Segment& seg2) const;
 
-    bool operator == (const Segment& seg2) const;
-
-    bool operator != (const Segment& seg2) const;
+    void Localize(
+      const Holding& holding);
 
     bool Prepend(
       const Holding& holding,
       const bool lastSegFlag);
-
-    void PrependSimple(
-      const Trick& tPrep);
 
     posType Connect(
       const Segment& sPrepend);
@@ -125,7 +126,7 @@ class Segment
       fixType& fix2) const;
     
     void Print(
-      std::ostream& out = cout) const;
+      std::ostream& out = std::cout) const;
 
     void Print(
       std::ostream& out,

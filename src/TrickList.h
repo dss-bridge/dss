@@ -57,7 +57,7 @@ class TrickList
       Header& header,
       const unsigned startNo = 0);
 
-    const Trick& GetFirstHeaderTrick();
+    void GetFirstHeaderTrick(Trick& t);
 
     cmpDetailType Compare(
       TrickList& lNew);

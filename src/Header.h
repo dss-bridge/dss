@@ -94,7 +94,7 @@ class Header
     unsigned GetMaxRank();
 
     void Print(
-      std::ostream& out = cout) const;
+      std::ostream& out = std::cout) const;
 
     void ToText(
       std::ostringstream& out) const;

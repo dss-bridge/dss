@@ -12,8 +12,7 @@
 #include "cst.h"
 #include "Segment.h"
 
-
-extern vector<unsigned> holdCtr;
+using namespace std;
 
 
 Segment::Segment()
@@ -29,14 +28,14 @@ Segment::~Segment()
 
 void Segment::Reset()
 {
-  headerDirty = true;
+  // headerDirty = true;
   len = 0;
 }
 
 
 bool Segment::Set1(const Trick& trick)
 {
-  headerDirty = true;
+  // headerDirty = true;
   len = 1;
   list[0] = trick;
   return true;
@@ -47,7 +46,7 @@ bool Segment::Set2(
   const Trick& trick1,
   const Trick& trick2)
 {
-  headerDirty = true;
+  // headerDirty = true;
   len = 2;
   list[1] = trick1;
   list[0] = trick2;
@@ -68,7 +67,7 @@ void Segment::PunchOut(
 
   unsigned realNo = len - 1 - no;
 
-  headerDirty = true;
+  // headerDirty = true;
 
   for (unsigned i = realNo+1; i < len; i++)
     list[i-1] = list[i];
@@ -84,7 +83,7 @@ void Segment::SetStart(
 {
   assert(len > 0);
 
-  headerDirty = true;
+  // headerDirty = true;
   list[len-1].SetStart(start);
 
   if (len > 1 && list[len-2].ReduceBoth(list[len-1]))
@@ -106,122 +105,58 @@ posType Segment::GetEnd() const
 }
 
 
+unsigned int Segment::GetRanks() const
+{
+  assert(len > 0);
+  return list[len-1].trick.ranks;
+}
+
+
 unsigned int Segment::GetLength() const
 {
   return len;
 }
 
 
-bool Segment::FirstRankExceeds(const unsigned lhoRank) const
-{
-  assert(len > 0);
-  return(list[len-1].trick.ranks > lhoRank);
-}
-
-
-reachType Segment::GetReach() const
-{
-  // SDS_SIDE_BOTH means that the suit combinations has enough
-  // freedom to let us take a finesse from either side in some
-  // other suit along the way.
-  // AP gives us a finesse from P at the end.
-  // AB gives us the freedom to end where we want.
-  // AP+BA also gives us both.
-  // AA+BA only gives us A which is actually worth nothing,
-  // as that is where we start.
-
-  if (len == 0)
-    return SDS_SIDE_NONE;
-
-  posType e = list[0].GetEnd();
-  if (e == QT_BOTH)
-    return SDS_SIDE_BOTH;
-
-  for (unsigned l = 1; l < len; l++)
-  {
-    if (list[len-1-l].GetStart() == QT_BOTH && list[len-l].GetEnd() != e)
-      return SDS_SIDE_BOTH;
-  }
-
-  return (e == QT_ACE ? SDS_SIDE_ACE : SDS_SIDE_PARD);
-}
-
-
-const Trick& Segment::GetHeaderTrick()
+void Segment::GetSummaryTrick(Trick& summaryTrick) const
 {
   if (len == 1)
   {
-    headerTrick = list[0];
-    return headerTrick;
+    summaryTrick = list[0];
+    return;
   }
 
   assert(len == 2);
+  // headerDirty = false;
 
-  // if (! headerDirty)
-    // return headerTrick;
-  headerDirty = false;
-
-  headerTrick = list[1];
-  headerTrick.trick.cashing += list[0].trick.cashing;
-  if (list[0].trick.ranks < headerTrick.trick.ranks)
-    headerTrick.trick.ranks = list[0].trick.ranks;
+  summaryTrick = list[1];
+  summaryTrick.trick.cashing += list[0].trick.cashing;
+  if (list[0].trick.ranks < summaryTrick.trick.ranks)
+    summaryTrick.trick.ranks = list[0].trick.ranks;
 
   posType e = list[0].trick.end;
   if (e == QT_BOTH)
-    headerTrick.trick.end = QT_BOTH;
+    summaryTrick.trick.end = QT_BOTH;
   else if (list[0].trick.start == QT_BOTH && list[1].trick.end != e)
-    headerTrick.trick.end = QT_BOTH;
+    summaryTrick.trick.end = QT_BOTH;
   else
-    headerTrick.trick.end = e;
-    
-  return headerTrick;
-
-  unsigned maxTricks = 0;
-  unsigned short maxRanks = SDS_VOID;
-
-  for (unsigned l = 0; l < len; l++)
-  {
-    maxTricks += list[l].GetCashing();
-    
-    unsigned r = list[l].GetRanks();
-    if (r < maxRanks)
-      maxRanks = r;
-  }
-
-  reachType reach = Segment::GetReach();
-  assert(reach != SDS_SIDE_NONE);
-    
-  posType start = list[len-1].GetStart();
-
-  posType end;
-  if (reach == SDS_SIDE_ACE)
-    end = QT_ACE;
-  else if (reach == SDS_SIDE_PARD)
-    end = QT_PARD;
-  else if (reach == SDS_SIDE_BOTH)
-    end = QT_BOTH;
-  else
-    assert(false);
-
-  headerTrick.Set(
-    start,
-    end,
-    maxRanks,
-    maxTricks);
-
-  return headerTrick;
+    summaryTrick.trick.end = e;
 }
 
 
-cmpDetailType Segment::Compare(Segment& seg2)
+cmpDetailType Segment::Compare(
+  const Segment& seg2) const
 {
-  const Trick& t1 = Segment::GetHeaderTrick();
-  const Trick& t2 = seg2.GetHeaderTrick();
+  Trick t1;
+  Segment::GetSummaryTrick(t1);
+  Trick t2;
+  seg2.GetSummaryTrick(t2);
   return t1.Compare(t2);
 }
 
 
-bool Segment::operator == (const Segment& seg2) const
+bool Segment::operator == (
+  const Segment& seg2) const
 {
   if (seg2.len != len)
     return false;
@@ -234,15 +169,17 @@ bool Segment::operator == (const Segment& seg2) const
 }
 
 
-bool Segment::operator != (const Segment& t2) const
+bool Segment::operator != (
+  const Segment& t2) const
 {
   return ! (* this == t2);
 }
 
 
-void Segment::Localize(const Holding& holding)
+void Segment::Localize(
+  const Holding& holding)
 {
-  headerDirty = true;
+  // headerDirty = true;
   for (unsigned p = 0; p < len; p++)
     list[p].Localize(holding);
 }
@@ -270,7 +207,7 @@ bool Segment::Prepend(
 
   assert(len > 0);
 
-  headerDirty = true;
+  // headerDirty = true;
   const Trick& mergingMove = holding.GetTrick();
   bool lastFlag = (lastSegFlag && (len == 1));
   const bool mergeSpecialFlag = holding.GetMergeType();
@@ -317,42 +254,6 @@ void Segment::PrependSimple(
       len = 2;
       break;
   }
-}
-
-
-posType Segment::Connect(
-  const Segment& sPrepend)
-{
-  // This arises when we collapse the first two segments in a TrickList.
-  // It only works for segments of 1 or 2 tricks, which is the case.
-
-  headerDirty = true;
-  posType pend = sPrepend.list[0].trick.end;
-
-  list[0].trick.start = pend;
-  if (len == 2)
-  {
-    // This works for all possible combinations.
-
-    list[0].trick.cashing += list[1].trick.cashing;
-    if (list[1].trick.ranks < list[0].trick.ranks)
-      list[0].trick.ranks = list[1].trick.ranks;
-    len = 1;
-  }
-
-  Segment::PrependSimple(sPrepend.list[0]);
-
-  // A third move must be prependable.
-  if (sPrepend.len == 1)
-  {
-    // Nothing more.
-  }
-  else if (len == 1)
-    Segment::PrependSimple(sPrepend.list[1]);
-  else
-    Segment::PrependDeep(sPrepend.list[1]);
-
-  return pend;
 }
 
 
@@ -496,6 +397,42 @@ void Segment::PrependFix(const bool lastFlag)
 }
 
 
+posType Segment::Connect(
+  const Segment& sPrepend)
+{
+  // This arises when we collapse the first two segments in a TrickList.
+  // It only works for segments of 1 or 2 tricks, which is the case.
+
+  // headerDirty = true;
+  posType pend = sPrepend.list[0].trick.end;
+
+  list[0].trick.start = pend;
+  if (len == 2)
+  {
+    // This works for all possible combinations.
+
+    list[0].trick.cashing += list[1].trick.cashing;
+    if (list[1].trick.ranks < list[0].trick.ranks)
+      list[0].trick.ranks = list[1].trick.ranks;
+    len = 1;
+  }
+
+  Segment::PrependSimple(sPrepend.list[0]);
+
+  // A third move must be prependable.
+  if (sPrepend.len == 1)
+  {
+    // Nothing more.
+  }
+  else if (len == 1)
+    Segment::PrependSimple(sPrepend.list[1]);
+  else
+    Segment::PrependDeep(sPrepend.list[1]);
+
+  return pend;
+}
+
+
 bool Segment::Fix11(
   Segment& seg2,
   fixType& fix1,
@@ -546,7 +483,7 @@ bool Segment::Fix11(
         // C0: AA+AB = AA+AP, AP+AB = AP+AA, PA+PB = PA+PP, PA+PB = PA+PP.
         t1.trick.end = SDS_PARTNER[t2.trick.end];
         fix1 = SDS_FIX_WEAKER;
-        headerDirty = true;
+        // headerDirty = true;
         return true;
       }
       else if (t1.trick.end != QT_BOTH && 
@@ -556,7 +493,7 @@ bool Segment::Fix11(
         // C1: AB+AA = AP+AA, AB+AP = AA+AP, PB+PA = PP+PA, PB+PA = PP+PA.
         t2.trick.end = SDS_PARTNER[t1.trick.end];
         fix2 = SDS_FIX_WEAKER;
-        seg2.headerDirty = true;
+        // seg2.headerDirty = true;
         return true;
       }
     }
@@ -569,7 +506,7 @@ bool Segment::Fix11(
       t1.trick.end = QT_BOTH;
       fix1 = SDS_FIX_STRONGER;
       fix2 = SDS_FIX_PURGED;
-      headerDirty = true;
+      // headerDirty = true;
       return true;
     }
   }
@@ -586,20 +523,20 @@ bool Segment::Fix11(
           t1.trick.end = QT_BOTH;
           fix1 = SDS_FIX_STRONGER;
           fix2 = SDS_FIX_PURGED;
-          headerDirty = true;
+          // headerDirty = true;
           return true;
         case SDS_OLD_BETTER:
           t2.trick.start = t1.trick.end;
           fix1 = SDS_FIX_UNCHANGED;
           fix2 = SDS_FIX_WEAKER;
-          seg2.headerDirty = true;
+          // seg2.headerDirty = true;
           return true;
         case SDS_NEW_BETTER:
           // break;
           t1.trick.start = t2.trick.end;
           fix1 = SDS_FIX_WEAKER;
           fix2 = SDS_FIX_UNCHANGED;
-          headerDirty = true;
+          // headerDirty = true;
           return true;
         default:
           break;
@@ -639,7 +576,7 @@ bool Segment::Fix11_OneB(
 
     fix1 = SDS_FIX_UNCHANGED;
     fix2 = SDS_FIX_PURGED;
-    seg2.headerDirty = true;
+    // seg2.headerDirty = true;
     return true;
   }
   else
@@ -684,7 +621,7 @@ bool Segment::Fix11_12(
   if (list[0] == seg2.list[1])
   {
     // seg2 clearly better.
-    headerDirty = true;
+    // headerDirty = true;
     fix1 = SDS_FIX_PURGED;
     fix2 = SDS_FIX_UNCHANGED;
     return true;
@@ -713,7 +650,7 @@ bool Segment::Fix11_12(
   {
     // C1: AB / AP+PA or AB+PA, PB / PA+AP or PB+AP.
     t1.trick.end = t21.trick.start;
-    headerDirty = true;
+    // headerDirty = true;
     fix1 = SDS_FIX_WEAKER;
     fix2 = SDS_FIX_UNCHANGED;
     return true;
@@ -781,7 +718,7 @@ bool Segment::Fix12(
     if (t1.trick.start == QT_BOTH)
       t1.trick.start = t20.trick.end;
     t1.trick.end = SDS_PARTNER[t20.trick.end];
-    headerDirty = true;
+    // headerDirty = true;
     fix1 = SDS_FIX_WEAKER;
     fix2 = SDS_FIX_UNCHANGED;
     return true;
@@ -793,7 +730,7 @@ bool Segment::Fix12(
   {
     // AB / BA+Px or BP+Ax, PB / BA+Px or BP+Ax.
     t1.trick.end = SDS_PARTNER[t20.trick.end];
-    headerDirty = true;
+    // headerDirty = true;
     fix1 = SDS_FIX_WEAKER;
     fix2 = SDS_FIX_UNCHANGED;
     return true;
@@ -808,7 +745,7 @@ bool Segment::Fix12(
       // BAnr (r > s) or _B_Pms+AA(n-m)-  equals  BAnr or _A_Pms+AA(n-m)-.
       // BPnr (r > s) or _B_Ams+PP(n-m)-  equals  BPnr or _P_Ams+PP(n-m)-.
       t20.trick.start = t21.trick.start;
-      seg20.headerDirty = true;
+      // seg20.headerDirty = true;
       fix1 = SDS_FIX_UNCHANGED;
       fix2 = SDS_FIX_WEAKER;
       return true;
@@ -817,7 +754,7 @@ bool Segment::Fix12(
     {
       // BA2K or BP3T + AA1-  equals  PA2K or same.
       t1.trick.start = t20.trick.end;
-      headerDirty = true;
+      // headerDirty = true;
       fix1 = SDS_FIX_WEAKER;
       fix2 = SDS_FIX_UNCHANGED;
       return true;
@@ -844,7 +781,7 @@ bool Segment::Fix12(
   {
     // PAnr  ">="  AA1A + PAms (r <= s, n >= m+1).
     // APnr  ">="  PP1A + APms (r <= s, n >= m+1).
-    seg20.headerDirty = true;
+    // seg20.headerDirty = true;
     fix1 = SDS_FIX_UNCHANGED;
     fix2 = SDS_FIX_PURGED;
     return true;
@@ -909,8 +846,8 @@ bool Segment::Fix12Special(
     {
       if (t1.trick.end == QT_BOTH)
       {
-        seg20.headerDirty = true; // Is removed
-        seg21.headerDirty = true; // Is removed
+        // seg20.headerDirty = true; // Is removed
+        // seg21.headerDirty = true; // Is removed
         fix1 = SDS_FIX_UNCHANGED;
         fix2 = SDS_FIX_PURGED;
         return true;
@@ -922,8 +859,8 @@ bool Segment::Fix12Special(
         if (t200.trick.ranks < t201.trick.ranks)
           t201.trick.ranks = t200.trick.ranks;
         seg20.len = 1;
-        seg20.headerDirty = true;
-        seg21.headerDirty = true; // Is removed
+        // seg20.headerDirty = true;
+        // seg21.headerDirty = true; // Is removed
 
         fix1 = SDS_FIX_UNCHANGED;
         fix2 = SDS_FIX_COLLAPSE;
@@ -962,7 +899,7 @@ bool Segment::Fix1nSpecial(
       if (t200.trick.ranks < t201.trick.ranks)
         t201.trick.ranks = t200.trick.ranks;
       seg20.len = 1;
-      seg20.headerDirty = true;
+      // seg20.headerDirty = true;
       fix1 = SDS_FIX_UNCHANGED;
       fix2 = SDS_FIX_WEAKER;
       return true;

@@ -681,7 +681,8 @@ bool AltList::operator >= (TrickList& tlist)
 bool AltList::FrontIsGE(
   TrickList& tlist)
 {
-  Trick htrick = tlist.GetFirstHeaderTrick();
+  Trick htrick;
+  tlist.GetFirstHeaderTrick(htrick);
   if (htrick.GetEnd() == QT_BOTH)
   {
     htrick.SetEnd(QT_ACE);

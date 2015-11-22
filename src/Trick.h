@@ -12,8 +12,6 @@
 
 #include <iostream>
 
-using namespace std;
-
 #include "cst.h"
 #include "Holding.h"
 
@@ -97,7 +95,7 @@ class Trick
       const unsigned char r) const;
 
     void Print(
-      std::ostream& out = cout) const;
+      std::ostream& out = std::cout) const;
 
     void Print(
       std::ostream& out,

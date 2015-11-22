@@ -13,8 +13,8 @@
 #include "TrickList.h"
 
 
-#include <vector>
-extern vector<unsigned> holdCtr;
+// #include <vector>
+// extern vector<unsigned> holdCtr;
 
 unsigned debugTrickList = false;
 
@@ -98,21 +98,24 @@ const void TrickList::GetHeader(
 {
   assert(len > startNo);
 
-  header.SetWithTrick(list[len-1-startNo].GetHeaderTrick());
+  Trick t;
+  list[len-1-startNo].GetSummaryTrick(t);
+  header.SetWithTrick(t);
 
   for (unsigned l = startNo+1; l < len; l++)
   {
     Header hLater;
-    hLater.SetWithTrick(list[len-1-l].GetHeaderTrick());
+    list[len-1-l].GetSummaryTrick(t);
+    hLater.SetWithTrick(t);
     header.Increase(hLater);
   }
 }
 
 
-const Trick& TrickList::GetFirstHeaderTrick()
+void TrickList::GetFirstHeaderTrick(Trick& t)
 {
   assert(len > 0);
-  return list[len-1].GetHeaderTrick();
+  list[len-1].GetSummaryTrick(t);
 }
 
 
@@ -240,7 +243,7 @@ void TrickList::operator += (
     return;
   }
   else if (holding.IsAATrick() &&
-      list[len-1].FirstRankExceeds(holding.GetLHOMaxRank()))
+      list[len-1].GetRanks() > holding.GetLHOMaxRank())
   {
     // Similar, but LHO only has to be below the first rank to
     // win the next trick.  Can probably combine these two...
@@ -387,7 +390,8 @@ bool TrickList::operator >= (
   const Trick& trick)
 {
   assert(len > 0);
-  Trick ltrick = TrickList::GetFirstHeaderTrick();
+  Trick ltrick;
+  TrickList::GetFirstHeaderTrick(ltrick);
   return cmpDetailToGE[ltrick.Compare(trick)];
 }
 
