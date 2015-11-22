@@ -134,7 +134,7 @@ cmpDetailType TrickList::Compare(
   unsigned s;
   for (s = 0; s < minLen; s++)
   {
-    cmpDetailType c = list[len-1-s].CompareHeader(lNew.list[lNew.len-1-s]);
+    cmpDetailType c = list[len-1-s].Compare(lNew.list[lNew.len-1-s]);
     assert(c != SDS_HEADER_RANK_DIFFERENT);
 
     if (c == SDS_HEADER_PLAY_DIFFERENT ||

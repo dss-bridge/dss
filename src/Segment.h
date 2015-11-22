@@ -11,14 +11,11 @@
 #define SDS_SEGMENT_H
 
 #include <iostream>
-#include <iomanip>
-#include <string>
 #include <vector>
 
 using namespace std;
 
 #include "Trick.h"
-#include "Header.h"
 #include "Holding.h"
 
 #define SEGMENT_MAXMOVES 2
@@ -53,18 +50,18 @@ class Segment
     bool Fix11_OneB(
       Segment& seg2,
       fixType& fix1,
-      fixType& fix2);
+      fixType& fix2) const;
 
     bool Fix12Special(
       Segment& seg20,
       Segment& seg21,
       fixType& fix1,
-      fixType& fix2);
+      fixType& fix2) const;
 
     bool Fix1nSpecial(
       Segment& seg20,
       fixType& fix1,
-      fixType& fix2);
+      fixType& fix2) const;
 
   public:
 
@@ -93,9 +90,7 @@ class Segment
 
     const Trick& GetHeaderTrick();
 
-    cmpDetailType CompareHeader(Segment& seg2);
-
-    bool EqualsExceptStart(Segment& seg2);
+    cmpDetailType Compare(Segment& seg2);
 
     void Localize(const Holding& holding);
 
@@ -127,7 +122,7 @@ class Segment
     bool Fix1n(
       Segment& seg20,
       fixType& fix1,
-      fixType& fix2);
+      fixType& fix2) const;
     
     void Print(
       std::ostream& out = cout) const;

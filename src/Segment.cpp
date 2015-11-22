@@ -11,7 +11,6 @@
 
 #include "cst.h"
 #include "Segment.h"
-#include "portab.h"
 
 
 extern vector<unsigned> holdCtr;
@@ -167,7 +166,9 @@ const Trick& Segment::GetHeaderTrick()
     */
 
   if (! headerDirty)
+  {
     return headerTrick;
+  }
   headerDirty = false;
 
 
@@ -208,27 +209,11 @@ const Trick& Segment::GetHeaderTrick()
 }
 
 
-cmpDetailType Segment::CompareHeader(Segment& seg2)
+cmpDetailType Segment::Compare(Segment& seg2)
 {
   const Trick& t1 = Segment::GetHeaderTrick();
   const Trick& t2 = seg2.GetHeaderTrick();
-
   return t1.Compare(t2);
-}
-
-
-bool Segment::EqualsExceptStart(Segment& seg2)
-{
-  Header header;
-  header.SetWithTrick(Segment::GetHeaderTrick());
-
-  Header hNew;
-  hNew.SetWithTrick(seg2.GetHeaderTrick());
-
-  if (! header.EqualsExceptPerhapsStart(hNew, true))
-    return false;
-
-  return (list[0].GetEnd() == seg2.list[0].GetEnd());
 }
 
 
@@ -630,9 +615,9 @@ bool Segment::Fix11(
 bool Segment::Fix11_OneB(
   Segment& seg2,
   fixType& fix1,
-  fixType& fix2)
+  fixType& fix2) const
 {
-  Trick& t1 = list[0];
+  const Trick& t1 = list[0];
   Trick& t2 = seg2.list[0];
 
   cmpType c = t1.CashRankOrder(t2.trick.cashing, t2.trick.ranks);
@@ -868,7 +853,7 @@ bool Segment::Fix12(
 bool Segment::Fix1n(
   Segment& seg20,
   fixType& fix1,
-  fixType& fix2)
+  fixType& fix2) const
 {
   if (len == 1 && seg20.len == 2 &&
       Segment::Fix1nSpecial(seg20, fix1, fix2))
@@ -882,7 +867,7 @@ bool Segment::Fix12Special(
   Segment& seg20,
   Segment& seg21,
   fixType& fix1,
-  fixType& fix2)
+  fixType& fix2) const
 {
   // xAnr or xA-m1-s1 + BP-m2-s2 + AA-m3-s3,
   // with m1+m2+m3 and min(s1,s2,s3) <= n, r).
@@ -897,7 +882,7 @@ bool Segment::Fix12Special(
   // it here either.
   // If we have xBnr, not xAnr, then (a) loses as well.
 
-  Trick& t1 = list[0];
+  const Trick& t1 = list[0];
   Trick& t200 = seg20.list[1];
   Trick& t201 = seg20.list[0];
   Trick& t21 = seg21.list[0];
@@ -949,7 +934,7 @@ bool Segment::Fix12Special(
 bool Segment::Fix1nSpecial(
   Segment& seg20,
   fixType& fix1,
-  fixType& fix2)
+  fixType& fix2) const
 {
   // APnr or AP-m1-s1 + PA-m2-s2 + P...
   // PAnr or PA-m1-s1 + AP-m2-s2 + A...
@@ -958,7 +943,7 @@ bool Segment::Fix1nSpecial(
   // what we're comfortable with.
   // Same for ABnr rather than APnr.
 
-  Trick& t1 = list[0];
+  const Trick& t1 = list[0];
   Trick& t200 = seg20.list[1];
   Trick& t201 = seg20.list[0];
 
