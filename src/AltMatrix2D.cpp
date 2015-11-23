@@ -7,19 +7,12 @@
 */
 
 
-#include <iostream>
 #include <iomanip>
-#include <string>
-
-using namespace std;
-
 #include <assert.h>
 
-#include "cst.h"
 #include "AltMatrix2D.h"
-#include "portab.h"
 
-extern bool debugComplex;
+using namespace std;
 
 
 AltMatrix2D::AltMatrix2D()
@@ -63,14 +56,14 @@ void AltMatrix2D::SetDimensions(
 
 
 bool AltMatrix2D::IsPurgedX(
-  const unsigned x)
+  const unsigned x) const
 {
   return ! activeX[x];
 }
 
 
 bool AltMatrix2D::IsPurgedY(
-  const unsigned y)
+  const unsigned y) const
 {
   return ! activeY[y];
 }
@@ -103,31 +96,6 @@ void AltMatrix2D::PurgeY(
   assert(y < numY);
   assert(activeY[y]);
   activeY[y] = false;
-}
-
-
-void AltMatrix2D::Verify()
-{
-  AltMatrix2D::ResetVectors(hasX, activeX, numX, hasXsum);
-  AltMatrix2D::ResetVectors(hasY, activeY, numY, hasYsum);
-
-  for (unsigned i = 0; i < numX; i++)
-  {
-    if (! activeX[i])
-      continue;
-
-    for (unsigned j = 0; j < numY; j++)
-    {
-      if (! activeY[j])
-        continue;
-
-      hasX[i][matrix[i][j]] = true;
-      hasY[j][matrix[i][j]] = true;
-    }
-  }
-
-  AltMatrix2D::VerifyVector(hasX, activeX, numX, hasXsum);
-  AltMatrix2D::VerifyVector(hasY, activeY, numY, hasYsum);
 }
 
 
@@ -171,8 +139,7 @@ void AltMatrix2D::VerifyVector(
           has[i][SDS_HEADER_RANK_NEW_BETTER] ||
           has[i][SDS_HEADER_SAME])
       {
-        AltMatrix2D::Print("Verify error I");
-        cout.flush();
+        AltMatrix2D::Print(cerr, "Verify error I");
 	assert(false);
       }
 
@@ -187,8 +154,7 @@ void AltMatrix2D::VerifyVector(
     {
       if (has[i][SDS_HEADER_SAME])
       {
-        AltMatrix2D::Print("Verify error II");
-        cout.flush();
+        AltMatrix2D::Print(cerr, "Verify error II");
 	assert(false);
       }
 
@@ -212,6 +178,31 @@ void AltMatrix2D::VerifyVector(
 }
 
 
+void AltMatrix2D::Verify()
+{
+  AltMatrix2D::ResetVectors(hasX, activeX, numX, hasXsum);
+  AltMatrix2D::ResetVectors(hasY, activeY, numY, hasYsum);
+
+  for (unsigned i = 0; i < numX; i++)
+  {
+    if (! activeX[i])
+      continue;
+
+    for (unsigned j = 0; j < numY; j++)
+    {
+      if (! activeY[j])
+        continue;
+
+      hasX[i][matrix[i][j]] = true;
+      hasY[j][matrix[i][j]] = true;
+    }
+  }
+
+  AltMatrix2D::VerifyVector(hasX, activeX, numX, hasXsum);
+  AltMatrix2D::VerifyVector(hasY, activeY, numY, hasYsum);
+}
+
+
 cmpDetailType AltMatrix2D::ComparePartial(
   const cmpDetailType diff,
   const cmpDetailType winX,
@@ -221,16 +212,15 @@ cmpDetailType AltMatrix2D::ComparePartial(
   {
     if (! (hasXsum[winX] && hasXsum[winY]))
     {
-      cout << "Error 1: " << 
+      cerr << "Error 1: " << 
         static_cast<int>(diff) << " " << 
         static_cast<int>(winX) << " " << 
         static_cast<int>(winY) << "\n";
       for (int c = 0; c < SDS_HEADER_CMP_SIZE; c++)
-        cout << setw(2) << c << 
+        cerr << setw(2) << c << 
           setw(5) << hasXsum[c] <<
           setw(5) << hasYsum[c];
-      AltMatrix2D::Print("Error 1");
-      cout.flush();
+      AltMatrix2D::Print(cerr, "Error 1");
       assert(false);
     }
   }
@@ -239,16 +229,15 @@ cmpDetailType AltMatrix2D::ComparePartial(
   {
     if (! (hasYsum[winX] && hasYsum[winY]))
     {
-      cout << "Error 2: " << 
+      cerr << "Error 2: " << 
         static_cast<int>(diff) << " " << 
         static_cast<int>(winX) << " " << 
         static_cast<int>(winY) << "\n";
       for (int c = 0; c < SDS_HEADER_CMP_SIZE; c++)
-        cout << setw(2) << c << 
+        cerr << setw(2) << c << 
           setw(5) << hasXsum[c] <<
           setw(5) << hasYsum[c];
-      AltMatrix2D::Print("Error 2");
-      cout.flush();
+      AltMatrix2D::Print(cerr, "Error 2");
       assert(false);
     }
   }
@@ -287,8 +276,6 @@ cmpDetailType AltMatrix2D::Compare()
     SDS_HEADER_RANK_DIFFERENT,
     SDS_HEADER_RANK_OLD_BETTER,
     SDS_HEADER_RANK_NEW_BETTER);
-
-  // Later expand with length as well.
 
   cval = c;
   return c;
@@ -361,72 +348,63 @@ bool AltMatrix2D::CandList(
 }
 
 
-void AltMatrix2D::Print(
-  const char text[]) const
-{
-  cout << "AltMatrix2D " << text << "\n";
-  AltMatrix2D::Print();
-}
-
-
-void AltMatrix2D::Print() const
-{
-  cout << setw(4) << left << "D1" << setw(4) << "D2";
-  for (unsigned j = 0; j < numY; j++)
-    cout << setw(10) << j;
-  cout << "\n  active ";
-  for (unsigned j = 0; j < numY; j++)
-    cout << setw(10) << (activeY[j] ? "yes" : "-");
-  cout << "\n";
-  
-  cout << setw(9) << "+";
-  for (unsigned j = 0; j < numY; j++)
-    cout << "----------";
-  cout << "\n";
-
-
-  for (unsigned i = 0; i < numX; i++)
-  {
-    cout << setw(2) << i << setw(6) << i <<
-      (activeX[i] ? "yes" : "-") << "|";
-
-    for (unsigned j = 0; j < numY; j++)
-      cout << setw(10) << CMP_DETAIL_NAMES[matrix[i][j]];
-    cout << "\n";
-  }
-  cout << "\n";
-
-  AltMatrix2D::PrintVector("hasX", hasX, numX);
-  AltMatrix2D::PrintVector("hasY", hasY, numY);
-
-}
-
 
 void AltMatrix2D::PrintVector(
-  const char text[],
+  ostream& out,
+  const string text,
   const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
   const unsigned len) const
 {
-  cout << setw(10) << text;
-  AltMatrix2D::PrintVector(cvec, len);
-}
+  if (text != "")
+    out << setw(10) << text;
 
-
-void AltMatrix2D::PrintVector(
-  const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
-  const unsigned len) const
-{
   for (unsigned i = 0; i < SDS_HEADER_CMP_SIZE; i++)
-    cout << setw(10) << CMP_DETAIL_NAMES[i];
-  cout << "\n";
+    out << setw(10) << CMP_DETAIL_NAMES[i];
+  out << "\n";
 
   for (unsigned i = 0; i < len; i++)
   {
-    cout << setw(2) << i << setw(8) << "";
+    out << setw(2) << i << setw(8) << "";
     for (unsigned j = 0; j < SDS_HEADER_CMP_SIZE; j++)
-      cout << setw(10) << (cvec[i][j] ? "yes" : "-");
-    cout << "\n";
+      out << setw(10) << (cvec[i][j] ? "yes" : "-");
+    out << "\n";
   }
-  cout << "\n";
+  out << endl;
+}
+
+
+void AltMatrix2D::Print(
+  ostream& out,
+  const string text) const
+{
+  if (text != "")
+    out << "AltMatrix2D " << text << "\n";
+
+  out << setw(4) << left << "D1" << setw(4) << "D2";
+  for (unsigned j = 0; j < numY; j++)
+    out << setw(10) << j;
+  out << "\n  active ";
+  for (unsigned j = 0; j < numY; j++)
+    out << setw(10) << (activeY[j] ? "yes" : "-");
+  out << "\n";
+  
+  out << setw(9) << "+";
+  for (unsigned j = 0; j < numY; j++)
+    out << "----------";
+  out << "\n";
+
+  for (unsigned i = 0; i < numX; i++)
+  {
+    out << setw(2) << i << setw(6) << i <<
+      (activeX[i] ? "yes" : "-") << "|";
+
+    for (unsigned j = 0; j < numY; j++)
+      out << setw(10) << CMP_DETAIL_NAMES[matrix[i][j]];
+    out << "\n";
+  }
+  out << "\n";
+
+  AltMatrix2D::PrintVector(out, "hasX", hasX, numX);
+  AltMatrix2D::PrintVector(out, "hasY", hasY, numY);
 }
 

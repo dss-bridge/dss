@@ -10,6 +10,11 @@
 #ifndef SDS_ALTMATRIX1D_H
 #define SDS_ALTMATRIX1D_H
 
+#include <iostream>
+#include <string>
+
+#include "cst.h"
+
 
 class AltMatrix1D
 {
@@ -21,15 +26,10 @@ class AltMatrix1D
 
     bool active[SDS_MAX_ALT];
 
-    bool verifiedFlag;
-
     bool has[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE];
 
-    void Print();
-
     void PrintVector(
-      const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
-      const unsigned len);
+      std::ostream& out) const;
 
   public:
 
@@ -56,12 +56,8 @@ class AltMatrix1D
     void Verify();
 
     void Print(
-      const char text[]);
-
-    void PrintVector(
-      const char text[],
-      const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
-      const unsigned len);
+      std::ostream& out = std::cout,
+      const std::string text = "") const;
 };
 
 #endif

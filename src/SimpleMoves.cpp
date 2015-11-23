@@ -19,6 +19,8 @@
 #include "Dist.h"
 #include "LoopHold.h"
 
+using namespace std;
+
 #define DEBUG_SIMPLE
 
 

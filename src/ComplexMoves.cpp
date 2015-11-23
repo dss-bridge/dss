@@ -21,6 +21,8 @@
 #include "ComplexMoves.h"
 #include "Stats.h"
 
+using namespace std;
+
 /*
    The multi-threading is rather simple:  Each thread gets a
    single batch of holdings, and we wait for all batches to complete

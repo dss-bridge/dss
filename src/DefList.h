@@ -11,13 +11,11 @@
 #define SDS_DEFLIST_H
 
 #include <iostream>
-#include <iomanip>
 #include <string>
 #include <vector>
 
-using namespace std;
-
 #include "AltList.h"
+#include "cst.h"
 
 
 class DefList
@@ -33,12 +31,12 @@ class DefList
       AltList& alt);
 
     void Purge(
-      const vector<bool>& skip);
+      const std::vector<bool>& skip);
 
     bool Reduce();
 
     void RegisterSize(
-      const string& text);
+      const std::string& text);
 
   public:
 
@@ -66,13 +64,13 @@ class DefList
 
     Header& GetHeader();
 
-    unsigned GetKey();
+    unsigned GetKey() const;
 
     bool operator == (
-      const DefList& def2);
+      const DefList& def2) const;
 
     bool operator != (
-      const DefList& def2);
+      const DefList& def2) const;
 
     void operator += (
       const Holding& holding);
@@ -87,7 +85,7 @@ class DefList
 
     void Print(
       std::ostream& out,
-      const std::string& text = "");
+      const std::string& text = "") const;
 };
 
 

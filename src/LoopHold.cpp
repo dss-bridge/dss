@@ -18,6 +18,8 @@
 #include "cst.h"
 #include "LoopHold.h"
 
+using namespace std;
+
 extern vector<unsigned> holdCtr;
 bool pickFlag;
 

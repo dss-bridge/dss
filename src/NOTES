@@ -6,19 +6,23 @@ TrickList.{cpp,h}
 Trick.{cpp,h}
 Segment.{cpp,h}
 AltList.{cpp,h}
+AltMatrix1D.{cpp,h}
+AltMatrix2D.{cpp,h}
 
 TODO (core)
 ====
-AltMatrix1D.{cpp,h}
-AltMatrix2D.{cpp,h}
 DefList.{cpp,h}
+- MergeSides
+- Effect on GetHeader and GetKey
+- No cached header at all?
 Header.{cpp,h}
+- Comparison straight in TrickList
+- Error fix in Trick.cpp -- reflect here as well
+- Look at using a Trick as a storage unit (Trick functions, then)
 
 PLAN
 ====
 * Get the algorithmic parts completely clean and solid
-* Fix MergeSides, data for storing moves from all 2(4) sides
-
 
 
 Algorithm bugs
@@ -47,22 +51,6 @@ Should just be BB5Q.
 Currently yields BA5Q or AB5J (right),
 but no table -- why?
 Currently fails (kind of)!!
-
-
-Algorithm code
---------------
-Header:
-* Header.cpp has a lot of functions...
-* Check at what levels it is good to cache the header
-* Error fix in Trick.cpp -- reflect here as well
-* Look at using a Trick as a storage unit (Trick functions, then)
-
-DefList:
-* Can we cache header at MoveList level, so not store in DL?
-* MergeSides needs to become quite intelligent (d=10 case)
-
-AltMatrix1D:
-**** Only have matrix at all when debugging.
 
 
 Table issues

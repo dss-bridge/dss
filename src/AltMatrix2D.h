@@ -10,6 +10,11 @@
 #ifndef SDS_ALTMATRIX2D_H
 #define SDS_ALTMATRIX2D_H
 
+#include <iostream>
+#include <string>
+
+#include "cst.h"
+
 
 class AltMatrix2D
 {
@@ -48,9 +53,9 @@ class AltMatrix2D
       const cmpDetailType winX,
       const cmpDetailType winY);
 
-    void Print() const;
-
     void PrintVector(
+      std::ostream& out,
+      const std::string text,
       const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
       const unsigned len) const;
 
@@ -67,10 +72,10 @@ class AltMatrix2D
       const unsigned y);
     
     bool IsPurgedX(
-      const unsigned x);
+      const unsigned x) const;
     
     bool IsPurgedY(
-      const unsigned y);
+      const unsigned y) const;
 
     void SetValue(
       const unsigned x,
@@ -92,12 +97,8 @@ class AltMatrix2D
       bool use[]) const;
 
     void Print(
-      const char text[]) const;
-
-    void PrintVector(
-      const char text[],
-      const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
-      const unsigned len) const;
+      std::ostream& out,
+      const std::string text) const;
 };
 
 #endif

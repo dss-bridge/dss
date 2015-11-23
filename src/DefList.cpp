@@ -7,10 +7,13 @@
 */
 
 
+#include <iomanip>
 #include <assert.h>
 
-#include "cst.h"
 #include "DefList.h"
+
+using namespace std;
+
 
 extern bool debugDefList;
 extern unsigned highestDefNo;
@@ -77,8 +80,12 @@ bool DefList::Set12(
 
 Header& DefList::GetHeader()
 {
+holdCtr[950]++;
   if (! headerDirty)
+  {
+holdCtr[951]++;
     return header;
+  }
   headerDirty = false;
 
   assert(len > 0);
@@ -95,7 +102,7 @@ Header& DefList::GetHeader()
 }
 
 
-unsigned DefList::GetKey() 
+unsigned DefList::GetKey() const
 {
   unsigned sum = 0;
   for (unsigned d = 0; d < len; d++)
@@ -106,7 +113,7 @@ unsigned DefList::GetKey()
 
 
 bool DefList::operator == (
-  const DefList& def2)
+  const DefList& def2) const
 {
   if (len != def2.len)
     return false;
@@ -139,7 +146,7 @@ bool DefList::operator == (
 
 
 bool DefList::operator != (
-  const DefList& def2)
+  const DefList& def2) const
 {
   return ! (* this == def2);
 }
@@ -440,7 +447,7 @@ void DefList::RegisterSize(
 
 void DefList::Print(
   ostream& out,
-  const string& text)
+  const string& text) const
 {
   if (! text.empty())
     out << setw(0) << text << "\n";

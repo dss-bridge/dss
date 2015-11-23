@@ -17,6 +17,8 @@
 #include "DefList.h"
 #include "SimpleMoves.h"
 
+using namespace std;
+
 
 const int SDS_DISTLENGTH0 = 0x1;
 const int SDS_DISTLENGTH1 = 0x4;

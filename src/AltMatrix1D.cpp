@@ -7,22 +7,16 @@
 */
 
 
-#include <iostream>
 #include <iomanip>
-#include <string>
+#include <assert.h>
+
+#include "AltMatrix1D.h"
 
 using namespace std;
 
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <string.h>
-#include <assert.h>
 
-#include "cst.h"
-#include "AltMatrix1D.h"
-#include "portab.h"
-
-extern bool debugComplex;
+// matrix is not needed for actual functionality -- could be deleted
+// for (a bit of) performance.
 
 
 AltMatrix1D::AltMatrix1D()
@@ -39,7 +33,6 @@ AltMatrix1D::~AltMatrix1D()
 void AltMatrix1D::Reset()
 {
   num = 0;
-  verifiedFlag = false;
 }
 
 
@@ -92,8 +85,6 @@ void AltMatrix1D::Purge(
 
 void AltMatrix1D::Verify()
 {
-  verifiedFlag = true;
-
   for (unsigned i = 0; i < num; i++)
   {
     if (! active[i])
@@ -117,7 +108,7 @@ void AltMatrix1D::Verify()
           has[i][SDS_HEADER_RANK_NEW_BETTER] ||
           has[i][SDS_HEADER_SAME])
       {
-        AltMatrix1D::Print("Verify error I");
+        AltMatrix1D::Print(cout, "Verify error I");
         cout.flush();
 	assert(false);
       }
@@ -127,7 +118,7 @@ void AltMatrix1D::Verify()
     {
       if (has[i][SDS_HEADER_SAME])
       {
-        AltMatrix1D::Print("Verify error II");
+        AltMatrix1D::Print(cout, "Verify error II");
         cout.flush();
 	assert(false);
       }
@@ -136,68 +127,52 @@ void AltMatrix1D::Verify()
 }
 
 
-void AltMatrix1D::Print(
-  const char text[])
+void AltMatrix1D::PrintVector(
+  ostream& out) const
 {
-  cout << "AltMatrix1D " << text << "\n";
-  AltMatrix1D::Print();
-}
-
-
-void AltMatrix1D::Print()
-{
-  cout << setw(4) << left << "D1" << setw(4) << "D2";
-  for (unsigned j = 0; j < num; j++)
-    cout << setw(3) << j;
-  cout << "\n";
+  out << setw(10) << "";
+  for (unsigned i = 0; i < SDS_HEADER_CMP_SIZE; i++)
+    out << setw(10) << CMP_DETAIL_NAMES[i];
+  out << "\n";
 
   for (unsigned i = 0; i < num; i++)
   {
-    cout << setw(2) << i <<
+    out << setw(2) << i << setw(8) << "";
+    for (unsigned j = 0; j < SDS_HEADER_CMP_SIZE; j++)
+      out << setw(10) << (has[i][j] ? "yes" : "");
+    out << "\n";
+  }
+  out << "\n";
+}
+
+
+void AltMatrix1D::Print(
+  ostream& out,
+  const string text) const
+{
+  if (text != "")
+    out << "AltMatrix1D " << text << "\n";
+
+  out << setw(4) << left << "D1" << setw(4) << "D2";
+  for (unsigned j = 0; j < num; j++)
+    out << setw(3) << j;
+  out << "\n";
+
+  for (unsigned i = 0; i < num; i++)
+  {
+    out << setw(2) << i <<
       setw(6) << (active[i] ? "yes" : "-");
 
     for (unsigned j = 0; j <= i; j++)
-      cout << setw(10) << "-";
+      out << setw(10) << "-";
 
     for (unsigned j = i+1; j < num; j++)
-      cout << setw(10) << CMP_DETAIL_NAMES[matrix[i][j]];
-    cout << "\n";
+      out << setw(10) << CMP_DETAIL_NAMES[matrix[i][j]];
+    out << "\n";
   }
-  cout << "\n";
+  out << "\n";
 
-  if (! verifiedFlag)
-    AltMatrix1D::Verify();
-
-  AltMatrix1D::PrintVector("has", has, num);
-}
-
-
-void AltMatrix1D::PrintVector(
-  const char text[],
-  const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
-  const unsigned len)
-{
-  cout << text << "\n";
-  AltMatrix1D::PrintVector(cvec, len);
-}
-
-
-void AltMatrix1D::PrintVector(
-  const bool cvec[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
-  const unsigned len)
-{
-  cout << setw(10) << "";
-  for (unsigned i = 0; i < SDS_HEADER_CMP_SIZE; i++)
-    cout << setw(10) << CMP_DETAIL_NAMES[i];
-  cout << "\n";
-
-  for (unsigned i = 0; i < len; i++)
-  {
-    cout << setw(2) << i << setw(8) << "";
-    for (unsigned j = 0; j < SDS_HEADER_CMP_SIZE; j++)
-      cout << setw(10) << (cvec[j] ? "yes" : "");
-    cout << "\n";
-  }
-  cout << "\n";
+  out << "has\n";
+  AltMatrix1D::PrintVector(out);
 }
 

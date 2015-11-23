@@ -71,6 +71,8 @@
 #include "SimpleMoves.h"
 #include "Twiddle.h"
 
+using namespace std;
+
 
 extern singleType * singles[14];
 
