@@ -225,7 +225,8 @@ void TrickList::operator += (
     return;
   }
   else if (holding.IsAATrick() &&
-      list[len-1].GetRanks() > holding.GetLHOMaxRank())
+      list[len-1].GetRanks() > holding.GetLHOMaxRank() &&
+      holding.GetMinDeclLength() >= 2)
   {
     // Rather special case: AA1A + Pxyz, where LHO is either void
     // or is below the first rank to win the next trick.

@@ -764,7 +764,8 @@ bool Holding::MakePlay(
 
   mergeSpecialFlag = false;
   if ((length[QT_LHO] == 0 && length[QT_RHO] == 0 &&
-      length[QT_ACE] >= 2 && length[QT_PARD] >= 2) ||
+      length[QT_ACE] >= length[QT_PARD] && length[QT_PARD] >= 2) ||
+      // length[QT_ACE] >= 2 && length[QT_PARD] >= 2) ||
      (length[QT_ACE] == length[QT_PARD] && 
       length[QT_LHO] <= 1 && length[QT_RHO] <= 1))
     mergeSpecialFlag = true;

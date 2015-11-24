@@ -115,12 +115,12 @@ void MakeComplexMoves()
         if (singles[sl][c].declLen != dlen)
           continue;
 
-// if (sl == 9 && c == 0xe18f)
+// if (sl == 10 && c == 0x81aa)
   // debugComplex = true;
 // else
   // debugComplex = false;
 // cout << setw(2) << dlen << 
-// setw(3) << sl << setw(3) << hex << c << dec << endl;
+// setw(3) << sl << " " << setw(3) << hex << c << dec << endl;
         holding.Set(sl, c);
         DefList sm;
 
