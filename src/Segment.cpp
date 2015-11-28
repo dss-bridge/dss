@@ -371,6 +371,7 @@ void Segment::PrependFix(const bool lastFlag)
     if (lastFlag)
     {
       // PA + BP = PB.
+      list[0].trick.start = QT_PARD;
       list[0].trick.end = QT_BOTH;
       list[0].trick.cashing += list[1].trick.cashing;
       if (list[1].trick.ranks < list[0].trick.ranks)
@@ -484,7 +485,9 @@ bool Segment::Fix11(
       }
     }
     else if (c == SDS_SAME &&
-        (t1.trick.end == QT_BOTH || t2.trick.end == QT_BOTH))
+        (t1.trick.end == QT_BOTH || t2.trick.end == QT_BOTH) &&
+        t1.trick.start != t1.trick.end &&
+        t2.trick.start != t2.trick.end)
     {
       // C2: AB+Ax either way, PB+Px either way,
       // when tricks and ranks are the same.

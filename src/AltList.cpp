@@ -320,8 +320,8 @@ void AltList::Backtrack1D(
       c = list[dimFixed].FixOrCompare(list[a], fix1, fix2);
       comp.SetValue(dimFixed, a, c);
 
-      assert(fix1 != SDS_FIX_STRONGER && fix1 != SDS_FIX_WEAKER);
-      assert(fix2 != SDS_FIX_PURGED && fix2 != SDS_FIX_WEAKER);
+      assert(fix1 != SDS_FIX_WEAKER);
+      assert(fix2 != SDS_FIX_WEAKER);
 
       if (fix1 == SDS_FIX_PURGED)
       {
@@ -604,7 +604,7 @@ bool AltList::CompareMulti(
   {
     tlist = tref;
     posType pstart = tlist.GetFirstStart();
-    if (tlist.GetLength() == 1 || pstart == QT_BOTH)
+    if (pstart == QT_BOTH)
       return false;
 
     aRed.PunchOut(this, pstart);

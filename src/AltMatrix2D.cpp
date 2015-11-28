@@ -288,10 +288,8 @@ bool AltMatrix2D::CandList(
 {
   if (sideToLose == QT_ACE)
   {
-    if ((cval == SDS_HEADER_PLAY_DIFFERENT &&
-        ! hasXsum[SDS_HEADER_PLAY_OLD_BETTER]) ||
-        (cval == SDS_HEADER_RANK_DIFFERENT &&
-        ! hasXsum[SDS_HEADER_RANK_OLD_BETTER]))
+    if (cval == SDS_HEADER_PLAY_DIFFERENT ||
+        cval == SDS_HEADER_RANK_DIFFERENT)
     {
       bool usedFlag = false;
       for (unsigned a = 0; a < numX; a++)
@@ -315,10 +313,8 @@ bool AltMatrix2D::CandList(
   }
   else if (sideToLose == QT_PARD)
   {
-    if ((cval == SDS_HEADER_PLAY_DIFFERENT &&
-        ! hasYsum[SDS_HEADER_PLAY_NEW_BETTER]) ||
-        (cval == SDS_HEADER_RANK_DIFFERENT &&
-        ! hasYsum[SDS_HEADER_RANK_NEW_BETTER]))
+    if (cval == SDS_HEADER_PLAY_DIFFERENT ||
+        cval == SDS_HEADER_RANK_DIFFERENT)
     {
       bool usedFlag = false;
       for (unsigned a = 0; a < numY; a++)

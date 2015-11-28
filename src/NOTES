@@ -1,4 +1,5 @@
-16487, 20845 10094
+15062, 60763 8975
+// 16487, 20845 10094
 
 DONE
 ====
@@ -25,36 +26,22 @@ PLAN
 * Get the algorithmic parts completely clean and solid
 
 
-Algorithm bugs
---------------
-13, a65642 (why ever yield 5 tricks?)
-def0: AB4T
-def1: AA4T or AP56
-def0 in total is worse, so defense should prefer it.
-CompareMultiSide() must learn this.
-
+Table issues
+------------
 10, 0x81aa
     AKJT
 -        9
     Q8765
-Currently yields
-AP5Q or
-PB5J or
-PA1A + AP4Q
 Should just be BB5Q.
-21.09.15: Currently actually fails!! (standalone)
+Currently fails to make a table
 
 11, 0xa4f3
     AKQ85
 764       9
     JT
 Currently yields BA5Q or AB5J (right),
-but no table -- why?
-Currently fails (kind of)!!
+Currently fails to make a table
 
-
-Table issues
-------------
 6, 0x92
     AKT
 -         J
