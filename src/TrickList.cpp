@@ -120,6 +120,37 @@ cmpDetailType TrickList::Compare(
   assert(len > 0);
   assert(lNew.len > 0);
 
+
+  cmpDetailType cc = list[len-1].Compare(lNew.list[lNew.len-1]);
+  if (cc == SDS_HEADER_PLAY_DIFFERENT)
+  {
+    // return SDS_HEADER_PLAY_DIFFERENT;
+  }
+  else
+  {
+
+  CompareStruct cdata;
+  cdata.lenOld = len-1;
+  cdata.lenNew = lNew.len-1;
+  cdata.winnerFirst = cc;
+
+  Trick t;
+  list[len-1].GetSummaryTrick(t);
+  cdata.tricksOld = t.GetCashing();
+  cdata.ranksOld = t.GetRanks();
+
+  lNew.list[lNew.len-1].GetSummaryTrick(t);
+  cdata.tricksNew = t.GetCashing();
+  cdata.ranksNew = t.GetRanks();
+
+  cdata.winnerRunning = TrickList::CompareRunning(cdata);
+
+  cc = TrickList::CompareTail(lNew, cdata);
+
+  }
+
+  
+
   unsigned minLen = Min(len, lNew.len);
   cmpDetailType status = SDS_HEADER_SAME;
 
@@ -137,7 +168,19 @@ cmpDetailType TrickList::Compare(
       TrickList::GetHeader(header, s);
       Header newHeader;
       lNew.GetHeader(newHeader, s);
-      return header.Compare(newHeader);
+      // return header.Compare(newHeader);
+      cmpDetailType d = header.Compare(newHeader);
+if (cc != d)
+{
+  cout << "POS1, s << " << s << "\n";
+  TrickList::Print();
+  cout << "\n";
+  lNew.Print();
+  cout << "\ncc " << CMP_DETAIL_NAMES[cc] << 
+    " d " << CMP_DETAIL_NAMES[d] << endl;
+  // assert(false);
+}
+      return d;
     }
     else if (c == SDS_HEADER_SAME)
       continue;
@@ -146,17 +189,106 @@ cmpDetailType TrickList::Compare(
   }
 
   if (s == len && s == lNew.len)
-    return status;
+  {
+if (cc != status)
+{
+  cout << "POS2\n";
+  TrickList::Print();
+  cout << "\n";
+  lNew.Print();
+  cout << "\ncc " << CMP_DETAIL_NAMES[cc] << 
+    " status " << CMP_DETAIL_NAMES[status] << endl;
+}
+    // return status;
+    return cc;
+  }
   else if (s == len)
+  {
+    assert(cc == SDS_HEADER_PLAY_NEW_BETTER);
     return SDS_HEADER_PLAY_NEW_BETTER;
+  }
   else if (s == lNew.len)
+  {
+    assert(cc == SDS_HEADER_PLAY_OLD_BETTER);
     return SDS_HEADER_PLAY_OLD_BETTER;
+  }
   else
   {
     // Just to have a return value in this branch for the compiler.
     assert(false);
     return SDS_HEADER_SAME;
   }
+}
+
+
+cmpDetailType TrickList::CompareRunning(
+  const CompareStruct cdata) const
+{
+  if (cdata.tricksOld > cdata.tricksNew)
+    return SDS_HEADER_PLAY_OLD_BETTER;
+  else if (cdata.tricksOld < cdata.tricksNew)
+    return SDS_HEADER_PLAY_NEW_BETTER;
+  else if (cdata.ranksOld > cdata.ranksNew)
+    return SDS_HEADER_RANK_OLD_BETTER;
+  else if (cdata.ranksOld < cdata.ranksNew)
+    return SDS_HEADER_RANK_NEW_BETTER;
+  else
+    return SDS_HEADER_SAME;
+}
+
+
+cmpDetailType TrickList::CompareTail(
+  const TrickList& lNew,
+  CompareStruct cdata) const
+{
+  if (cdata.lenOld == 0 && cdata.lenNew == 0)
+  {
+    return cmpDetailMatrix[cdata.winnerFirst][cdata.winnerRunning];
+  }
+  else if (cdata.lenOld == 0)
+  {
+    cmpDetailType c = cdata.winnerRunning;
+    if (c == SDS_HEADER_SAME ||
+        c == SDS_HEADER_PLAY_NEW_BETTER ||
+        c == SDS_HEADER_RANK_NEW_BETTER)
+    {
+      return cmpDetailMatrix[cdata.winnerFirst][SDS_HEADER_PLAY_NEW_BETTER];
+    }
+  }
+  else if (cdata.lenNew == 0)
+  {
+    cmpDetailType c = cdata.winnerRunning;
+    if (c == SDS_HEADER_SAME ||
+        c == SDS_HEADER_PLAY_OLD_BETTER ||
+        c == SDS_HEADER_RANK_OLD_BETTER)
+    {
+      return cmpDetailMatrix[cdata.winnerFirst][SDS_HEADER_PLAY_OLD_BETTER];
+    }
+  }
+
+  if (cdata.lenOld > 0)
+  {
+    Trick t;
+    list[cdata.lenOld-1].GetSummaryTrick(t);
+    cdata.tricksOld += t.GetCashing();
+    cdata.ranksOld = Min(cdata.ranksOld, t.GetRanks());
+    cdata.lenOld--;
+  }
+
+  if (cdata.lenNew > 0)
+  {
+    Trick t;
+    lNew.list[cdata.lenNew-1].GetSummaryTrick(t);
+    cdata.tricksNew += t.GetCashing();
+    cdata.ranksNew = Min(cdata.ranksNew, t.GetRanks());
+    cdata.lenNew--;
+  }
+
+  cmpDetailType d = TrickList::CompareRunning(cdata);
+  cdata.winnerRunning = cmpDetailMatrix[cdata.winnerRunning][d];
+
+  cmpDetailType c = TrickList::CompareTail(lNew, cdata);
+  return cmpDetailMatrix[cdata.winnerFirst][c];
 }
 
 

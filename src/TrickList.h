@@ -27,6 +27,25 @@ class TrickList
     Segment list[TRICKLIST_MAXSEGS];
     unsigned len;
 
+    struct CompareStruct
+    {
+      unsigned lenOld;
+      unsigned lenNew;
+      cmpDetailType winnerFirst;
+      cmpDetailType winnerRunning;
+      unsigned tricksOld;
+      unsigned tricksNew;
+      unsigned ranksOld;
+      unsigned ranksNew;
+    };
+
+    cmpDetailType CompareRunning(
+      const CompareStruct cdata) const;
+
+    cmpDetailType CompareTail(
+      const TrickList& lNew,
+      CompareStruct cdata) const;
+
     bool Fix(
       TrickList& lOther,
       fixType& fix1,
@@ -94,7 +113,7 @@ class TrickList
     posType ConnectFirst();
 
     void Print(
-      std::ostream& pout,
+      std::ostream& out = std::cout,
       const unsigned d = 0,
       const unsigned a = 0) const;
 };
