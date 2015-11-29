@@ -103,7 +103,7 @@ cout << "sizeof(Trick) " << sizeof(Trick) << "\n";
 cout << "sizeof(bool) " << sizeof(bool) << "\n";
 
   LoopHold holding;
-  holding.Set(13, 0x8c0aff);
+  holding.Set(13, 0x90e17f);
   // holding.Set(13, 0xa65642);
   // holding.Set(13, 0xa65642);
   // holding.Set(13, 0x222e1);
@@ -115,8 +115,8 @@ cout << "sizeof(bool) " << sizeof(bool) << "\n";
 
   debugComplex = true;
   debugDefList = true;
-  debugAltList = false;
-  // debugAltList = true;
+  // debugAltList = false;
+  debugAltList = true;
   MakeComplexSingleMove(holding, def0);
   cout << "Solving directly with no tables:\n";
   def0.Print(cout);

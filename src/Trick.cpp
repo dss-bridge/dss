@@ -344,7 +344,7 @@ cmpDetailType Trick::Compare(
   if (runningScore == SDS_DIFFERENT)
     return SDS_HEADER_PLAY_DIFFERENT;
 
-  if (runningScore != SDS_SAME && trick.cashing != t1.trick.cashing)
+  if (runningScore != SDS_SAME)
     return cmpPlayToDetail[runningScore];
 
   cmpType rankScore;

@@ -114,109 +114,78 @@ void TrickList::GetFirstSummaryTrick(
 }
 
 
+cmpDetailType TrickList::CompareInit(
+  const TrickList& lNew,
+  CompareStruct cdata) const
+{
+  cmpDetailType cc;
+  do
+  {
+    if (cdata.lenOld == 0 && cdata.lenNew == 0)
+      return SDS_HEADER_SAME;
+    else if (cdata.lenOld == 0)
+      return SDS_HEADER_PLAY_NEW_BETTER;
+    else if (cdata.lenNew == 0)
+      return SDS_HEADER_PLAY_OLD_BETTER;
+
+    cdata.lenOld--;
+    cdata.lenNew--;
+
+    cc = list[cdata.lenOld].Compare(lNew.list[cdata.lenNew]);
+    if (cc == SDS_HEADER_PLAY_DIFFERENT)
+      return SDS_HEADER_PLAY_DIFFERENT;
+
+    cdata.winnerFirst = cmpDetailMatrix[cdata.winnerFirst][cc];
+    assert(cdata.winnerFirst != SDS_HEADER_PLAY_DIFFERENT);
+
+    Trick t1;
+    list[cdata.lenOld].GetSummaryTrick(t1);
+    cdata.tricksOld += t1.GetCashing();
+    unsigned r1 = t1.GetRanks();
+    cdata.ranksOld = Min(cdata.ranksOld, r1);
+
+    Trick t2;
+    lNew.list[cdata.lenNew].GetSummaryTrick(t2);
+    cdata.tricksNew += t2.GetCashing();
+    unsigned r2 = t2.GetRanks();
+    cdata.ranksNew = Min(cdata.ranksNew, r2);
+  
+    cdata.winnerRunning = TrickList::CompareRunning(cdata);
+  }
+  while (cc != SDS_HEADER_PLAY_NEW_BETTER &&
+      cc != SDS_HEADER_PLAY_OLD_BETTER);
+
+  return cc;
+}
+
+
 cmpDetailType TrickList::Compare(
   const TrickList& lNew) const
 {
   assert(len > 0);
   assert(lNew.len > 0);
 
-
-  cmpDetailType cc = list[len-1].Compare(lNew.list[lNew.len-1]);
-  if (cc == SDS_HEADER_PLAY_DIFFERENT)
-  {
-    // return SDS_HEADER_PLAY_DIFFERENT;
-  }
-  else
-  {
-
   CompareStruct cdata;
-  cdata.lenOld = len-1;
-  cdata.lenNew = lNew.len-1;
+  cdata.lenOld = len;
+  cdata.lenNew = lNew.len;
+  cdata.tricksOld = 0;
+  cdata.tricksNew = 0;
+  cdata.ranksOld = SDS_VOID;
+  cdata.ranksNew = SDS_VOID;
+  cdata.winnerFirst = SDS_HEADER_SAME;
+  cdata.winnerRunning = SDS_HEADER_SAME;
+
+  cmpDetailType cc = TrickList::CompareInit(lNew, cdata);
   cdata.winnerFirst = cc;
 
-  Trick t;
-  list[len-1].GetSummaryTrick(t);
-  cdata.tricksOld = t.GetCashing();
-  cdata.ranksOld = t.GetRanks();
-
-  lNew.list[lNew.len-1].GetSummaryTrick(t);
-  cdata.tricksNew = t.GetCashing();
-  cdata.ranksNew = t.GetRanks();
-
-  cdata.winnerRunning = TrickList::CompareRunning(cdata);
-
-  cc = TrickList::CompareTail(lNew, cdata);
-
-  }
-
-  
-
-  unsigned minLen = Min(len, lNew.len);
-  cmpDetailType status = SDS_HEADER_SAME;
-
-  unsigned s;
-  for (s = 0; s < minLen; s++)
+  if (cc == SDS_HEADER_PLAY_DIFFERENT)
   {
-    cmpDetailType c = list[len-1-s].Compare(lNew.list[lNew.len-1-s]);
-    assert(c != SDS_HEADER_RANK_DIFFERENT);
-
-    if (c == SDS_HEADER_PLAY_DIFFERENT ||
-        c == SDS_HEADER_PLAY_NEW_BETTER ||
-        c == SDS_HEADER_PLAY_OLD_BETTER)
-    {
-      Header header;
-      TrickList::GetHeader(header, s);
-      Header newHeader;
-      lNew.GetHeader(newHeader, s);
-      // return header.Compare(newHeader);
-      cmpDetailType d = header.Compare(newHeader);
-if (cc != d)
-{
-  cout << "POS1, s << " << s << "\n";
-  TrickList::Print();
-  cout << "\n";
-  lNew.Print();
-  cout << "\ncc " << CMP_DETAIL_NAMES[cc] << 
-    " d " << CMP_DETAIL_NAMES[d] << endl;
-  // assert(false);
-}
-      return d;
-    }
-    else if (c == SDS_HEADER_SAME)
-      continue;
-    else if (status == SDS_HEADER_SAME)
-      status = c;
-  }
-
-  if (s == len && s == lNew.len)
-  {
-if (cc != status)
-{
-  cout << "POS2\n";
-  TrickList::Print();
-  cout << "\n";
-  lNew.Print();
-  cout << "\ncc " << CMP_DETAIL_NAMES[cc] << 
-    " status " << CMP_DETAIL_NAMES[status] << endl;
-}
-    // return status;
-    return cc;
-  }
-  else if (s == len)
-  {
-    assert(cc == SDS_HEADER_PLAY_NEW_BETTER);
-    return SDS_HEADER_PLAY_NEW_BETTER;
-  }
-  else if (s == lNew.len)
-  {
-    assert(cc == SDS_HEADER_PLAY_OLD_BETTER);
-    return SDS_HEADER_PLAY_OLD_BETTER;
+    return SDS_HEADER_PLAY_DIFFERENT;
   }
   else
   {
-    // Just to have a return value in this branch for the compiler.
-    assert(false);
-    return SDS_HEADER_SAME;
+    cdata.winnerRunning = cc;
+    return TrickList::CompareTail(lNew, cdata);
   }
 }
 
@@ -354,7 +323,17 @@ void TrickList::operator += (
       // Never start with AA.
       TrickList::Set1(holding.GetTrick());
     }
-    return;
+    else
+    {
+      // Normal case.  It can happen that the prepending trick
+      // has the same rank as a later segment, as we sometimes
+      // take the rank below the real one.
+      for (unsigned p = 1; p < len; p++)
+      {
+        if (list[len-1-p].FixRanks(holding.GetPrependRank()))
+          break;
+      }
+    }
   }
   else if (holding.IsAATrick() &&
       list[len-1].GetRanks() > holding.GetLHOMaxRank() &&
@@ -366,13 +345,14 @@ void TrickList::operator += (
     // available.  If there isn't, we'll just have to cash from A.
     // So we can always consider this to be AA1A.
     TrickList::Set1(holding.GetTrick());
-    return;
   }
-
-  // Didn't fit, so make a new segment.
-  assert(len < TRICKLIST_MAXSEGS);
-  len++;
-  list[len-1].Set1(holding.GetTrick());
+  else
+  {
+    // Didn't fit, so make a new segment.
+    assert(len < TRICKLIST_MAXSEGS);
+    len++;
+    list[len-1].Set1(holding.GetTrick());
+  }
 }
 
 

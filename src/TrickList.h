@@ -39,6 +39,10 @@ class TrickList
       unsigned ranksNew;
     };
 
+    cmpDetailType CompareInit(
+      const TrickList& lNew,
+      CompareStruct cdata) const;
+
     cmpDetailType CompareRunning(
       const CompareStruct cdata) const;
 

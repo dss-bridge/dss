@@ -106,6 +106,9 @@ class Segment
       const Holding& holding,
       const bool lastSegFlag);
 
+    bool FixRanks(
+      const unsigned rPrep);
+
     posType Connect(
       const Segment& sPrepend);
 

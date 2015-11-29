@@ -387,6 +387,23 @@ void Segment::PrependFix(const bool lastFlag)
 }
 
 
+bool Segment::FixRanks(
+  const unsigned rPrep)
+{
+  for (unsigned t = 0; t < len; t++)
+  {
+    if (list[len-1-t].trick.ranks == rPrep)
+    {
+      list[len-1-t].trick.ranks = SDS_VOID;
+      return true;
+    }
+    else if (list[len-1-t].trick.ranks < rPrep)
+      return true;
+  }
+  return false;
+}
+
+
 posType Segment::Connect(
   const Segment& sPrepend)
 {
