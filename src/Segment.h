@@ -93,6 +93,9 @@ class Segment
     cmpDetailType Compare(
       const Segment& seg2) const;
 
+    bool EqualsExceptStart(
+      const Segment& seg2) const;
+
     bool operator == (
       const Segment& seg2) const;
 

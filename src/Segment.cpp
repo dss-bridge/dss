@@ -146,6 +146,17 @@ cmpDetailType Segment::Compare(
 }
 
 
+bool Segment::EqualsExceptStart(
+  const Segment& seg2) const
+{
+  Trick t1;
+  Segment::GetSummaryTrick(t1);
+  Trick t2;
+  seg2.GetSummaryTrick(t2);
+  return t1.EqualsExceptStart(t2);
+}
+
+
 bool Segment::operator == (
   const Segment& seg2) const
 {

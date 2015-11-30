@@ -80,12 +80,8 @@ bool DefList::Set12(
 
 Header& DefList::GetHeader()
 {
-holdCtr[950]++;
   if (! headerDirty)
-  {
-holdCtr[951]++;
     return header;
-  }
   headerDirty = false;
 
   assert(len > 0);

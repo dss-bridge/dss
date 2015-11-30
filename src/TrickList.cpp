@@ -15,6 +15,7 @@
 using namespace std;
 
 
+
 TrickList::TrickList()
 {
   TrickList::Reset();
@@ -179,9 +180,7 @@ cmpDetailType TrickList::Compare(
   cdata.winnerFirst = cc;
 
   if (cc == SDS_HEADER_PLAY_DIFFERENT)
-  {
     return SDS_HEADER_PLAY_DIFFERENT;
-  }
   else
   {
     cdata.winnerRunning = cc;
@@ -264,20 +263,24 @@ cmpDetailType TrickList::CompareTail(
 bool TrickList::EqualsExceptStart(
   const TrickList& lNew) const
 {
-  Header header;
-  TrickList::GetHeader(header);
-  Header hNew;
-  lNew.GetHeader(hNew);
+  assert(len > 0 && lNew.len > 0);
 
-  if (! header.EqualsExceptStart(hNew))
+  if (len != lNew.len)
     return false;
-
-  if (len == 1 && lNew.len == 1)
-    return true;
-  else if (list[len-1].GetEnd() == lNew.list[lNew.len-1].GetEnd())
-    return true;
+  else if (! list[len-1].EqualsExceptStart(lNew.list[lNew.len-1]))
+    return false;
   else
-    return false;
+  {
+    int p = 1;
+    while (p <= len-1)
+    {
+      if (list[len-1-p] != lNew.list[lNew.len-1-p])
+        return false;
+      p++;
+    }
+  }
+
+  return true;
 }
 
 

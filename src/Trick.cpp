@@ -99,6 +99,20 @@ bool Trick::operator != (
 }
 
 
+bool Trick::EqualsExceptStart(
+  const Trick& t2) const
+{
+  if (t2.trick.start == trick.start ||
+      trick.start == QT_BOTH ||
+      t2.trick.start == QT_BOTH)
+    return false;
+
+  return (t2.trick.end == trick.end &&
+          t2.trick.cashing == trick.cashing &&
+          t2.trick.ranks == trick.ranks);
+}
+
+
 bool Trick::Extends(
   const Trick& tEarlier) const
 {

@@ -28,18 +28,6 @@ class Header
     unsigned char cashTricks[DDS_HANDS];
     unsigned char cashRanks[DDS_HANDS];
 
-    cmpType CompareFirstPlay(
-      const Header& newHeader,
-      const posType side) const;
-
-    cmpType ComparePlay(
-      const Header& newHeader,
-      const posType side) const;
-
-    cmpType CompareRanks(
-      const Header& newHeader,
-      const posType side) const;
-
   public:
 
     Header();
@@ -57,12 +45,6 @@ class Header
 
     void MergeMin(
       const Header& newHeader);
-
-    cmpDetailType Compare(
-      const Header& newHeader) const;
-
-    bool EqualsExceptStart(
-      const Header& newHeader) const;
 
     int GetKey() const;
     int GetTrickKey() const;

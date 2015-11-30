@@ -73,6 +73,9 @@ class Trick
     bool operator != (
       const Trick& t2) const;
 
+    bool EqualsExceptStart(
+      const Trick& t2) const;
+
     bool Extends(
       const Trick& tEarlier) const;
 

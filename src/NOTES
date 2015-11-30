@@ -1,4 +1,5 @@
-14953, 52390 8934
+14982, 06906 8962
+// 14953, 52390 8934
 // 15062, 60763 8975
 // 16487, 20845 10094
 
@@ -25,6 +26,8 @@ Header.{cpp,h}
 PLAN
 ====
 * Get the algorithmic parts completely clean and solid
+
+Is everything in cst.h still needed?
 
 
 Table issues
