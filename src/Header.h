@@ -27,6 +27,7 @@ class Header
     unsigned char minRanks;
     unsigned char cashTricks[DDS_HANDS];
     unsigned char cashRanks[DDS_HANDS];
+    unsigned keyNew;
 
   public:
 
@@ -46,10 +47,14 @@ class Header
     void MergeMin(
       const Header& newHeader);
 
+    void SetKeyNew(
+      const unsigned keyNew);
+
     int GetKey() const;
     int GetTrickKey() const;
     int GetRankKey() const;
     unsigned GetMaxRank() const;
+    unsigned GetKeyNew() const;
 
     void PrintKey(
       std::ostream& out,

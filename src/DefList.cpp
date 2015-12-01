@@ -94,12 +94,19 @@ Header& DefList::GetHeader()
     header.MergeMin(headerNew);
   }
 
+  unsigned sum = 0;
+  for (unsigned d = 0; d < len; d++)
+    sum += list[d].GetLength();
+  
+  header.SetKeyNew(static_cast<unsigned>((len-1) + (sum << 4)));
+
   return header;
 }
 
 
 unsigned DefList::GetKey() const
 {
+assert(false);
   unsigned sum = 0;
   for (unsigned d = 0; d < len; d++)
     sum += list[d].GetLength();

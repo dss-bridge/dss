@@ -17,10 +17,9 @@
 #include "cst.h"
 #include "Holding.h"
 #include "DefList.h"
+#include "Hash.h"
 
 #define POOLSIZE 19200
-#define ML_TRICKS 14
-#define ML_MAXKEY (1 << 20)
 
 #define LENTRICK 4096
 #define LENRANK 65536
@@ -54,15 +53,16 @@ class MoveList
 
     int moveCount[POOLSIZE];
 
-    int trickKeyMap[LENTRICK];
-    int rankKeyMap[LENRANK];
-    int caseKeyMap[LENCASE];
-    int rankCaseKeyMap[LENRANKCASE];
-    int keyMapNo;
-    int rankMapNo;
-    int caseMapNo;
-    int rankCaseMapNo;
+    // int trickKeyMap[LENTRICK];
+    // int rankKeyMap[LENRANK];
+    // int caseKeyMap[LENCASE];
+    // int rankCaseKeyMap[LENRANKCASE];
+    // int keyMapNo;
+    // int rankMapNo;
+    // int caseMapNo;
+    // int rankCaseMapNo;
 
+    Hash hash;
 
     int numEntries;
 
@@ -102,6 +102,8 @@ class MoveList
     void PrintListStats();
     void PrintListStats(
       std::ostream& fout);
+    
+    void PrintHashCounts() const;
 };
 
 #endif

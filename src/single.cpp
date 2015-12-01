@@ -225,6 +225,7 @@ debugAltList = true;
   moveList.CountTrickCombos();
   moveList.CountRankCombos();
   moveList.CountCaseCombos();
+  moveList.PrintHashCounts();
   cout.flush();
 
   FreeLists();

@@ -34,23 +34,6 @@ MoveList::MoveList()
     moveCount[i] = 0;
 
   numEntries = 0;
-
-  for (int i = 0; i < LENTRICK; i++)
-    trickKeyMap[i] = -1;
-
-  for (int i = 0; i < LENRANK; i++)
-    rankKeyMap[i] = -1;
-
-  for (int i = 0; i < LENCASE; i++)
-    caseKeyMap[i] = -1;
-
-  for (int i = 0; i < LENRANKCASE; i++)
-    rankCaseKeyMap[i] = -1;
-
-  keyMapNo = 0;
-  rankMapNo = 0;
-  caseMapNo = 0;
-  rankCaseMapNo = 0;
 }
 
 
@@ -65,60 +48,8 @@ DefList * MoveList::AddMoves(
   bool& newFlag)
 {
   Header& hp = def.GetHeader();
-  // int key = hp.GetKey();
-  // assert(key >= 0 && key < ML_MAXKEY);
 
-  // TRICK: 12 bits (4096) --> 132 combinations, 8 bits.
-  int tFullTrick = hp.GetTrickKey();
-  int tRedTrick;
-  if (trickKeyMap[tFullTrick] == -1)
-    trickKeyMap[tFullTrick] = keyMapNo++;
-  tRedTrick = trickKeyMap[tFullTrick];
-  assert(tFullTrick < LENTRICK);
-  assert(tRedTrick < 250);
-
-  // RANK: 12 bits ( 4096) --> 399 combinations,  9 bits.
-  // RANK: 16 bits (65536) --> 593 combinations, 10 bits.
-  int tFullRank = hp.GetRankKey();
-  int tRedRank;
-  if (rankKeyMap[tFullRank] == -1)
-    rankKeyMap[tFullRank] = rankMapNo++;
-  tRedRank = rankKeyMap[tFullRank];
-  assert(tFullRank < LENRANK);
-  assert(tRedRank < 1000);
-
-  // CASE: ? bits --> 20 combinations, 5 bits.
-  unsigned tFullCase = def.GetKey();
-  int tRedCase;
-  if (caseKeyMap[tFullCase] == -1)
-    caseKeyMap[tFullCase] = caseMapNo++;
-  tRedCase = caseKeyMap[tFullCase];
-  assert(tFullCase < LENCASE);
-  assert(tRedCase < 128);
-
-  // CASE*RANK(old): 5 + 9 = 14 bits -> 10 bits
-  // CASE*RANK(new): 5 +10 = 15 bits -> ?? bits
-  /*
-  int tFullRankCase = (tRedRank << 5) | tRedCase;
-  int tRedRankCase;
-  if (rankCaseKeyMap[tFullRankCase] == -1)
-    rankCaseKeyMap[tFullRankCase] = rankCaseMapNo++;
-  tRedRankCase = rankCaseKeyMap[tFullRankCase];
-  assert(tFullRankCase < LENRANKCASE);
-  assert(tRedRankCase < 1024);
-  */
-
-  int tFullRankCase = (tRedRank << 7) | tRedCase;
-  int tRedRankCase;
-  if (rankCaseKeyMap[tFullRankCase] == -1)
-    rankCaseKeyMap[tFullRankCase] = rankCaseMapNo++;
-  tRedRankCase = rankCaseKeyMap[tFullRankCase];
-  assert(tFullRankCase < LENRANKCASE);
-  assert(tRedRankCase < 4096);
-
-  int key = (tRedRankCase << 8) | tRedTrick;
-  // int key = (tRedRank << 8) | tRedTrick;
-  assert(key < ML_MAXKEY);
+  unsigned key = hash.GetKey(hp);
 
 
   ListEntry * lp = index[key];
@@ -219,7 +150,8 @@ void MoveList::CountCaseCombos()
 
   for (int n = 0; n < numEntries; n++)
   {
-    unsigned maxt = list[n].def.GetKey();
+    Header& header = list[n].def.GetHeader();
+    unsigned maxt = header.GetKeyNew();
     unsigned d = maxt & 0xf;
     unsigned a = maxt >> 4;
     histd[d]++;
@@ -451,3 +383,8 @@ void MoveList::PrintListStats(std::ostream& fout)
     "\n";
 }
 
+
+void MoveList::PrintHashCounts() const
+{
+  hash.PrintCounts();
+}

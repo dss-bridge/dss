@@ -130,6 +130,19 @@ void Header::MergeMin(const Header& newHeader)
 }
 
 
+void Header::SetKeyNew(
+  const unsigned k)
+{
+  keyNew = k;
+}
+
+
+unsigned Header::GetKeyNew() const
+{
+  return keyNew;
+}
+
+
 int Header::GetKey() const
 {
   return (maxTricks << 7) | (maxRanks << 3) | start;

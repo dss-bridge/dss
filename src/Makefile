@@ -19,6 +19,7 @@ SOURCE_FILES 	=		\
         SimpleMoves.cpp         \
         ComplexMoves.cpp        \
         Header.cpp              \
+        Hash.cpp                \
         Twiddle.cpp             \
         Dist.cpp                \
         single.cpp
@@ -46,7 +47,7 @@ clean:
 # DO NOT DELETE
 
 Stats.obj: portab.h Stats.h
-DefList.obj: cst.h DefList.h AltList.h TrickList.h Segment.h Trick.h
+DefList.obj: DefList.h AltList.h TrickList.h Segment.h Trick.h cst.h
 DefList.obj: Holding.h Header.h AltMatrix1D.h AltMatrix2D.h
 MoveList.obj: portab.h cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
 MoveList.obj: TrickList.h Segment.h Header.h AltMatrix1D.h AltMatrix2D.h
@@ -55,8 +56,8 @@ Segment.obj: cst.h Segment.h Trick.h Holding.h
 TrickList.obj: cst.h TrickList.h Segment.h Trick.h Holding.h Header.h
 AltList.obj: cst.h AltList.h TrickList.h Segment.h Trick.h Holding.h Header.h
 AltList.obj: AltMatrix1D.h AltMatrix2D.h
-AltMatrix1D.obj: cst.h AltMatrix1D.h portab.h
-AltMatrix2D.obj: cst.h AltMatrix2D.h portab.h
+AltMatrix1D.obj: AltMatrix1D.h cst.h
+AltMatrix2D.obj: AltMatrix2D.h cst.h
 Holding.obj: cst.h Holding.h Trick.h
 LoopHold.obj: cst.h LoopHold.h DefList.h AltList.h TrickList.h Segment.h
 LoopHold.obj: Trick.h Holding.h Header.h AltMatrix1D.h AltMatrix2D.h
@@ -67,6 +68,7 @@ ComplexMoves.obj: portab.h cst.h DefList.h AltList.h TrickList.h Segment.h
 ComplexMoves.obj: Trick.h Holding.h Header.h AltMatrix1D.h AltMatrix2D.h
 ComplexMoves.obj: MoveList.h SimpleMoves.h ComplexMoves.h Stats.h
 Header.obj: Header.h cst.h Trick.h Holding.h
+Hash.obj: Hash.h Header.h cst.h
 Twiddle.obj: cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
 Twiddle.obj: TrickList.h Segment.h Header.h AltMatrix1D.h AltMatrix2D.h
 Twiddle.obj: SimpleMoves.h Twiddle.h

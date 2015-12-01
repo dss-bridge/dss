@@ -11,17 +11,13 @@ Segment.{cpp,h}
 AltList.{cpp,h}
 AltMatrix1D.{cpp,h}
 AltMatrix2D.{cpp,h}
+Header.{cpp,h}
 
 TODO (core)
 ====
 DefList.{cpp,h}
 - MergeSides
 - Effect on GetHeader and GetKey
-- No cached header at all?
-Header.{cpp,h}
-- Comparison straight in TrickList
-- Error fix in Trick.cpp -- reflect here as well
-- Look at using a Trick as a storage unit (Trick functions, then)
 
 PLAN
 ====
