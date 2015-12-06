@@ -16,8 +16,14 @@
 using namespace std;
 
 
+extern unsigned headerStats[4];
+
 Header::Header()
 {
+  dCum = 0;
+  aCum = 0;
+  sCum = 0;
+  tCum = 0;
 }
 
 
@@ -27,11 +33,36 @@ Header::~Header()
 
 
 void Header::Set(
-  const Trick& trick)
+  const Trick& trick,
+  unsigned tno)
 {
+  dCum = 1;
+  aCum = 1;
+  sCum = 1;
+  tCum = tno;
+
   start = trick.GetStart();
+  if (start == QT_ACE)
+    startNew = 1;
+  else if (start == QT_PARD)
+    startNew = 2;
+  else if (start == QT_BOTH)
+    startNew = 4;
+  else
+    assert(false);
+
   end = trick.GetEnd();
+  if (end == QT_ACE)
+    endNew = 1;
+  else if (end == QT_PARD)
+    endNew = 2;
+  else if (end == QT_BOTH)
+    endNew = 4;
+  else
+    assert(false);
+
   maxTricks = trick.GetCashing();
+
   maxRanks = trick.GetRanks();
   minRanks = maxRanks;
 
@@ -45,19 +76,47 @@ void Header::Set(
   {
     cashTricks[QT_ACE] = maxTricks;
     cashRanks[QT_ACE] = maxRanks;
+
+    cashAceMin = maxTricks;
+    cashAceMax = maxTricks;
+    rankAceMin = maxRanks;
+    rankAceMax = maxRanks;
+  }
+  else
+  {
+    cashAceMin = 0;
+    cashAceMax = 0;
+    rankAceMin = SDS_VOID;
+    rankAceMax = 0;
   }
 
   if (start == QT_PARD || start == QT_BOTH)
   {
     cashTricks[QT_PARD] = maxTricks;
     cashRanks[QT_PARD] = maxRanks;
+
+    cashPardMin = maxTricks;
+    cashPardMax = maxTricks;
+    rankPardMin = maxRanks;
+    rankPardMax = maxRanks;
+  }
+  else
+  {
+    cashPardMin = 0;
+    cashPardMax = 0;
+    rankPardMin = SDS_VOID;
+    rankPardMax = 0;
   }
 }
 
 
 void Header::Increase(
-  const Trick& tLater)
+  const Trick& tLater,
+  const unsigned tno)
 {
+  sCum++;
+  tCum += tno;
+
   maxTricks += tLater.GetCashing();
   unsigned mr = tLater.GetRanks();
   if (mr < maxRanks)
@@ -67,6 +126,40 @@ void Header::Increase(
 
 void Header::MergeMax(const Header& newHeader)
 {
+  aCum++;
+  sCum += newHeader.sCum;
+  tCum += newHeader.tCum;
+
+  if (newHeader.start == QT_ACE)
+    startNew |= 1;
+  else if (newHeader.start == QT_PARD)
+    startNew |= 2;
+  else if (newHeader.start == QT_BOTH)
+    startNew |= 4;
+  else
+    assert(false);
+
+  if (newHeader.end == QT_ACE)
+    endNew |= 1;
+  else if (newHeader.end == QT_PARD)
+    endNew |= 2;
+  else if (newHeader.end == QT_BOTH)
+    endNew |= 4;
+  else
+    assert(false);
+
+  unsigned t = newHeader.maxTricks;
+  cashAceMin = Min(cashAceMin, t);
+  cashAceMax = Max(cashAceMax, t);
+  cashPardMin = Min(cashPardMin, t);
+  cashPardMax = Max(cashPardMax, t);
+
+  unsigned r = newHeader.maxRanks;
+  rankAceMin = Min(rankAceMin, r);
+  rankAceMax = Max(rankAceMax, r);
+  rankPardMin = Min(rankPardMin, r);
+  rankPardMax = Max(rankPardMax, r);
+
   if (newHeader.maxTricks > maxTricks)
   {
     maxTricks = newHeader.maxTricks;
@@ -98,6 +191,54 @@ void Header::MergeMax(const Header& newHeader)
 
 void Header::MergeMin(const Header& newHeader)
 {
+  dCum++;
+  aCum += newHeader.aCum;
+  sCum += newHeader.sCum;
+  tCum += newHeader.tCum;
+
+  if (newHeader.start == QT_ACE)
+    startNew |= 1;
+  else if (newHeader.start == QT_PARD)
+    startNew |= 2;
+  else if (newHeader.start == QT_BOTH)
+    startNew |= 4;
+  else
+    assert(false);
+
+  if (newHeader.end == QT_ACE)
+    endNew |= 1;
+  else if (newHeader.end == QT_PARD)
+    endNew |= 2;
+  else if (newHeader.end == QT_BOTH)
+    endNew |= 4;
+  else
+    assert(false);
+
+  unsigned t = newHeader.maxTricks;
+  cashAceMin = Min(cashAceMin, t);
+  cashAceMax = Max(cashAceMax, t);
+  cashPardMin = Min(cashPardMin, t);
+  cashPardMax = Max(cashPardMax, t);
+
+  unsigned r = newHeader.maxRanks;
+  rankAceMin = Min(rankAceMin, r);
+  rankAceMax = Max(rankAceMax, r);
+  rankPardMin = Min(rankPardMin, r);
+  rankPardMax = Max(rankPardMax, r);
+
+  assert(aCum >= dCum);
+  assert(sCum >= aCum);
+  assert(tCum >= sCum);
+
+  if (dCum > headerStats[0]) 
+    headerStats[0] = dCum;
+  if (aCum-dCum > headerStats[1]) 
+    headerStats[1] = aCum-dCum;
+  if (sCum-aCum > headerStats[2]) 
+    headerStats[2] = sCum-aCum;
+  if (tCum-sCum > headerStats[3]) 
+    headerStats[3] = tCum-sCum;
+
   if (newHeader.maxTricks < maxTricks)
   {
     maxTricks = newHeader.maxTricks;
@@ -130,22 +271,9 @@ void Header::MergeMin(const Header& newHeader)
 }
 
 
-void Header::SetKeyNew(
-  const unsigned k)
-{
-  keyNew = k;
-}
-
-
 unsigned Header::GetKeyNew() const
 {
-  return keyNew;
-}
-
-
-int Header::GetKey() const
-{
-  return (maxTricks << 7) | (maxRanks << 3) | start;
+  return (dCum-1) + (aCum << 4);
 }
 
 

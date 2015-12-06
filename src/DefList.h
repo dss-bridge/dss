@@ -64,8 +64,6 @@ class DefList
 
     Header& GetHeader();
 
-    unsigned GetKey() const;
-
     bool operator == (
       const DefList& def2) const;
 

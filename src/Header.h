@@ -29,6 +29,23 @@ class Header
     unsigned char cashRanks[DDS_HANDS];
     unsigned keyNew;
 
+    unsigned dCum;
+    unsigned aCum;
+    unsigned sCum;
+    unsigned tCum;
+
+    unsigned startNew;
+    unsigned endNew;
+
+    unsigned cashAceMin;
+    unsigned cashAceMax;
+    unsigned cashPardMin;
+    unsigned cashPardMax;
+    unsigned rankAceMin;
+    unsigned rankAceMax;
+    unsigned rankPardMin;
+    unsigned rankPardMax;
+
   public:
 
     Header();
@@ -36,10 +53,12 @@ class Header
     ~Header();
 
     void Set(
-      const Trick& trick);
+      const Trick& trick,
+      unsigned tno);
 
     void Increase(
-      const Trick& tLater);
+      const Trick& tLater,
+      unsigned tno);
 
     void MergeMax(
       const Header& newHeader);
@@ -47,10 +66,6 @@ class Header
     void MergeMin(
       const Header& newHeader);
 
-    void SetKeyNew(
-      const unsigned keyNew);
-
-    int GetKey() const;
     int GetTrickKey() const;
     int GetRankKey() const;
     unsigned GetMaxRank() const;

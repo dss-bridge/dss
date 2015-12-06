@@ -19,7 +19,7 @@
 #include "DefList.h"
 #include "Hash.h"
 
-#define POOLSIZE 19200
+#define POOLSIZE 16000
 
 #define LENTRICK 4096
 #define LENRANK 65536
@@ -53,21 +53,12 @@ class MoveList
 
     int moveCount[POOLSIZE];
 
-    // int trickKeyMap[LENTRICK];
-    // int rankKeyMap[LENRANK];
-    // int caseKeyMap[LENCASE];
-    // int rankCaseKeyMap[LENRANKCASE];
-    // int keyMapNo;
-    // int rankMapNo;
-    // int caseMapNo;
-    // int rankCaseMapNo;
-
     Hash hash;
 
     int numEntries;
 
     void PrintMove(
-      std::ostream& fout,
+      std::ostream& out,
       const int n);
 
   public:
@@ -87,21 +78,17 @@ class MoveList
 
     void PrintCount();
 
-    void PrintMoveList();
     void PrintMoveList(
-      std::ostream& fout);
+      std::ostream& out = std::cout);
 
-    void PrintMoveListByKeys();
     void PrintMoveListByKeys(
-      std::ostream& fout);
+      std::ostream& out = std::cout);
 
-    void PrintMoveStats();
     void PrintMoveStats(
-      std::ostream& fout);
+      std::ostream& out = std::cout);
 
-    void PrintListStats();
     void PrintListStats(
-      std::ostream& fout);
+      std::ostream& out = std::cout);
     
     void PrintHashCounts() const;
 };

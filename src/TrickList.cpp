@@ -97,12 +97,12 @@ const void TrickList::GetHeader(
 
   Trick t;
   list[len-1-startNo].GetSummaryTrick(t);
-  header.Set(t);
+  header.Set(t, list[len-1-startNo].GetLength());
 
   for (unsigned l = startNo+1; l < len; l++)
   {
     list[len-1-l].GetSummaryTrick(t);
-    header.Increase(t);
+    header.Increase(t, list[len-1-l].GetLength());
   }
 }
 

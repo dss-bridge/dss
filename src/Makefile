@@ -22,6 +22,8 @@ SOURCE_FILES 	=		\
         Hash.cpp                \
         Twiddle.cpp             \
         Dist.cpp                \
+        WholeMove.cpp           \
+        misc.cpp                \
         single.cpp
 
 # OBJ_FILES 	= $(subst .cpp,.obj,$(SOURCE_FILES))
@@ -49,8 +51,9 @@ clean:
 Stats.obj: portab.h Stats.h
 DefList.obj: DefList.h AltList.h TrickList.h Segment.h Trick.h cst.h
 DefList.obj: Holding.h Header.h AltMatrix1D.h AltMatrix2D.h
-MoveList.obj: portab.h cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
+MoveList.obj: cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
 MoveList.obj: TrickList.h Segment.h Header.h AltMatrix1D.h AltMatrix2D.h
+MoveList.obj: Hash.h misc.h
 Trick.obj: cst.h Trick.h Holding.h
 Segment.obj: cst.h Segment.h Trick.h Holding.h
 TrickList.obj: cst.h TrickList.h Segment.h Trick.h Holding.h Header.h
@@ -63,17 +66,21 @@ LoopHold.obj: cst.h LoopHold.h DefList.h AltList.h TrickList.h Segment.h
 LoopHold.obj: Trick.h Holding.h Header.h AltMatrix1D.h AltMatrix2D.h
 SimpleMoves.obj: cst.h DefList.h AltList.h TrickList.h Segment.h Trick.h
 SimpleMoves.obj: Holding.h Header.h AltMatrix1D.h AltMatrix2D.h MoveList.h
-SimpleMoves.obj: SimpleMoves.h ComplexMoves.h Twiddle.h Dist.h LoopHold.h
+SimpleMoves.obj: Hash.h SimpleMoves.h ComplexMoves.h Twiddle.h Dist.h
+SimpleMoves.obj: LoopHold.h
 ComplexMoves.obj: portab.h cst.h DefList.h AltList.h TrickList.h Segment.h
 ComplexMoves.obj: Trick.h Holding.h Header.h AltMatrix1D.h AltMatrix2D.h
-ComplexMoves.obj: MoveList.h SimpleMoves.h ComplexMoves.h Stats.h
+ComplexMoves.obj: MoveList.h Hash.h SimpleMoves.h ComplexMoves.h Stats.h
 Header.obj: Header.h cst.h Trick.h Holding.h
 Hash.obj: Hash.h Header.h cst.h
 Twiddle.obj: cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
 Twiddle.obj: TrickList.h Segment.h Header.h AltMatrix1D.h AltMatrix2D.h
-Twiddle.obj: SimpleMoves.h Twiddle.h
+Twiddle.obj: Hash.h SimpleMoves.h Twiddle.h
 Dist.obj: Holding.h cst.h Trick.h DefList.h AltList.h TrickList.h Segment.h
 Dist.obj: Header.h AltMatrix1D.h AltMatrix2D.h SimpleMoves.h
+WholeMove.obj: WholeMove.h DefList.h AltList.h TrickList.h Segment.h Trick.h
+WholeMove.obj: cst.h Holding.h Header.h AltMatrix1D.h AltMatrix2D.h
+misc.obj: misc.h
 single.obj: portab.h cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
-single.obj: TrickList.h Segment.h Header.h AltMatrix1D.h AltMatrix2D.h
+single.obj: TrickList.h Segment.h Header.h AltMatrix1D.h AltMatrix2D.h Hash.h
 single.obj: SimpleMoves.h ComplexMoves.h Stats.h Twiddle.h Dist.h LoopHold.h

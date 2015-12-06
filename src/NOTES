@@ -1,7 +1,33 @@
-14982, 06906 8962
+14982, 24623 9148
+average 4.4823, Gini 0.4839, number 5218
+
+// 14982, 06906 8962
 // 14953, 52390 8934
 // 15062, 60763 8975
 // 16487, 20845 10094
+
+Remove GetKeyNew and GetKey
+Change internal data structure of Header
+Find bounds in Header on new internal data
+Experiment with hashes, also end
+
+Thoughts on two-move data structure
+-----------------------------------
+ListEntry gets *defp1, *defp2, no1, no1, *next.
+singleType should probably have a *listp (to a ListEntry),
+  not a *defp.
+PrintMove* should go by sl, c.
+DefList::PrintMove: would be nice to have a two-move format.
+AddMoves always gets two moves, of which one may be NULL.
+MoveList has 3 different hashes.
+
+Should def1 have only QT_ACE, def2 only QT_PARD?  Would be nice.
+
+ListEntry might become an object.
+We can set it with two defense -- it might or might not merge them.
+We can query for tricks and ranks, perhaps.
+
+
 
 DONE
 ====

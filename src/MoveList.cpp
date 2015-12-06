@@ -7,18 +7,20 @@
 */
 
 
-#include <iostream>
+// #include <iostream>
 #include <sstream>
-#include <iomanip>
-#include <string>
+// #include <iomanip>
+// #include <string>
+#include <algorithm>
 
 using namespace std;
-// #include <stdio.h>
+
 #include <assert.h>
 
-#include "portab.h"
+// #include "portab.h"
 #include "cst.h"
 #include "MoveList.h"
+#include "misc.h"
 
 
 
@@ -192,27 +194,16 @@ void MoveList::PrintCount()
 }
 
 
-void MoveList::PrintMoveList()
+void MoveList::PrintMoveList(
+  ostream& out)
 {
   for (int n = 0; n < numEntries; n++)
-    MoveList::PrintMove(cout, n);
+    MoveList::PrintMove(out, n);
 }
 
 
-void MoveList::PrintMoveList(std::ostream& fout)
-{
-  for (int n = 0; n < numEntries; n++)
-    MoveList::PrintMove(fout, n);
-}
-
-
-void MoveList::PrintMoveListByKeys()
-{
-  MoveList::PrintMoveListByKeys(cout);
-}
-
-
-void MoveList::PrintMoveListByKeys(std::ostream& fout)
+void MoveList::PrintMoveListByKeys(
+  ostream& fout)
 {
   int movesSeen = 0;
   Header h;
@@ -236,7 +227,7 @@ void MoveList::PrintMoveListByKeys(std::ostream& fout)
 
 
 void MoveList::PrintMove(
-  std::ostream& fout,
+  ostream& fout,
   const int n)
 {
   fout << "----------------------------------------------------\n";
@@ -260,19 +251,9 @@ void MoveList::PrintMove(
 }
 
 
-void MoveList::PrintMoveStats()
+void MoveList::PrintMoveStats(
+  ostream& out)
 {
-  MoveList::PrintMoveStats(cout);
-}
-
-
-void MoveList::PrintMoveStats(std::ostream& fout)
-{
-  struct SortEntry
-  {
-    int no;
-    int count;
-  };
   SortEntry sortList[POOLSIZE], tmp;
 
   for (int i = 0; i < numEntries; i++)
@@ -282,6 +263,8 @@ void MoveList::PrintMoveStats(std::ostream& fout)
   }
 
   // Simple bubble sort.
+  sort(sortList, sortList + numEntries, SortIsGreater);
+  /*
   int n = numEntries;
   do
   {
@@ -300,24 +283,20 @@ void MoveList::PrintMoveStats(std::ostream& fout)
     n = new_n;
   }
   while (n > 0);
+  */
 
-  fout << "Sorted move counts\n\n";
+  out << "Sorted move counts\n\n";
   for (int i = 0; i < numEntries; i++)
-    fout <<
+    out <<
       setw(6) << i <<
       setw(8) << sortList[i].no <<
       setw(10) << sortList[i].count << "\n";
-  fout << "\n";
+  out << "\n";
 }
 
 
-void MoveList::PrintListStats()
-{
-  MoveList::PrintListStats(cout);
-}
-
-
-void MoveList::PrintListStats(std::ostream& fout)
+void MoveList::PrintListStats(
+  ostream& out)
 {
   int p = 0;
   int mm = ML_MAXKEY;
@@ -325,8 +304,8 @@ void MoveList::PrintListStats(std::ostream& fout)
 
   double ssum = 0., sumsq = 0.;
 
-  fout << "Hash counts\n\n";
-  fout << " k   count\n";
+  out << "Hash counts\n\n";
+  out << " k   count\n";
     
   for (int key = 0; key < mm; key++)
   {
@@ -335,7 +314,7 @@ void MoveList::PrintListStats(std::ostream& fout)
       continue;
     ssum += i;
     sumsq += static_cast<double>(i) * static_cast<double>(i);
-    fout <<
+    out <<
       setw(2) << key <<
       setw(10) << i << "\n";
     clist[p++] = i;
@@ -345,7 +324,9 @@ void MoveList::PrintListStats(std::ostream& fout)
   if (p == 0)
     return;
 
+  sort(clist, clist + p);
   // Simple bubble sort.
+  /*
   int n = p;
   int tmp;
   do
@@ -365,6 +346,7 @@ void MoveList::PrintListStats(std::ostream& fout)
     n = new_n;
   }
   while (n > 0);
+  */
 
   double sum = 0., psum = 0.;
   for (int i = 0; i < p; i++)
@@ -375,11 +357,11 @@ void MoveList::PrintListStats(std::ostream& fout)
   double giniCoeff = 2 * psum / (p * sum) - (p+1.) / p;
 
 
-  fout << "\nGini coefficient " <<
-    setw(6) << std::fixed << std::setprecision(4) << giniCoeff <<
+  out << "\nGini coefficient " <<
+    setw(6) << fixed << setprecision(4) << giniCoeff <<
     ", number " << p << "\n";
-  fout << "\nAverage search   " <<
-    setw(6) << std::fixed << std::setprecision(4) << sumsq / (2. * ssum) <<
+  out << "\nAverage search   " <<
+    setw(6) << fixed << setprecision(4) << sumsq / (2. * ssum) <<
     "\n";
 }
 

@@ -30,6 +30,8 @@ using namespace std;
 
 #define MOVEFILE "moves.txt"
 
+unsigned headerStats[4] = {0};
+
 
 // Globals
 
@@ -247,6 +249,9 @@ debugAltList = true;
 
   cout << "Maxdef/alt " << highestDefNo << " " << highestAltNo << "\n";
   printTTlist();
+
+  cout << "max header " << headerStats[0] << " " << headerStats[1] << " " <<
+    headerStats[2] << " " << headerStats[3] << endl;
 }
 
 
