@@ -576,7 +576,6 @@ bool Segment::Fix11_OneB(
 
   cmpType c = t1.CashRankOrder(t2.trick.cashing, t2.trick.ranks);
 
-  // C9: BA or AB; or BP or PB.  Doesn't happen.
   // CA: BA+AA where AA is better, BP+PP ditto.  Doesn't happen.
   // CB: BB+AB or PB where the latter is better.  Doesn't happen.
 
@@ -589,6 +588,18 @@ bool Segment::Fix11_OneB(
 
     fix1 = SDS_FIX_UNCHANGED;
     fix2 = SDS_FIX_PURGED;
+    return true;
+  }
+  else if (t2.trick.start == t1.trick.end &&
+    t2.trick.end == QT_BOTH && 
+      (c == SDS_OLD_BETTER || c == SDS_SAME))
+  {
+    // C9: BA or AB; or BP or PB.
+
+    t2.trick.end = SDS_PARTNER[t2.trick.start];
+
+    fix1 = SDS_FIX_UNCHANGED;
+    fix2 = SDS_FIX_WEAKER;
     return true;
   }
   else

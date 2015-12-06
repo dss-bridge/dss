@@ -163,8 +163,6 @@ void MoveList::CountTrickCombos()
 
   for (int n = 0; n < numEntries; n++)
   {
-    // Header& header = list[n].whole.GetHeader();
-    // int maxt = header.GetTrickKey();
     unsigned maxt = list[n].whole.GetTrickKey();
     if (seen[maxt])
       continue;
@@ -184,8 +182,6 @@ void MoveList::CountRankCombos()
 
   for (int n = 0; n < numEntries; n++)
   {
-    // Header& header = list[n].whole.GetHeader();
-    // int maxt = header.GetRankKey();
     unsigned maxt = list[n].whole.GetRankKey();
     if (seen[maxt])
       continue;
@@ -208,8 +204,6 @@ void MoveList::CountCaseCombos()
 
   for (int n = 0; n < numEntries; n++)
   {
-    // Header& header = list[n].whole.GetHeader();
-    // unsigned maxt = header.GetKeyNew();
     unsigned maxt = list[n].whole.GetKeyNew();
     unsigned d = maxt & 0xf;
     unsigned a = maxt >> 4;
@@ -262,9 +256,6 @@ void MoveList::PrintMoveList(
 void MoveList::PrintMoveListByKeys(
   ostream& fout)
 {
-  int movesSeen = 0;
-  // Header h;
-
   const string divider(52, '=');
   for (int key = 0; key < ML_MAXKEY; key++)
   {
@@ -273,7 +264,6 @@ void MoveList::PrintMoveListByKeys(
       continue;
 
     lp->wholep->GetHeader().PrintKey(fout, key);
-    // fout << "====================================================\n\n";
     fout << divider << "\n\n";
 
     while (lp)
@@ -291,7 +281,6 @@ void MoveList::PrintMove(
 {
   const string divider(52, '-');
   out << divider << "\n";
-  // out << "----------------------------------------------------\n";
   out << "Entry " << n << " of " << numEntries-1 << " (" <<
     moveCount[n] << " times, len " <<
     list[n].suitLengthExample <<

@@ -299,6 +299,12 @@ void DefList::MergeSides(
   // the view that it is nice to merge those entries that are the
   // same except for the starting point.  The rest are concatenated.
 
+  if (def2.len == 0)
+  {
+    * this = def1;
+    return;
+  }
+
   assert(def1.len > 0);
   assert(def2.len > 0);
 
@@ -445,6 +451,7 @@ void DefList::Print(
     out << setw(0) << text << "\n";
 
   out << 
+      right <<
       setw(4) << "Def" << 
       setw(6) << "Alt" << 
       setw(6) << "No" << 

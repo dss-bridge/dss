@@ -1,49 +1,38 @@
-14982, 24623 9148
+14982, 01750 9148
 average 4.4823, Gini 0.4839, number 5218
-
-// 14982, 06906 8962
-// 14953, 52390 8934
-// 15062, 60763 8975
-// 16487, 20845 10094
 
 Remove GetKeyNew and GetKey
 Change internal data structure of Header
 Find bounds in Header on new internal data
 Experiment with hashes, also end
 
+Const errors
+------------
+12, 0x3a4245
+    A985
+K        T643
+    QJ7
+
+Somehow the recursion yields
+
+BP37 + AA1- or PA3J
+BB3J
+
+whereas BB3J seems right.
+
+
 Thoughts on two-move data structure
 -----------------------------------
-ListEntry gets *defp1, *defp2, no1, no1, *next.
-singleType should probably have a *listp (to a ListEntry),
-  not a *defp.
-PrintMove* should go by sl, c.
-DefList::PrintMove: would be nice to have a two-move format.
-AddMoves always gets two moves, of which one may be NULL.
-MoveList has 3 different hashes.
+Modify DefList::MergeSides and WholeMove to keep moves separate.
 
-Should def1 have only QT_ACE, def2 only QT_PARD?  Would be nice.
+Do merge them in GetCombinedMove, but hopefully not that complex,
+as at most 10 cards.
 
-ListEntry might become an object.
-We can set it with two defense -- it might or might not merge them.
-We can query for tricks and ranks, perhaps.
+Look at counts of moves and #d, #a.
+Reduce size of arrays.
 
+Can have individual hash functions, or smaller ones, for each type.
 
-
-DONE
-====
-TrickList.{cpp,h}
-Trick.{cpp,h}
-Segment.{cpp,h}
-AltList.{cpp,h}
-AltMatrix1D.{cpp,h}
-AltMatrix2D.{cpp,h}
-Header.{cpp,h}
-
-TODO (core)
-====
-DefList.{cpp,h}
-- MergeSides
-- Effect on GetHeader and GetKey
 
 PLAN
 ====
