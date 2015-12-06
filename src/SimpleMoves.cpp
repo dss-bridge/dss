@@ -61,7 +61,7 @@ void MakeMovesSimple()
             100. * c / SDS_NUMSINGLES[sl] << "%)" << endl;
       }
 
-      if (singles[sl][c].defp)
+      if (singles[sl][c].wholep)
         continue;
 
       holding.Set(sl, c);
@@ -91,8 +91,8 @@ void MakeMovesSimple()
           start = (lenPard ? QT_BOTH : QT_ACE);
           trick.Set(start, QT_ACE, r, lenAce);
           def.Set1(trick);
-          DefList * defp = moveList.AddMoves(def, holding, newFlag);
-          SetAllPermutations(sl, c, defp, holding, r, 
+          WholeMove * wholep = moveList.AddMoves(def, holding, newFlag);
+          SetAllPermutations(sl, c, wholep, holding, r, 
             HIST_ACE_SHORT, newFlag);
         }
         else
@@ -121,15 +121,15 @@ void MakeMovesSimple()
           trick2.Set(QT_PARD, QT_PARD, r, static_cast<unsigned>(t));
           def.Set2(trick, trick2);
 
-          DefList * defp = moveList.AddMoves(def, holding, newFlag);
-          SetAllPermutations(sl, c, defp, holding, rmin, 
+          WholeMove * wholep = moveList.AddMoves(def, holding, newFlag);
+          SetAllPermutations(sl, c, wholep, holding, rmin, 
             HIST_BLOCKED, newFlag);
         }
       }
 
       if (singles[sl][c].minLen == 0)
       {
-        if (! singles[sl][c].defp)
+        if (! singles[sl][c].wholep)
         {
           // Partner is void.  Cash maximum from aceholder.
           //
@@ -147,8 +147,8 @@ void MakeMovesSimple()
 
           trick.Set(QT_ACE, QT_ACE, r, static_cast<unsigned>(t));
           def.Set1(trick);
-          DefList * defp = moveList.AddMoves(def, holding, newFlag);
-          SetAllPermutations(sl, c, defp, holding, r, 
+          WholeMove * wholep = moveList.AddMoves(def, holding, newFlag);
+          SetAllPermutations(sl, c, wholep, holding, r, 
             HIST_PARD_VOID, newFlag);
         }
 
@@ -277,7 +277,7 @@ if (! singles[8][0x8af].defp)
         {
           // This also takes care of the surely-blocked flips from above.
           int cNew = holding.FlipTops(numTops, nMask);
-          if (singles[sl][cNew].defp)
+          if (singles[sl][cNew].wholep)
             continue;
 
           hNew.Set(sl, cNew);
@@ -301,9 +301,9 @@ if (! singles[8][0x8af].defp)
 
             r = Min(brank, rrank);
             r = Min(r, crank);
-            DefList * defp = moveList.AddMoves(def, hNew, newFlag);
+            WholeMove * wholep = moveList.AddMoves(def, hNew, newFlag);
 
-            SetAllLowCards(sl, cNew, defp, hNew, r, 
+            SetAllLowCards(sl, cNew, wholep, hNew, r, 
               HIST_CRASH, newFlag);
 	  }
 	  else if (rtricks <= 0)
@@ -313,9 +313,9 @@ if (! singles[8][0x8af].defp)
         
             r = Min(brank, rrank);
             r = Min(r, crank);
-            DefList * defp = moveList.AddMoves(def, hNew, newFlag);
+            WholeMove * wholep = moveList.AddMoves(def, hNew, newFlag);
 
-            SetAllLowCards(sl, cNew, defp, hNew, r, HIST_CRASH, newFlag);
+            SetAllLowCards(sl, cNew, wholep, hNew, r, HIST_CRASH, newFlag);
 	  }
           else
           {
@@ -356,8 +356,8 @@ if (! singles[8][0x8af].defp)
         
             r = Min(brank, rrank);
             r = Min(r, crank);
-            DefList * defp = moveList.AddMoves(def, hNew, newFlag);
-            SetAllPermutations(sl, cNew, defp, hNew, r, 
+            WholeMove * wholep = moveList.AddMoves(def, hNew, newFlag);
+            SetAllPermutations(sl, cNew, wholep, hNew, r, 
               HIST_CRASH, newFlag);
           }
         }
@@ -376,7 +376,7 @@ if (pl && singles[8][0x8af].defp)
 */
       }
 
-      if (singles[sl][c].defp)
+      if (singles[sl][c].wholep)
         continue;
 
       if (holding.SolveStopped(move))
@@ -393,8 +393,8 @@ if (pl && singles[8][0x8af].defp)
         def.Set1(trick);
 
         // def.Set(move.start, move.end, move.rank, move.tricks);
-        DefList * defp = moveList.AddMoves(def, holding, newFlag);
-        SetAllPermutations(sl, c, defp, holding, move.rank, 
+        WholeMove * wholep = moveList.AddMoves(def, holding, newFlag);
+        SetAllPermutations(sl, c, wholep, holding, move.rank, 
           HIST_SINGLE, newFlag);
       }
       else if (holding.CashoutBoth(def, r))
@@ -404,7 +404,7 @@ if (pl && singles[8][0x8af].defp)
 // cout << "--- end ---\n";
         // Suits such as AQx / Kx.
 
-        DefList * defp = moveList.AddMoves(def, holding, newFlag);
+        WholeMove * wholep = moveList.AddMoves(def, holding, newFlag);
 /*
 if (pl && singles[8][0x3a0a].defp)
 {
@@ -414,7 +414,7 @@ if (pl && singles[8][0x3a0a].defp)
   assert(false);
 }
 */
-        SetAllPermutations(sl, c, defp, holding, r, 
+        SetAllPermutations(sl, c, wholep, holding, r, 
           HIST_CASHES, newFlag);
       }
     }
@@ -455,24 +455,24 @@ void UpdateHist(
 
 
 void CompareRecurse(
-  DefList& def,
+  WholeMove& whole,
   Holding& holding,
   const int histNo)
 {
 #ifdef DEBUG_SIMPLE
-  DefList defCmp;
+  WholeMove wholeCmp;
 
-  MakeComplexSingleMove(holding, defCmp);
+  MakeComplexSingleMove(holding, wholeCmp);
 
-  if (def != defCmp)
+  if (wholeCmp != whole)
   {
     cout << "CompareRecurse error: histogram " << histNo <<
       ", " << HIST_NAMES[histNo] << "\n";
-    holding.PrintNew(cout);
+    holding.Print(cout);
     cout.flush();
-    def.Print(cout);
+    whole.Print(cout);
     cout.flush();
-    defCmp.Print(cout);
+    wholeCmp.Print(cout);
     cout.flush();
 
 // debugComplex = true;

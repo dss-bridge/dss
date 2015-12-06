@@ -18,6 +18,7 @@
 #include "Holding.h"
 #include "DefList.h"
 #include "Hash.h"
+#include "WholeMove.h"
 
 #define POOLSIZE 16000
 
@@ -33,14 +34,14 @@ class MoveList
 
     struct ListEntry
     {
-      DefList * defp;
+      WholeMove * wholep;
       int no;
       ListEntry * next;
     };
 
     struct SuitListEntry
     {
-      DefList def;
+      WholeMove whole;
       int suitLengthExample;
       int counterExample;
     };
@@ -67,8 +68,13 @@ class MoveList
 
     ~MoveList();
 
-    DefList * AddMoves(
+    WholeMove * AddMoves(
       DefList& sm, 
+      const Holding& holding,
+      bool& newFlag);
+
+    WholeMove * AddMoves(
+      WholeMove &whole,
       const Holding& holding,
       bool& newFlag);
 

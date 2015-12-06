@@ -64,6 +64,9 @@ class Holding
       int& maskFull,
       int& cFlipped);
 
+    void ToText(
+      std::ostream&) const;
+
   protected:
 
     unsigned suitLength;
@@ -137,12 +140,9 @@ class Holding
       const int numTops,
       const int nMask);
 
-    void Print() const;
-    void ToText(
-      std::ostringstream&) const;
-
-    void PrintNew(
-      std::ostream& pout) const;
+    void Print(
+      std::ostream& out = std::cout,
+      const bool showBinary = true) const;
 
     void PrintRanks() const;
     

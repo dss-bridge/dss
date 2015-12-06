@@ -470,13 +470,13 @@ bool Segment::Fix11(
 
           AA  AP  AB  PA  PP  PB  BA  BP  BB (old, t1)
         +-----------------------------------
-     AA |  -   -  C0   -   -  C2  CA  C8  -
+     AA |  -   -  C0   -   -   -  CA  C8  -
      AP |  -   -  C0   -   -  C2   -  C8  -
-     AB | C1  C1   -  C2  C2  C2  C9  C8 CB
+     AB | C1  C1   -  C2   -  C2  C9  C8 CB
         |
      PA |  -   -  C2   -   -  C0  C8   -  -
-     PP |  -   -  C2   -   -  C0  C8  CA  -
-     PB | C2  C2  C2  C1  C1   -  C8  C9 CB
+     PP |  -   -   -   -   -  C0  C8  CA  -
+     PB |  -  C2  C2  C1  C1   -  C8  C9 CB
         |
      BA | CA   -  C9  C8  C8  C8   - C35 C67
      BP | C8  C8  C8   -  CA  C9 C35   - C67

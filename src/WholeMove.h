@@ -10,6 +10,7 @@
 #ifndef SDS_WHOLEMOVE_H
 #define SDS_WHOLEMOVE_H
 
+#include <iostream>
 #include "DefList.h"
 
 
@@ -22,12 +23,53 @@ class WholeMove
 
   public:
 
+    friend class MoveList;
+
     WholeMove();
 
     ~WholeMove();
 
     void Reset();
 
+    void Add(
+      const DefList& res1);
+
+    void Add(
+      DefList& res1,
+      DefList& res2);
+
+    bool operator == (
+      const DefList& def);
+
+    bool operator == (
+      const WholeMove& whole2);
+
+    bool operator != (
+      const WholeMove& whole2);
+
+    Header& GetHeader();
+
+    DefList& GetCombinedMove();
+
+    unsigned GetKeyNew();
+
+    unsigned GetTrickKey();
+
+    unsigned GetRankKey();
+
+    unsigned GetMaxRank();
+
+    void Print(
+      std::ostream& out = std::cout) const;
+
+};
+
+struct singleType
+{
+  WholeMove * wholep;
+  unsigned char declLen;
+  unsigned char minLen;
+  unsigned char oppLen;
 };
 
 #endif

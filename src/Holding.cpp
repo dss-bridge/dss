@@ -878,24 +878,18 @@ unsigned Holding::ListToRank(const int listValue)
   
 }
 
-void Holding::Print() const
+void Holding::Print(
+  ostream& out,
+  const bool showBinary) const
 {
-assert(false);
-}
-
-
-void Holding::PrintNew(
-  std::ostream& pout) const
-{
-  ostringstream out;
+  if (showBinary)
+    out << "sl " << suitLength << " c " << hex << counter << dec << "\n";
   Holding::ToText(out);
-
-  pout << "sl " << suitLength <<
-    " c " << hex << counter << dec << "\n" << out.str();
 }
 
 
-void Holding::ToText(std::ostringstream& out) const
+void Holding::ToText(
+  ostream& out) const
 {
   assert(suitLength < 14);
 

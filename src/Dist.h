@@ -16,7 +16,7 @@ void SetChain();
 void SetAllLowCards(
   const int& suitLength,
   const int& counter,
-  DefList * def,
+  WholeMove * wholep,
   Holding& holding,
   const int rank,
   const int histNo,

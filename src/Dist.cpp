@@ -100,7 +100,7 @@ void SetChain();
 void SetAllLowCards(
   const int& suitLength,
   const int& counter,
-  DefList * defp,
+  WholeMove * wholep,
   Holding& holding,
   const int rank,
   int histNo,
@@ -167,7 +167,7 @@ int histCycles[10000] = {0};
 void SetAllLowCards(
   const int& suitLength,
   const int& counter,
-  DefList * defp,
+  WholeMove * wholep,
   Holding& holding,
   const int rank,
   int histNo,
@@ -183,9 +183,9 @@ void SetAllLowCards(
 
   if (numXes == 1)
   {
-    singles[suitLength][counter].defp = defp;
+    singles[suitLength][counter].wholep = wholep;
     UpdateHist(histNo, suitLength, counter, rank, newFlag);
-    CompareRecurse(* defp, holding, histNo);
+    CompareRecurse(* wholep, holding, histNo);
     histCycles[1]++;
 
     return;
@@ -206,25 +206,25 @@ void SetAllLowCards(
 
     Holding htmp;
     htmp.Set(suitLength, c);
-    // htmp.PrintNew();
+    // htmp.Print();
     // cout << "\n";
 
-    if (! singles[suitLength][c].defp)
+    if (! singles[suitLength][c].wholep)
     {
-      singles[suitLength][c].defp = defp;
+      singles[suitLength][c].wholep = wholep;
       if (! wasNew)
       {
         UpdateHist(histNo, suitLength, c, rank, newFlag);
         wasNew = true;
       }
-      // CompareRecurse(* defp, htmp, histNo);
+      // CompareRecurse(* wholep, htmp, histNo);
       num++;
     }
     else
     {
       Holding htmp2;
       htmp2.Set(suitLength, c);
-      htmp2.PrintNew(cout);
+      htmp2.Print(cout);
       cout << endl;
       assert(false);
     }
@@ -266,7 +266,7 @@ void PrintDist()
       {
         Holding holding;
         holding.Set(d+1, r);
-        holding.PrintNew(cout);
+        holding.Print(cout);
         cout << "\n";
 
         r = chain[d][r].next;

@@ -7,17 +7,13 @@
 */
 
 
-// #include <iostream>
 #include <sstream>
-// #include <iomanip>
-// #include <string>
 #include <algorithm>
 
 using namespace std;
 
 #include <assert.h>
 
-// #include "portab.h"
 #include "cst.h"
 #include "MoveList.h"
 #include "misc.h"
@@ -44,15 +40,17 @@ MoveList::~MoveList()
 }
 
 
-DefList * MoveList::AddMoves(
+WholeMove * MoveList::AddMoves(
   DefList& def, 
   const Holding& holding, 
   bool& newFlag)
 {
+  // WholeMove whole;
+  // whole.Add(def);
+  // return MoveList::AddMoves(whole, holding, newFlag);
+
   Header& hp = def.GetHeader();
-
   unsigned key = hash.GetKey(hp);
-
 
   ListEntry * lp = index[key];
   newFlag = false;
@@ -67,10 +65,10 @@ DefList * MoveList::AddMoves(
   {
     while (lp)
     {
-      if (def == *(lp->defp))
+      if (def == lp->wholep->def1)
       {
         moveCount[lp->no]++;
-        return lp->defp;
+        return lp->wholep;
       }
 
       if (! lp->next)
@@ -94,11 +92,67 @@ DefList * MoveList::AddMoves(
   lp->no = numEntries;
   list[numEntries].suitLengthExample = holding.GetSuitLength();
   list[numEntries].counterExample = holding.GetCounter();
-  lp->defp = &list[numEntries++].def;
-  *(lp->defp) = def;
+  lp->wholep = &list[numEntries++].whole;
+  lp->wholep->Add(def);
   lp->next = nullptr;
 
-  return lp->defp;
+  return lp->wholep;
+}
+
+
+WholeMove * MoveList::AddMoves(
+  WholeMove& whole,
+  const Holding& holding, 
+  bool& newFlag)
+{
+  Header& hp = whole.GetHeader();
+  unsigned key = hash.GetKey(hp);
+
+  ListEntry * lp = index[key];
+  newFlag = false;
+
+  if (lp == nullptr)
+  {
+    index[key] = new ListEntry;
+    lp = index[key];
+    newFlag = true;
+  }
+  else
+  {
+    while (lp)
+    {
+      if (whole == *(lp->wholep))
+      {
+        moveCount[lp->no]++;
+        return lp->wholep;
+      }
+
+      if (! lp->next)
+      {
+        lp->next = new ListEntry;
+        newFlag = true;
+        lp = lp->next;
+        break;
+      }
+      lp = lp->next;
+    }
+  }
+
+  assert(numEntries < POOLSIZE);
+
+  if (newFlag)
+    indexCount[key]++;
+
+  moveCount[numEntries]++;
+
+  lp->no = numEntries;
+  list[numEntries].suitLengthExample = holding.GetSuitLength();
+  list[numEntries].counterExample = holding.GetCounter();
+  lp->wholep = &list[numEntries++].whole;
+  *(lp->wholep) = whole;
+  lp->next = nullptr;
+
+  return lp->wholep;
 }
 
 
@@ -109,8 +163,9 @@ void MoveList::CountTrickCombos()
 
   for (int n = 0; n < numEntries; n++)
   {
-    Header& header = list[n].def.GetHeader();
-    int maxt = header.GetTrickKey();
+    // Header& header = list[n].whole.GetHeader();
+    // int maxt = header.GetTrickKey();
+    unsigned maxt = list[n].whole.GetTrickKey();
     if (seen[maxt])
       continue;
 
@@ -129,8 +184,9 @@ void MoveList::CountRankCombos()
 
   for (int n = 0; n < numEntries; n++)
   {
-    Header& header = list[n].def.GetHeader();
-    int maxt = header.GetRankKey();
+    // Header& header = list[n].whole.GetHeader();
+    // int maxt = header.GetRankKey();
+    unsigned maxt = list[n].whole.GetRankKey();
     if (seen[maxt])
       continue;
 
@@ -152,8 +208,9 @@ void MoveList::CountCaseCombos()
 
   for (int n = 0; n < numEntries; n++)
   {
-    Header& header = list[n].def.GetHeader();
-    unsigned maxt = header.GetKeyNew();
+    // Header& header = list[n].whole.GetHeader();
+    // unsigned maxt = header.GetKeyNew();
+    unsigned maxt = list[n].whole.GetKeyNew();
     unsigned d = maxt & 0xf;
     unsigned a = maxt >> 4;
     histd[d]++;
@@ -166,7 +223,7 @@ void MoveList::CountCaseCombos()
     seen[maxt] = 1;
   }
 
-  cout << "Case count: " << count << "\n";
+  cout << "Case count: " << count << right << "\n";
 
   cout << "Defense histogram\n";
   for (int i = 0; i < LENCASE; i++)
@@ -206,16 +263,18 @@ void MoveList::PrintMoveListByKeys(
   ostream& fout)
 {
   int movesSeen = 0;
-  Header h;
+  // Header h;
 
+  const string divider(52, '=');
   for (int key = 0; key < ML_MAXKEY; key++)
   {
     ListEntry * lp = index[key];
     if (lp == nullptr)
       continue;
 
-    lp->defp->GetHeader().PrintKey(fout, key);
-    fout << "====================================================\n\n";
+    lp->wholep->GetHeader().PrintKey(fout, key);
+    // fout << "====================================================\n\n";
+    fout << divider << "\n\n";
 
     while (lp)
     {
@@ -227,63 +286,41 @@ void MoveList::PrintMoveListByKeys(
 
 
 void MoveList::PrintMove(
-  ostream& fout,
+  ostream& out,
   const int n)
 {
-  fout << "----------------------------------------------------\n";
-  fout << "Entry " << n << " of " << numEntries-1 << " (" <<
+  const string divider(52, '-');
+  out << divider << "\n";
+  // out << "----------------------------------------------------\n";
+  out << "Entry " << n << " of " << numEntries-1 << " (" <<
     moveCount[n] << " times, len " <<
     list[n].suitLengthExample <<
     ", counter " <<
     hex << list[n].counterExample << dec << "):\n\n";
 
-  ostringstream out;
   Holding holding;
   holding.Set(list[n].suitLengthExample, list[n].counterExample);
-  holding.ToText(out);
-  fout << out.str() << "\n";
+  holding.Print(out, false);
+  out << right << "\n";
 
-  Header& hp = list[n].def.GetHeader();
-  hp.Print(fout, true);
-  fout << "\n";
+  Header& hp = list[n].whole.GetHeader();
+  hp.Print(out, true);
+  out << "\n";
 
-  list[n].def.Print(fout);
+  list[n].whole.Print(out);
 }
 
 
 void MoveList::PrintMoveStats(
   ostream& out)
 {
-  SortEntry sortList[POOLSIZE], tmp;
-
+  SortEntry sortList[POOLSIZE];
   for (int i = 0; i < numEntries; i++)
   {
     sortList[i].no = i;
     sortList[i].count = moveCount[i];
   }
-
-  // Simple bubble sort.
   sort(sortList, sortList + numEntries, SortIsGreater);
-  /*
-  int n = numEntries;
-  do
-  {
-    int new_n = 0;
-    for (int i = 1; i < n; i++)
-    {
-      if (sortList[i-1].count > sortList[i].count) 
-        continue;
-
-      tmp = sortList[i-1];
-      sortList[i-1] = sortList[i];
-      sortList[i] = tmp;
-
-      new_n = i;
-    }
-    n = new_n;
-  }
-  while (n > 0);
-  */
 
   out << "Sorted move counts\n\n";
   for (int i = 0; i < numEntries; i++)
@@ -299,7 +336,6 @@ void MoveList::PrintListStats(
   ostream& out)
 {
   int p = 0;
-  int mm = ML_MAXKEY;
   int clist[1 << 14] = {0};
 
   double ssum = 0., sumsq = 0.;
@@ -307,7 +343,7 @@ void MoveList::PrintListStats(
   out << "Hash counts\n\n";
   out << " k   count\n";
     
-  for (int key = 0; key < mm; key++)
+  for (int key = 0; key < ML_MAXKEY; key++)
   {
     int i = indexCount[key];
     if (i == 0)
@@ -325,28 +361,6 @@ void MoveList::PrintListStats(
     return;
 
   sort(clist, clist + p);
-  // Simple bubble sort.
-  /*
-  int n = p;
-  int tmp;
-  do
-  {
-    int new_n = 0;
-    for (int i = 1; i < n; i++)
-    {
-      if (clist[i-1] < clist[i]) 
-        continue;
-
-      tmp = clist[i-1];
-      clist[i-1] = clist[i];
-      clist[i] = tmp;
-
-      new_n = i;
-    }
-    n = new_n;
-  }
-  while (n > 0);
-  */
 
   double sum = 0., psum = 0.;
   for (int i = 0; i < p; i++)

@@ -38,6 +38,12 @@ void DefList::Reset()
 }
 
 
+bool DefList::IsEmpty()
+{
+  return (len == 0);
+}
+
+
 bool DefList::Set1(
   const Trick& trick)
 {

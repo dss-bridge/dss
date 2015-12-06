@@ -113,7 +113,7 @@ cout << "sizeof(bool) " << sizeof(bool) << "\n";
   holding.PrintNew(cout);
   cout.flush();
 
-  DefList def0;
+  WholeMove whole0;
 
   debugComplex = true;
   debugDefList = true;
@@ -121,7 +121,7 @@ cout << "sizeof(bool) " << sizeof(bool) << "\n";
   debugAltList = true;
   MakeComplexSingleMove(holding, def0);
   cout << "Solving directly with no tables:\n";
-  def0.Print(cout);
+  whole0.Print();
 
   cout << "Looking up:\n";
 
@@ -172,22 +172,22 @@ debugComplex = false;
 debugDefList = false;
 debugAltList = false;
 MakeMovesSimple();
-singles[suitLengthArg][counterArg].defp = nullptr;
+singles[suitLengthArg][counterArg].wholep = nullptr;
 debugComplex = true;
 debugDefList = true;
 debugAltList = true;
 
     Holding holding2;
     holding2.Set(suitLengthArg, counterArg);
-    holding2.PrintNew(cout);
+    holding2.Print(cout);
     
-    if (singles[suitLengthArg][counterArg].defp)
-      singles[suitLengthArg][counterArg].defp->Print(cout);
+    if (singles[suitLengthArg][counterArg].wholep)
+      singles[suitLengthArg][counterArg].wholep->Print();
     else
     {
-      DefList def;
+      WholeMove whole;
 
-      MakeComplexSingleMove(holding2, def);
+      MakeComplexSingleMove(holding2, whole);
     }
   }
   else if (noOfCores > 1)
@@ -463,7 +463,7 @@ void SetLengths()
         count[tmp & 3]++;
         tmp >>= 2;
       }
-      singles[sl][c].defp = nullptr;
+      singles[sl][c].wholep = nullptr;
       singles[sl][c].declLen = (count[0] >= count[2] ? count[0] : count[2]);
       singles[sl][c].minLen = (count[0] <= count[2] ? count[0] : count[2]);
       singles[sl][c].oppLen = (count[1] >= count[3] ? count[1] : count[3]);

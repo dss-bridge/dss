@@ -46,6 +46,8 @@ class DefList
 
     void Reset();
 
+    bool IsEmpty();
+
     bool Set1(
       const Trick& trick);
 
@@ -82,17 +84,8 @@ class DefList
       DefList& def2);
 
     void Print(
-      std::ostream& out,
+      std::ostream& out = std::cout,
       const std::string& text = "") const;
-};
-
-
-struct singleType
-{
-  DefList * defp;
-  unsigned char declLen;
-  unsigned char minLen;
-  unsigned char oppLen;
 };
 
 #endif
