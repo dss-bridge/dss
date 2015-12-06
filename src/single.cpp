@@ -94,7 +94,7 @@ int main(int argc, char * argv[])
 
 setTTlist();
 
-#if 0
+#if 1
 
 cout << "sizeof(def) " << sizeof(DefList) << "\n";
 cout << "sizeof(Header) " << sizeof(Header) << "\n";
