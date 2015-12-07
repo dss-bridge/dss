@@ -46,9 +46,15 @@ class AltMatrix2D
       const bool has[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
       const bool active[],
       const unsigned len,
-      bool hasSum[]);
+      bool hasSum[],
+      const bool verifyFlag);
 
     cmpDetailType ComparePartial(
+      const cmpDetailType diff,
+      const cmpDetailType winX,
+      const cmpDetailType winY);
+
+    cmpDetailType ComparePartialDeclarer(
       const cmpDetailType diff,
       const cmpDetailType winX,
       const cmpDetailType winY);
@@ -88,9 +94,14 @@ class AltMatrix2D
     void PurgeY(
       const unsigned y);
 
-    void Verify();
+    void Verify(
+      const bool verifyFlag = true);
 
     cmpDetailType Compare();
+
+    cmpDetailType CompareDeclarer();
+
+    cmpDetailType CompareHard();
 
     bool CandList(
       const posType side,

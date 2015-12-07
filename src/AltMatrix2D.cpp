@@ -123,7 +123,8 @@ void AltMatrix2D::VerifyVector(
   const bool has[SDS_MAX_ALT][SDS_HEADER_CMP_SIZE],
   const bool active[],
   const unsigned len,
-  bool hasSum[])
+  bool hasSum[],
+  bool verifyFlag)
 {
   for (unsigned i = 0; i < len; i++)
   {
@@ -139,8 +140,11 @@ void AltMatrix2D::VerifyVector(
           has[i][SDS_HEADER_RANK_NEW_BETTER] ||
           has[i][SDS_HEADER_SAME])
       {
-        AltMatrix2D::Print(cerr, "Verify error I");
-	assert(false);
+        if (verifyFlag)
+        {
+          AltMatrix2D::Print(cerr, "Verify error I");
+	  assert(false);
+        }
       }
 
       if (has[i][SDS_HEADER_PLAY_OLD_BETTER])
@@ -154,8 +158,11 @@ void AltMatrix2D::VerifyVector(
     {
       if (has[i][SDS_HEADER_SAME])
       {
-        AltMatrix2D::Print(cerr, "Verify error II");
-	assert(false);
+        if (verifyFlag)
+        {
+          AltMatrix2D::Print(cerr, "Verify error II");
+	  assert(false);
+        }
       }
 
       if (has[i][SDS_HEADER_PLAY_NEW_BETTER])
@@ -178,7 +185,8 @@ void AltMatrix2D::VerifyVector(
 }
 
 
-void AltMatrix2D::Verify()
+void AltMatrix2D::Verify(
+  const bool verifyFlag)
 {
   AltMatrix2D::ResetVectors(hasX, activeX, numX, hasXsum);
   AltMatrix2D::ResetVectors(hasY, activeY, numY, hasYsum);
@@ -198,8 +206,8 @@ void AltMatrix2D::Verify()
     }
   }
 
-  AltMatrix2D::VerifyVector(hasX, activeX, numX, hasXsum);
-  AltMatrix2D::VerifyVector(hasY, activeY, numY, hasYsum);
+  AltMatrix2D::VerifyVector(hasX, activeX, numX, hasXsum, verifyFlag);
+  AltMatrix2D::VerifyVector(hasY, activeY, numY, hasYsum, verifyFlag);
 }
 
 
@@ -257,6 +265,26 @@ cmpDetailType AltMatrix2D::ComparePartial(
 }
 
 
+cmpDetailType AltMatrix2D::ComparePartialDeclarer(
+  const cmpDetailType diff,
+  const cmpDetailType winX,
+  const cmpDetailType winY)
+{
+  if (hasXsum[diff] && hasYsum[diff])
+    return diff;
+  else if (hasYsum[diff])
+    return (hasYsum[winY] ? diff : winX);
+  else if (hasXsum[diff])
+    return (hasXsum[winX] ? diff : winY);
+  else if (hasYsum[winY])
+    return (hasYsum[winX] ? diff : winY);
+  else if (hasXsum[winX])
+    return (hasXsum[winY] ? diff : winX);
+  else
+    return SDS_HEADER_SAME;
+}
+
+
 cmpDetailType AltMatrix2D::Compare()
 {
   AltMatrix2D::Verify();
@@ -279,6 +307,66 @@ cmpDetailType AltMatrix2D::Compare()
 
   cval = c;
   return c;
+}
+
+
+cmpDetailType AltMatrix2D::CompareDeclarer()
+{
+  AltMatrix2D::Verify(false);
+
+  bool Xdiff = (hasXsum[SDS_HEADER_PLAY_DIFFERENT] ||
+      hasXsum[SDS_HEADER_RANK_DIFFERENT]);
+  bool Ydiff = (hasYsum[SDS_HEADER_PLAY_DIFFERENT] ||
+      hasYsum[SDS_HEADER_RANK_DIFFERENT]);
+  bool Xwin = (hasXsum[SDS_HEADER_PLAY_OLD_BETTER] ||
+        hasXsum[SDS_HEADER_RANK_OLD_BETTER]);
+  bool Ywin = (hasYsum[SDS_HEADER_PLAY_NEW_BETTER] ||
+        hasYsum[SDS_HEADER_RANK_NEW_BETTER]);
+
+  // Could go deeper with the difference (play or rank).
+  if (Xdiff && Ydiff)
+    return SDS_HEADER_PLAY_DIFFERENT;
+  else if (Ydiff)
+    return (Ywin || ! Xwin ? 
+      SDS_HEADER_PLAY_DIFFERENT : SDS_HEADER_PLAY_OLD_BETTER);
+  else if (Xdiff)
+    return (Xwin || ! Ywin ? 
+      SDS_HEADER_PLAY_DIFFERENT : SDS_HEADER_PLAY_NEW_BETTER);
+  else if (Ywin)
+    return (Xwin ? SDS_HEADER_PLAY_DIFFERENT : SDS_HEADER_PLAY_NEW_BETTER);
+  else if (Xwin)
+    return (Ywin ? SDS_HEADER_PLAY_DIFFERENT : SDS_HEADER_PLAY_OLD_BETTER);
+  else
+    return SDS_HEADER_SAME;
+}
+
+
+cmpDetailType AltMatrix2D::CompareHard()
+{
+  AltMatrix2D::Verify(false);
+
+  bool Xdiff = (hasXsum[SDS_HEADER_PLAY_DIFFERENT] ||
+      hasXsum[SDS_HEADER_RANK_DIFFERENT]);
+  bool Ydiff = (hasYsum[SDS_HEADER_PLAY_DIFFERENT] ||
+      hasYsum[SDS_HEADER_RANK_DIFFERENT]);
+  bool Xwin = (hasXsum[SDS_HEADER_PLAY_OLD_BETTER] ||
+        hasXsum[SDS_HEADER_RANK_OLD_BETTER]);
+  bool Ywin = (hasYsum[SDS_HEADER_PLAY_NEW_BETTER] ||
+        hasYsum[SDS_HEADER_RANK_NEW_BETTER]);
+
+  // Could go deeper with the difference (play or rank).
+  if (Xdiff && Ydiff)
+    return SDS_HEADER_PLAY_DIFFERENT;
+  else if (Ydiff)
+    return (Xwin ? SDS_HEADER_PLAY_DIFFERENT : SDS_HEADER_PLAY_NEW_BETTER);
+  else if (Xdiff)
+    return (Ywin ? SDS_HEADER_PLAY_DIFFERENT : SDS_HEADER_PLAY_OLD_BETTER);
+  else if (Ywin)
+    return (Xwin ? SDS_HEADER_PLAY_DIFFERENT : SDS_HEADER_PLAY_NEW_BETTER);
+  else if (Xwin)
+    return (Ywin ? SDS_HEADER_PLAY_DIFFERENT : SDS_HEADER_PLAY_OLD_BETTER);
+  else
+    return SDS_HEADER_SAME;
 }
 
 

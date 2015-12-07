@@ -120,6 +120,23 @@ cmpDetailType AltList::Compare(
 }
 
 
+cmpDetailType AltList::CompareHard(
+  const AltList& aNew) const
+{
+  unsigned numOld = len;
+  unsigned numNew = aNew.len;
+
+  AltMatrix2D comp;
+  comp.SetDimensions(numOld, numNew);
+
+  for (unsigned lOld = 0; lOld < numOld; lOld++)
+    for (unsigned lNew = 0; lNew < numNew; lNew++)
+      comp.SetValue(lOld, lNew, list[lOld].Compare(aNew.list[lNew]));
+
+  return comp.CompareHard();
+}
+
+
 bool AltList::operator == (
   const AltList& alt2) const
 {

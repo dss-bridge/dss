@@ -120,6 +120,9 @@ class AltList
     cmpDetailType Compare(
       const AltList& aNew) const;
 
+    cmpDetailType CompareHard(
+      const AltList& aNew) const;
+
     bool operator == (
       const AltList& alt2) const;
 

@@ -184,7 +184,17 @@ void DefList::operator += (
   }
 
   int cc = seen[SDS_SAME] + seen[SDS_NEW_BETTER] + seen[SDS_OLD_BETTER];
-  assert(cc <= 1);
+  if (cc > 1)
+  {
+    cout << seen[SDS_SAME] << " " << 
+      seen[SDS_NEW_BETTER] << " " <<
+      seen[SDS_OLD_BETTER] << "\n";
+    DefList::Print();
+    cout << "\n";
+    alt.Print(cout, "Offending alt");
+    cout << endl;
+    assert(cc <= 1);
+  }
 
   if (cc == 1 && ! purge)
     return;
@@ -268,20 +278,53 @@ void DefList::operator *= (
     def2.Print(cout, "DefList::MergeDeclarer: new");
   }
 
-  // Make one copy.
-  unsigned oldLen = len;
-  vector<AltList> oldList(oldLen);
-  for (unsigned d = 0; d < oldLen; d++)
-    oldList[d] = list[d];
+  /*
+     If one side has > (at least once), = and no !=, AND
+     if the other side has <, = and perhaps !=, THEN
+     the first side is better.
+     Declarer will not choose the second side, as the defense
+     can then stick to the inferior ones and always do at least
+     as well.
+  */
 
-  len = 0;
+  AltMatrix2D comp;
+  comp.SetDimensions(len, def2.len);
 
-  for (unsigned dnew = 0; dnew < def2.len; dnew++)
-    for (unsigned dold = 0; dold < oldLen; dold++)
+  for (unsigned dOld = 0; dOld < len; dOld++)
+    for (unsigned dNew = 0; dNew < def2.len; dNew++)
+      comp.SetValue(dOld, dNew, list[dOld].CompareHard(def2.list[dNew]));
+
+  cmpDetailType c = comp.CompareDeclarer();
+  if (c == SDS_HEADER_PLAY_OLD_BETTER ||
+      c == SDS_HEADER_RANK_OLD_BETTER ||
+      c == SDS_HEADER_SAME)
+  {
+    // Nothing more to do.
+  }
+  else if (c == SDS_HEADER_PLAY_NEW_BETTER ||
+      c == SDS_HEADER_RANK_NEW_BETTER)
+  {
+    * this = def2;
+  }
+  else
+  {
+    // Make one copy.
+    unsigned oldLen = len;
+    vector<AltList> oldList(oldLen);
+    for (unsigned d = 0; d < oldLen; d++)
+      oldList[d] = list[d];
+
+    len = 0;
+
+    for (unsigned dnew = 0; dnew < def2.len; dnew++)
     {
-      AltList alt = oldList[dold] + def2.list[dnew];
-      * this += alt;
+      for (unsigned dold = 0; dold < oldLen; dold++)
+      {
+        AltList alt = oldList[dold] + def2.list[dnew];
+        * this += alt;
+      }
     }
+  }
 
   if (debugDefList)
     DefList::Print(cout, "DefList::MergeDeclarer after Merge");

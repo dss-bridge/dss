@@ -1,28 +1,9 @@
-14982, 01750 9148
-average 4.4823, Gini 0.4839, number 5218
+Moves   14700
+Sum     34347 8926
+Time    11:52
+Gini    0.4809, 5298
+Avg     4.3648
 
-Const errors
-------------
-12, 0x3a4245
-    A985
-K        T643
-    QJ7
-
-Somehow the recursion yields
-
-BP37 + AA1- or PA3J
-BB3J
-
-whereas BB3J seems right.
-
-In general, in MergeDeclarer (*=):
-Could cross all defenses.
-If one side has only >, = and !=, with at least one >
-AND the other side has only <, = and !=
-THEN choose the better side.
-Reason:  If we chose the other side, then the defense could
-limit itself to the moves that are not as good or equal.
-That would limit declarer to something that is not as good.
 
 single.defp should be a single number.
 In MoveList this should map to a set of numbers that are indices
