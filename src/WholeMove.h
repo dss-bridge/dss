@@ -66,7 +66,7 @@ class WholeMove
 
 struct singleType
 {
-  WholeMove * wholep;
+  unsigned moveNo;
   unsigned char declLen;
   unsigned char minLen;
   unsigned char oppLen;

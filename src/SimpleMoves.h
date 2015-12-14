@@ -24,7 +24,7 @@ void UpdateHist(
   bool newFlag);
 
 void CompareRecurse(
-  WholeMove& whole,
+  unsigned moveNo,
   Holding& Holding,
   const int histNo);
 

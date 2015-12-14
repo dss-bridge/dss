@@ -68,15 +68,24 @@ class MoveList
 
     ~MoveList();
 
-    WholeMove * AddMoves(
+    unsigned AddMoves(
       DefList& sm, 
       const Holding& holding,
       bool& newFlag);
 
-    WholeMove * AddMoves(
+    unsigned AddMoves(
       WholeMove &whole,
       const Holding& holding,
       bool& newFlag);
+
+    unsigned GetMaxRank(
+      const unsigned no);
+
+    DefList& GetCombinedMove(
+      const unsigned no);
+
+    void Print(
+      const unsigned no);
 
     void CountTrickCombos();
     void CountRankCombos();

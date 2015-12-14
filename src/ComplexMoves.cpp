@@ -119,7 +119,7 @@ void MakeComplexMoves()
     {
       for (int c = 0; c < SDS_NUMSINGLES[sl]; c++)
       {
-        if (singles[sl][c].wholep)
+        if (singles[sl][c].moveNo)
           continue;
 
         if (singles[sl][c].declLen != dlen)
@@ -137,13 +137,13 @@ void MakeComplexMoves()
         MakeComplexSingleMove(holding, sm);
 
         StartTimer();
-        singles[sl][c].wholep = moveList.AddMoves(sm, holding, newFlag);
+        singles[sl][c].moveNo = moveList.AddMoves(sm, holding, newFlag);
         EndTimer();
 
         histCount[HIST_COMPLEX][dlen]++;
         // Header& header = singles[sl][c].defp->GetHeader();
         // int r = static_cast<int>(header.GetMaxRank());
-        unsigned r = singles[sl][c].wholep->GetMaxRank();
+        unsigned r = moveList.GetMaxRank(singles[sl][c].moveNo);
         histRank[HIST_COMPLEX][r]++;
 
         if (newFlag)
@@ -161,8 +161,8 @@ void MakeComplexSingleMove(
   Holding& holding,
   WholeMove& whole)
 {
-holding.Print(cout);
-cout.flush();
+// holding.Print(cout);
+// cout.flush();
 
   DefList def1, def2;
 
@@ -249,7 +249,7 @@ bool MakeComplexTables(
     int cs = (sl == slStart ? cStart : 0);
     for (int c = 0; c < SDS_NUMSINGLES[sl]; c++)
     {
-      if (singles[sl][c].wholep)
+      if (singles[sl][c].moveNo)
         continue;
 
       if (singles[sl][c].declLen != dlen)
@@ -311,13 +311,13 @@ void MakeComplexMovesParallel()
         int sl = holdingList[i].GetSuitLength();
         int c = holdingList[i].GetCounter();
 
-        singles[sl][c].wholep = moveList.AddMoves(wholeList[i], 
+        singles[sl][c].moveNo = moveList.AddMoves(wholeList[i], 
           holdingList[i], newFlag);
 
         histCount[HIST_COMPLEX][dlen]++;
         // Header& header = singles[sl][c].defp->GetHeader();
         // int r = static_cast<int>(header.GetMaxRank());
-        unsigned r = singles[sl][c].wholep->GetMaxRank();
+        unsigned r = moveList.GetMaxRank(singles[sl][c].moveNo);
         histRank[HIST_COMPLEX][r]++;
 
         if (newFlag)
@@ -565,7 +565,7 @@ bool BestMoveAfterPard(
   assert(cNew >= 0 && cNew < SDS_NUMSINGLES[slNew]);
 
 
-  if (singles[slNew][cNew].wholep == nullptr)
+  if (singles[slNew][cNew].moveNo == 0)
   {
     Holding tmpHolding;
     tmpHolding.Set(slNew, cNew);
@@ -583,7 +583,7 @@ bool BestMoveAfterPard(
     int sl = tmpHolding.GetSuitLength();
     int c = tmpHolding.GetCounter();
     // TODO: Does tmpHolding really change in the invocation?
-    singles[sl][c].wholep = moveList.AddMoves(stmp, tmpHolding, newFlag);
+    singles[sl][c].moveNo = moveList.AddMoves(stmp, tmpHolding, newFlag);
 
     if (debugComplex)
     {
@@ -592,8 +592,8 @@ bool BestMoveAfterPard(
     }
   }
 
-  assert(singles[slNew][cNew].wholep != nullptr);
-  def = singles[slNew][cNew].wholep->GetCombinedMove();
+  assert(singles[slNew][cNew].moveNo != 0);
+  def = moveList.GetCombinedMove(singles[slNew][cNew].moveNo);
 
   if (debugComplex)
   {

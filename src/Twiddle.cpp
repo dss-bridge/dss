@@ -107,7 +107,7 @@ void FillBits(
   const int cBase,
   const int compBits,
   int suitLength,
-  WholeMove * wholep,
+  unsigned moveNo,
   Holding& holding,
   const int rank,
   const int histNo,
@@ -216,7 +216,7 @@ void PrintGroupHist()
 void SetAllPermutations(
   const int& suitLength,
   const int& counter,
-  WholeMove * wholep,
+  unsigned moveNo,
   Holding& holding,
   const int rank,
   const int histNo,
@@ -268,14 +268,14 @@ histGroup[numGroups]++;
 // if (histNo == HIST_CRASH)
 // if (histNo == HIST_SINGLE)
 // if (histNo == HIST_CASHES)
-  // CompareRecurse(* wholep, holding, histNo);
+  CompareRecurse(moveNo, holding, histNo);
 
   if (numGroups == 0)
   {
 nSet++;
-    singles[suitLength][counter].wholep = wholep;
+    singles[suitLength][counter].moveNo = moveNo;
     UpdateHist(histNo, suitLength, counter, rank, newFlag);
-    // CompareRecurse(* wholep, holding, histNo);
+    // CompareRecurse(moveNo, holding, histNo);
     return;
   }
 
@@ -292,7 +292,7 @@ nSet++;
 
   // Cycle recursively through the groups.
   FillBits(group, 0, numGroups, cBase, 0, 
-    suitLength, wholep, holding, rank, histNo, newFlag);
+    suitLength, moveNo, holding, rank, histNo, newFlag);
 }
 
 
@@ -303,7 +303,7 @@ void FillBits(
   const int cBase,
   const int compBits,
   int suitLength,
-  WholeMove * wholep,
+  unsigned moveNo,
   Holding& holding,
   const int rank,
   const int histNo,
@@ -339,16 +339,16 @@ void FillBits(
     if (groupNo == numGroups-1)
     {
       int c = cBase | compBits | compGroup;
-      if (! singles[suitLength][c].wholep)
+      if (singles[suitLength][c].moveNo == 0)
       {
-        singles[suitLength][c].wholep = wholep;
+        singles[suitLength][c].moveNo = moveNo;
 
         // if (histNo == HIST_CRASH)
         UpdateHist(histNo, suitLength, c, rank, newFlag);
 nSet++;
 
         // if (pnew)
-          // CompareRecurse(* wholep, holding, histNo);
+          // CompareRecurse(moveNo, holding, histNo);
         newFlag = false;
         pnew = false;
       }
@@ -356,7 +356,7 @@ nSet++;
     else
     {
       FillBits(group, groupNo+1, numGroups, cBase, compBits | compGroup,
-        suitLength, wholep, holding, rank, histNo, newFlag);
+        suitLength, moveNo, holding, rank, histNo, newFlag);
     }
 
     ret = Twiddle(x, y, z, p);

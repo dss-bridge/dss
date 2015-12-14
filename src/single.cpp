@@ -175,7 +175,7 @@ debugComplex = false;
 debugDefList = false;
 debugAltList = false;
 MakeMovesSimple();
-singles[suitLengthArg][counterArg].wholep = nullptr;
+singles[suitLengthArg][counterArg].moveNo = 0;
 debugComplex = true;
 debugDefList = true;
 debugAltList = true;
@@ -184,8 +184,8 @@ debugAltList = true;
     holding2.Set(suitLengthArg, counterArg);
     holding2.Print(cout);
     
-    if (singles[suitLengthArg][counterArg].wholep)
-      singles[suitLengthArg][counterArg].wholep->Print();
+    if (singles[suitLengthArg][counterArg].moveNo)
+      moveList.Print(singles[suitLengthArg][counterArg].moveNo);
     else
     {
       WholeMove whole;
@@ -466,7 +466,7 @@ void SetLengths()
         count[tmp & 3]++;
         tmp >>= 2;
       }
-      singles[sl][c].wholep = nullptr;
+      singles[sl][c].moveNo = 0;
       singles[sl][c].declLen = (count[0] >= count[2] ? count[0] : count[2]);
       singles[sl][c].minLen = (count[0] <= count[2] ? count[0] : count[2]);
       singles[sl][c].oppLen = (count[1] >= count[3] ? count[1] : count[3]);

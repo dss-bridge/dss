@@ -31,7 +31,7 @@ MoveList::MoveList()
   for (int i = 0; i < POOLSIZE; i++)
     moveCount[i] = 0;
 
-  numEntries = 0;
+  numEntries = 1;
 }
 
 
@@ -40,7 +40,7 @@ MoveList::~MoveList()
 }
 
 
-WholeMove * MoveList::AddMoves(
+unsigned MoveList::AddMoves(
   DefList& def, 
   const Holding& holding, 
   bool& newFlag)
@@ -68,7 +68,7 @@ WholeMove * MoveList::AddMoves(
       if (def == lp->wholep->def1)
       {
         moveCount[lp->no]++;
-        return lp->wholep;
+        return lp->no;
       }
 
       if (! lp->next)
@@ -96,11 +96,11 @@ WholeMove * MoveList::AddMoves(
   lp->wholep->Add(def);
   lp->next = nullptr;
 
-  return lp->wholep;
+  return lp->no;
 }
 
 
-WholeMove * MoveList::AddMoves(
+unsigned MoveList::AddMoves(
   WholeMove& whole,
   const Holding& holding, 
   bool& newFlag)
@@ -124,7 +124,7 @@ WholeMove * MoveList::AddMoves(
       if (whole == *(lp->wholep))
       {
         moveCount[lp->no]++;
-        return lp->wholep;
+        return lp->no;
       }
 
       if (! lp->next)
@@ -152,7 +152,28 @@ WholeMove * MoveList::AddMoves(
   *(lp->wholep) = whole;
   lp->next = nullptr;
 
-  return lp->wholep;
+  return lp->no;
+}
+
+
+unsigned MoveList::GetMaxRank(
+  const unsigned no)
+{
+  return list[no].whole.GetMaxRank();
+}
+
+
+DefList& MoveList::GetCombinedMove(
+  const unsigned no)
+{
+  return list[no].whole.GetCombinedMove();
+}
+
+
+void MoveList::Print(
+  const unsigned no)
+{
+  return list[no].whole.Print();
 }
 
 
@@ -161,7 +182,7 @@ void MoveList::CountTrickCombos()
   int seen[LENTRICK] = {0};
   int count = 0;
 
-  for (int n = 0; n < numEntries; n++)
+  for (int n = 1; n < numEntries; n++)
   {
     unsigned maxt = list[n].whole.GetTrickKey();
     if (seen[maxt])
@@ -180,7 +201,7 @@ void MoveList::CountRankCombos()
   int seen[LENRANK] = {0};
   int count = 0;
 
-  for (int n = 0; n < numEntries; n++)
+  for (int n = 1; n < numEntries; n++)
   {
     unsigned maxt = list[n].whole.GetRankKey();
     if (seen[maxt])
@@ -202,7 +223,7 @@ void MoveList::CountCaseCombos()
 
   int count = 0;
 
-  for (int n = 0; n < numEntries; n++)
+  for (int n = 1; n < numEntries; n++)
   {
     unsigned maxt = list[n].whole.GetKeyNew();
     unsigned d = maxt & 0xf;
@@ -248,7 +269,7 @@ void MoveList::PrintCount()
 void MoveList::PrintMoveList(
   ostream& out)
 {
-  for (int n = 0; n < numEntries; n++)
+  for (int n = 1; n < numEntries; n++)
     MoveList::PrintMove(out, n);
 }
 
@@ -304,15 +325,15 @@ void MoveList::PrintMoveStats(
   ostream& out)
 {
   SortEntry sortList[POOLSIZE];
-  for (int i = 0; i < numEntries; i++)
+  for (int i = 1; i < numEntries; i++)
   {
-    sortList[i].no = i;
-    sortList[i].count = moveCount[i];
+    sortList[i-1].no = i;
+    sortList[i-1].count = moveCount[i];
   }
-  sort(sortList, sortList + numEntries, SortIsGreater);
+  sort(sortList, sortList + numEntries - 1, SortIsGreater);
 
   out << "Sorted move counts\n\n";
-  for (int i = 0; i < numEntries; i++)
+  for (int i = 0; i < numEntries-1; i++)
     out <<
       setw(6) << i <<
       setw(8) << sortList[i].no <<

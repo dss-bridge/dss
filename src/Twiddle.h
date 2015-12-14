@@ -13,7 +13,7 @@
 void SetAllPermutations(
   const int& suitLength,
   const int& counter,
-  WholeMove * wholep,
+  unsigned moveNo,
   Holding& holding,
   const int rank,
   const int histNo,
