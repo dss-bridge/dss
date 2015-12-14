@@ -13,6 +13,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <map>
 
 #include "cst.h"
 #include "Holding.h"
@@ -21,6 +22,7 @@
 #include "WholeMove.h"
 
 #define POOLSIZE 16000
+#define POOLSIZE_AB 3000
 
 #define LENTRICK 4096
 #define LENRANK 65536
@@ -32,11 +34,24 @@ class MoveList
 {
   private:
 
+    struct MoveNumberStruct
+    {
+      unsigned noAB;
+      unsigned noP;
+    };
+
     struct ListEntry
     {
       WholeMove * wholep;
       int no;
       ListEntry * next;
+    };
+
+    struct ListEntrySide
+    {
+      DefList * defp;
+      int no;
+      ListEntrySide * next;
     };
 
     struct SuitListEntry
@@ -46,18 +61,49 @@ class MoveList
       int counterExample;
     };
 
+    struct SuitListEntrySide
+    {
+      DefList def;
+      int suitLengthExample;
+      int counterExample;
+    };
+
     SuitListEntry list[POOLSIZE];
+    SuitListEntrySide listSide[2][POOLSIZE]; // _AB
 
     ListEntry * index[ML_MAXKEY];
+    ListEntrySide * indexSide[2][ML_MAXKEY];
 
     int indexCount[ML_MAXKEY];
+    int indexCountSide[2][ML_MAXKEY];
 
     int moveCount[POOLSIZE];
+    unsigned moveCountSide[2][POOLSIZE]; // _AB
 
     Hash hash;
 
     int numEntries;
+    int numEntriesSide[2];
+    int numEntriesNew;
 
+    unsigned noToSideNumbers[POOLSIZE][2];
+
+    std::map<std::string, unsigned> sideMap;
+
+    unsigned PairToNo(
+      const unsigned noAB,
+      const unsigned noP);
+
+    unsigned SetPairNo(
+      const unsigned noAB,
+      const unsigned noP);
+
+    unsigned AddSideMove(
+      DefList& defSide,
+      const Holding& holding,
+      const unsigned side,
+      bool& newFlag);
+      
     void PrintMove(
       std::ostream& out,
       const int n);
@@ -75,6 +121,12 @@ class MoveList
 
     unsigned AddMoves(
       WholeMove &whole,
+      const Holding& holding,
+      bool& newFlag);
+
+    unsigned AddMoves(
+      DefList& defAB, 
+      DefList& defP, 
       const Holding& holding,
       bool& newFlag);
 
