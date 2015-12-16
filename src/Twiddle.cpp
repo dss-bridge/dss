@@ -268,7 +268,7 @@ histGroup[numGroups]++;
 // if (histNo == HIST_CRASH)
 // if (histNo == HIST_SINGLE)
 // if (histNo == HIST_CASHES)
-  CompareRecurse(moveNo, holding, histNo);
+  // CompareRecurse(moveNo, holding, histNo);
 
   if (numGroups == 0)
   {

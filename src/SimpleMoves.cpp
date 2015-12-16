@@ -428,8 +428,8 @@ if (pl && singles[8][0x3a0a].defp)
     cout << setw(4) << i << setw(10) << holdCtr[i] << "\n";
   }
 
-  cout.flush();
-  assert(false);
+  // cout.flush();
+  // assert(false);
 
 
 }

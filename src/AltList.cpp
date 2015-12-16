@@ -231,8 +231,8 @@ AltList AltList::operator + (
 }
 
 
-bool AltList::MergeSides(
-  const AltList& aNew) 
+bool AltList::CanMergeSides(
+  const AltList& aNew) const
 {
   if (len != aNew.len)
     return false;
@@ -264,23 +264,33 @@ bool AltList::MergeSides(
       {
         oldUsed[a1] = true;
         newUsed[a2] = true;
+assert(false);
 
         count++;
       }
     }
   }
 
-  if (count != len)
-    return false;
+  return (count == len);
+}
 
+
+void AltList::SetStart()
+{
   for (unsigned a = 0; a < len; a++)
-  {
-    if (oldFix[a])
-      list[a].SetStart(QT_BOTH);
-  }
+    list[a].SetStart(QT_BOTH);
 
   AltList::Reduce();
+}
 
+
+bool AltList::MergeSides(
+  const AltList& aNew) 
+{
+  if (! AltList::CanMergeSides(aNew))
+    return false;
+
+  AltList::SetStart();
   return true;
 }
 

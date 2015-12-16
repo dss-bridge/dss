@@ -135,6 +135,11 @@ class AltList
     AltList operator + (
       const AltList& aRight) const;
 
+    bool CanMergeSides(
+      const AltList& aNew) const;
+
+    void SetStart();
+
     bool MergeSides(
       const AltList& aNew);
 

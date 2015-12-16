@@ -161,8 +161,8 @@ void MakeComplexSingleMove(
   Holding& holding,
   WholeMove& whole)
 {
-// holding.Print(cout);
-// cout.flush();
+holding.Print(cout);
+cout.flush();
 
   DefList def1, def2;
 
