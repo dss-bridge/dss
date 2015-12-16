@@ -333,6 +333,121 @@ void DefList::operator *= (
 }
 
 
+bool DefList::MergeSidesSoft(
+  DefList& def1,
+  DefList& def2)
+{
+  if (def2.len == 0)
+  {
+    * this = def1;
+    return true;
+  }
+
+  if (def1.len != def2.len)
+    return false;
+
+  if (debugDefList)
+  {
+    def1.Print(cout, "DefList::MergeSidesSoft def1");
+    def2.Print(cout, "DefList::MergeSidesSoft def2");
+  }
+
+  DefList::Reset();
+
+  if (def1.len == 1 && def2.len == 1)
+  {
+    if (def1.list[0].CanMergeSides(def2.list[0]))
+    {
+      * this = def1;
+      list[0].SetStart();
+    }
+    else
+    {
+      AltList alt = def1.list[0] + def2.list[0];
+      * this += alt;
+    }
+    return true;
+  }
+
+  vector<bool> purge1(def1.len, false);
+  vector<bool> purge2(def2.len, false);
+  unsigned count = 0;
+
+  for (unsigned d2 = 0; d2 < def2.len; d2++)
+  {
+    if (purge2[d2])
+      continue;
+
+    for (unsigned d1 = 0; d1 < def1.len; d1++)
+    {
+      if (purge1[d1])
+        continue;
+
+      if (def1.list[d1].CanMergeSides(def2.list[d2]))
+      {
+        purge1[d1] = true;
+        purge2[d2] = true;
+        count++;
+
+        * this += def1.list[d1];
+
+        break;
+      }
+    }
+  }
+
+  if (count != def1.len)
+    return false;
+
+  * this = def1;
+  for (unsigned d = 0; d < len; d++)
+    list[d].SetStart();
+
+  if (debugDefList)
+    DefList::Print(cout, "DefList::MergeSidesSoft result");
+
+  return true;
+}
+
+
+void DefList::MergeSidesHard(
+  DefList& def1,
+  DefList& def2)
+{
+  // The two defenses have different starting sides.
+  // It is not clear that these should be merged.  Here we take
+  // the view that it is nice to merge those entries that are the
+  // same except for the starting point.  The rest are concatenated.
+
+  assert(def1.len > 0);
+  assert(def2.len > 0);
+
+  DefList::Reset();
+
+  if (debugDefList)
+  {
+    def1.Print(cout, "DefList::MergeSidesHard def1");
+    def2.Print(cout, "DefList::MergeSidesHard def2");
+  }
+
+  // Merge defenses as a cross product.
+
+  for (unsigned d2 = 0; d2 < def2.len; d2++)
+  {
+    for (unsigned d1 = 0; d1 < def1.len; d1++)
+    {
+      AltList alt = def1.list[d1] + def2.list[d2];
+      * this += alt;
+    }
+  }
+
+  if (debugDefList)
+    DefList::Print(cout, "DefList::MergeSidesHard result");
+
+  DefList::RegisterSize("NEWDEF5");
+}
+
+
 void DefList::MergeSides(
   DefList& def1,
   DefList& def2)

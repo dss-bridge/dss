@@ -239,7 +239,6 @@ bool AltList::CanMergeSides(
 
   vector<bool> oldUsed(len, false);
   vector<bool> newUsed(len, false);
-  vector<bool> oldFix(len, false);
   unsigned count = 0;
 
   for (unsigned a1 = 0; a1 < len; a1++)
@@ -256,16 +255,6 @@ bool AltList::CanMergeSides(
       {
         oldUsed[a1] = true;
         newUsed[a2] = true;
-        oldFix[a1] = true;
-
-        count++;
-      }
-      else if (list[a1] == aNew.list[a2])
-      {
-        oldUsed[a1] = true;
-        newUsed[a2] = true;
-assert(false);
-
         count++;
       }
     }

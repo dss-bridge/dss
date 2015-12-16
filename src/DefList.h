@@ -79,6 +79,14 @@ class DefList
 
     void operator *= (DefList& def2);
 
+    bool MergeSidesSoft(
+      DefList& def1,
+      DefList& def2);
+
+    void MergeSidesHard(
+      DefList& def1,
+      DefList& def2);
+
     void MergeSides(
       DefList& def1,
       DefList& def2);
