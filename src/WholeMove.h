@@ -20,6 +20,7 @@ class WholeMove
 
     DefList def1;
     DefList def2;
+    DefList defMerged;
 
   public:
 

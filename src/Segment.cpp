@@ -513,9 +513,7 @@ bool Segment::Fix11(
       }
     }
     else if (c == SDS_SAME &&
-        (t1.trick.end == QT_BOTH || t2.trick.end == QT_BOTH) &&
-        t1.trick.start != t1.trick.end &&
-        t2.trick.start != t2.trick.end)
+        (t1.trick.end == QT_BOTH || t2.trick.end == QT_BOTH))
     {
       // C2: AB+Ax either way, PB+Px either way,
       // when tricks and ranks are the same.
@@ -546,7 +544,6 @@ bool Segment::Fix11(
           fix2 = SDS_FIX_WEAKER;
           return true;
         case SDS_NEW_BETTER:
-          // break;
           t1.trick.start = t2.trick.end;
           fix1 = SDS_FIX_WEAKER;
           fix2 = SDS_FIX_UNCHANGED;

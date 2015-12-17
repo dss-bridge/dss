@@ -50,11 +50,6 @@ class TrickList
       const TrickList& lNew,
       CompareStruct cdata) const;
 
-    bool Fix(
-      TrickList& lOther,
-      fixType& fix1,
-      fixType& fix2);
-    
     void Split();
 
   public:
@@ -107,6 +102,11 @@ class TrickList
       const Trick& trick) const;
 
     cmpDetailType FixOrCompare(
+      TrickList& lOther,
+      fixType& fix1,
+      fixType& fix2);
+    
+    bool Fix(
       TrickList& lOther,
       fixType& fix1,
       fixType& fix2);

@@ -39,7 +39,7 @@ void AltMatrix1D::Reset()
 void AltMatrix1D::SetDimension(
   const unsigned x)
 {
-  assert(x < SDS_MAX_ALT);
+  assert(x <= SDS_MAX_ALT);
 
   num = x;
 

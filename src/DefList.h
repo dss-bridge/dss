@@ -87,10 +87,6 @@ class DefList
       DefList& def1,
       DefList& def2);
 
-    void MergeSides(
-      DefList& def1,
-      DefList& def2);
-
     void Print(
       std::ostream& out = std::cout,
       const std::string& text = "") const;

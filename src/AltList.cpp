@@ -213,16 +213,16 @@ AltList AltList::operator + (
 
   for (unsigned a2 = 0; a2 < aNew.len; a2++)
   {
-    if (! compY.IsPurged(a2))
-    {
-      assert(aOld.len < SDS_MAX_ALT);
-      aOld.list[aOld.len++] = aNew.list[a2];
-    }
+    if (compY.IsPurged(a2))
+     continue;
+
+    assert(aOld.len < SDS_MAX_ALT);
+    aOld.list[aOld.len++] = aNew.list[a2];
   }
 
   aOld.RegisterSize("NEWALT");
 
-  aOld.PurgeMulti();
+  aOld.Reduce();
 
   if (debugAltList)
     aOld.Print(cout, "AltList::++ result");

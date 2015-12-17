@@ -34,6 +34,7 @@ void WholeMove::Reset()
 {
   def1.Reset();
   def2.Reset();
+  defMerged.Reset();
 }
 
 
@@ -42,6 +43,7 @@ void WholeMove::Add(
 {
   def1 = res1;
   def2.Reset();
+  defMerged = res1;
 }
 
 
@@ -49,14 +51,24 @@ void WholeMove::Add(
   DefList& res1,
   DefList& res2)
 {
-  def1.MergeSides(res1, res2);
-  def2.Reset();
+  def1 = res1;
+  if (def1.MergeSidesSoft(res1, res2))
+  {
+    def2.Reset();
+    defMerged = def1;
+  }
+  else
+  {
+    def2 = res2;
+    defMerged.MergeSidesHard(res1, res2);
+  }
 }
 
 
 bool WholeMove::operator == (
   const DefList& def)
 {
+assert(false);
   if (! def2.IsEmpty())
     return false;
   else
@@ -80,41 +92,40 @@ bool WholeMove::operator != (
 
 Header& WholeMove::GetHeader()
 {
-  return def1.GetHeader();
+  return defMerged.GetHeader();
 }
 
 
 DefList& WholeMove::GetCombinedMove()
 {
-  // Later on this will have to call MergeSides, forcing a merge.
-  return def1;
+  return defMerged;
 }
 
 
 unsigned WholeMove::GetKeyNew() 
 {
-  Header& header = def1.GetHeader();
+  Header& header = defMerged.GetHeader();
   return header.GetKeyNew();
 }
 
 
 unsigned WholeMove::GetTrickKey() 
 {
-  Header& header = def1.GetHeader();
+  Header& header = defMerged.GetHeader();
   return header.GetTrickKey();
 }
 
 
 unsigned WholeMove::GetRankKey()
 {
-  Header& header = def1.GetHeader();
+  Header& header = defMerged.GetHeader();
   return header.GetRankKey();
 }
 
 
 unsigned WholeMove::GetMaxRank()
 {
-  Header& header = def1.GetHeader();
+  Header& header = defMerged.GetHeader();
   return header.GetMaxRank();
 }
 
@@ -122,6 +133,5 @@ unsigned WholeMove::GetMaxRank()
 void WholeMove::Print(
   ostream& out) const
 {
-  def1.Print(out);
-  // def2.Print(out);
+  defMerged.Print(out);
 }
