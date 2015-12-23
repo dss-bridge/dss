@@ -94,7 +94,7 @@ int main(int argc, char * argv[])
 
 setTTlist();
 
-#if 0
+#if 1
 
 cout << "sizeof(def) " << sizeof(DefList) << "\n";
 cout << "sizeof(Header) " << sizeof(Header) << "\n";
@@ -105,7 +105,9 @@ cout << "sizeof(Trick) " << sizeof(Trick) << "\n";
 cout << "sizeof(bool) " << sizeof(bool) << "\n";
 
   LoopHold holding;
-  holding.Set(10, 0x24906);
+  // holding.Set(9, 0x92e5);
+  holding.Set(13, 0x986c97);
+  // holding.Set(12, 0xb907f);
 
   // holding.Set(13, 0xc2cbcb);
   // holding.Set(12, 0x3a4245);
@@ -126,6 +128,7 @@ cout << "sizeof(bool) " << sizeof(bool) << "\n";
   MakeComplexSingleMove(holding, whole0);
   cout << "Solving directly with no tables:\n";
   whole0.Print();
+  Header hdr = whole0.GetHeader();
 
   cout << "Looking up:\n";
 

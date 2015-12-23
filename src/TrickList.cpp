@@ -489,8 +489,14 @@ posType TrickList::ConnectFirst(
 
 posType TrickList::ConnectFirst()
 {
-  if (len <= 1)
-    return QT_LHO; // Anything
+  assert(len > 0);
+  if (len == 1)
+  {
+    // Must be a connector to the other side.
+    list[0].SetEnd(QT_BOTH);
+    return QT_BOTH;
+    // return QT_LHO;
+  }
   
   len--;
   return list[len-1].Connect(list[len]);

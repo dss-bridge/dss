@@ -327,10 +327,12 @@ cmpDetailType AltMatrix2D::CompareDeclarer()
   if (Xdiff && Ydiff)
     return SDS_HEADER_PLAY_DIFFERENT;
   else if (Ydiff)
-    return (Ywin || ! Xwin ? 
+    // return (Ywin || ! Xwin ? 
+    return (Ywin ?
       SDS_HEADER_PLAY_DIFFERENT : SDS_HEADER_PLAY_OLD_BETTER);
   else if (Xdiff)
-    return (Xwin || ! Ywin ? 
+    // return (Xwin || ! Ywin ? 
+    return (Xwin ?
       SDS_HEADER_PLAY_DIFFERENT : SDS_HEADER_PLAY_NEW_BETTER);
   else if (Ywin)
     return (Xwin ? SDS_HEADER_PLAY_DIFFERENT : SDS_HEADER_PLAY_NEW_BETTER);

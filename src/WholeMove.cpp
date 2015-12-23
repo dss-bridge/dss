@@ -52,27 +52,20 @@ void WholeMove::Add(
   DefList& res2)
 {
   def1 = res1;
-  if (def1.MergeSidesSoft(res1, res2))
+  def2 = res2;
+
+  if (defMerged.MergeSidesSoft(res1, res2))
   {
+    def1 = defMerged;
     def2.Reset();
-    defMerged = def1;
+    // defMerged = def1;
   }
   else
   {
-    def2 = res2;
+    // def2 = res2;
+    // def2.Reset();
     defMerged.MergeSidesHard(res1, res2);
   }
-}
-
-
-bool WholeMove::operator == (
-  const DefList& def)
-{
-assert(false);
-  if (! def2.IsEmpty())
-    return false;
-  else
-    return (def1 == def);
 }
 
 
@@ -126,7 +119,48 @@ unsigned WholeMove::GetRankKey()
 unsigned WholeMove::GetMaxRank()
 {
   Header& header = defMerged.GetHeader();
-  return header.GetMaxRank();
+  unsigned r = header.GetMaxRank();
+
+  Header& header1 = def1.GetHeader();
+  unsigned r1 = header1.GetMaxRank();
+  if (def2.IsEmpty())
+  {
+    if (r != r1)
+    {
+      def1.Print(cout, "def1");
+      def2.Print(cout, "def2");
+      defMerged.Print(cout, "defMerged");
+      cout << "header\n";
+      header.Print();
+      cout << "header1\n";
+      header1.Print();
+      cout << "r " << r << " r1 " << r1 << endl;
+    }
+    assert(r == r1);
+  }
+  else
+  {
+    Header& header2 = def2.GetHeader();
+    unsigned r2 = header2.GetMaxRank();
+
+    unsigned rr = Min(r1, r2);
+    if (r != rr)
+    {
+      def1.Print(cout, "def1");
+      def2.Print(cout, "def2");
+      defMerged.Print(cout, "defMerged");
+      cout << "header\n";
+      header.Print();
+      cout << "header1\n";
+      header1.Print();
+      cout << "header2\n";
+      header2.Print();
+      cout << "r " << r << " r1 " << r1 << " r2 " << r2 << endl;
+      // assert(r == rr);
+    }
+  }
+
+  return r;
 }
 
 

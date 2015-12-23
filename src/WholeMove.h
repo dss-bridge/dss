@@ -40,9 +40,6 @@ class WholeMove
       DefList& res2);
 
     bool operator == (
-      const DefList& def);
-
-    bool operator == (
       const WholeMove& whole2);
 
     bool operator != (

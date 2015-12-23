@@ -90,6 +90,14 @@ posType Segment::GetStart() const
 }
 
 
+void Segment::SetEnd(
+  const posType end)
+{
+  assert(len > 0);
+  list[0].SetEnd(end);
+}
+
+
 posType Segment::GetEnd() const
 {
   assert(len > 0);
@@ -729,7 +737,10 @@ bool Segment::Fix12(
 
   if (t1.trick.start == t20.trick.start &&
       t1.trick.end == QT_BOTH &&
-      t1.trick.cashing <= t20.trick.cashing)
+      (t1.trick.cashing < t20.trick.cashing ||
+      (t1.trick.cashing == t20.trick.cashing && 
+       t1.trick.ranks <= t20.trick.ranks)))
+      // t1.trick.cashing <= t20.trick.cashing)
   {
     // AB / Ax+yz, PB / Px+yz, BB / Bx+yz
     // Note that BB turns into x-(not x), not just B-(not x).

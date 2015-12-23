@@ -81,6 +81,9 @@ class Segment
 
     posType GetStart() const;
 
+    void SetEnd(
+      const posType end);
+
     posType GetEnd() const;
 
     unsigned int GetRanks() const;
