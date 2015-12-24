@@ -105,7 +105,7 @@ cout << "sizeof(Trick) " << sizeof(Trick) << "\n";
 cout << "sizeof(bool) " << sizeof(bool) << "\n";
 
   LoopHold holding;
-  holding.Set(9, 0xe87b);
+  holding.Set(13, 0x38a47f);
   // holding.Set(9, 0x92e5);
   // holding.Set(13, 0x986c97);
   // holding.Set(12, 0xb907f);
@@ -130,6 +130,7 @@ cout << "sizeof(bool) " << sizeof(bool) << "\n";
   cout << "Solving directly with no tables:\n";
   whole0.Print();
   Header hdr = whole0.GetHeader();
+  whole0.GetMaxRank();
 
   cout << "Looking up:\n";
 

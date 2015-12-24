@@ -163,12 +163,15 @@ void Header::MergeMax(const Header& newHeader)
   if (newHeader.maxTricks > maxTricks)
   {
     maxTricks = newHeader.maxTricks;
-    maxRanks = newHeader.maxRanks;
+    // maxRanks = newHeader.maxRanks;
 
     // Irrelevant, really.
     start = newHeader.start;
     end = newHeader.end;
   }
+
+  if (newHeader.maxRanks < maxRanks)
+    maxRanks = newHeader.maxRanks;
 
   if (newHeader.minRanks < minRanks && newHeader.minRanks > 0)
     minRanks = newHeader.minRanks;

@@ -1,13 +1,26 @@
-A better CompareMultiSide
--------------------------
-9, 92e5
-Issue is roughly that PB2K = PA2K or PP2K loses by play to PA1A+AP2T,
-and loses by rank to PA28+PP1-.  So overall def2 is worse than def1
-for declarer, and the defenders will choose def2.
+Ranks
+-----
+13, 38a47f
+    AKT6
+Q432      75
+    J98
 
-13, 986c97
-Similar issue:  One def is ahead on ranks, but it's the side that
-should lose on play once expanded.
+def1 has 6 in it, seems right.
+def2: PP39+AA1- or PA4T.
+West doesn't cover when T AND 9 are held.  How to recognize?
+The merge then loses the 6: AA1A + PA36 <= PA4T (or PA49, or whatever).
+This is actually true.  No reason to start with ace if you have a
+AP move from elsewhere.
+
+13, 9ab056
+    A76
+8         Q543
+    KJT92
+
+Looks a bit odd all round.
+Idea:  If an AltList Compare produces rank diff, pick the one
+with the highest minimum rank.
+
 
 
 Moves   14700

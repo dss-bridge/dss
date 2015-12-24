@@ -477,9 +477,9 @@ void AltList::FillMatrix2D(
       {
         nextSoftY[a2] = true;
         vector<fixType> fixVector(aNew.len, SDS_FIX_UNCHANGED);
-	fixVector[a2] = fix2;
+        fixVector[a2] = fix2;
 
-	aNew.Backtrack1D(compY, a2, aNew.len, fixVector);
+        aNew.Backtrack1D(compY, a2, aNew.len, fixVector);
       }
 
       if (fix1 == SDS_FIX_PURGED && ! compX.IsPurged(a1))
@@ -491,9 +491,9 @@ void AltList::FillMatrix2D(
       {
         nextSoftX[a1] = true;
         vector<fixType> fixVector(len, SDS_FIX_UNCHANGED);
-	fixVector[a1] = fix1;
+        fixVector[a1] = fix1;
 
-	AltList::Backtrack1D(compX, a1, len, fixVector);
+        AltList::Backtrack1D(compX, a1, len, fixVector);
       }
 
       if (compX.IsPurged(a1))
