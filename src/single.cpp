@@ -234,7 +234,7 @@ debugAltList = true;
   }
 
   moveList.PrintHashCounts();
-  moveList.CountCaseCombos();
+  moveList.PrintCaseCombos();
   cout.flush();
 
   FreeLists();

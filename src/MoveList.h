@@ -137,11 +137,11 @@ class MoveList
       const unsigned no);
 
     void Print(
-      const unsigned no);
+      const unsigned no) const;
 
-    void CountCaseCombos();
+    void PrintCaseCombos();
 
-    void PrintCount();
+    void PrintCount() const;
 
     void PrintMoveList(
       std::ostream& out = std::cout);
@@ -150,10 +150,10 @@ class MoveList
       std::ostream& out = std::cout);
 
     void PrintMoveStats(
-      std::ostream& out = std::cout);
+      std::ostream& out = std::cout) const;
 
     void PrintListStats(
-      std::ostream& out = std::cout);
+      std::ostream& out = std::cout) const;
     
     void PrintHashCounts() const;
 };

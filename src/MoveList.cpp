@@ -307,13 +307,13 @@ DefList& MoveList::GetCombinedMove(
 
 
 void MoveList::Print(
-  const unsigned no)
+  const unsigned no) const
 {
   return list[no].whole.Print();
 }
 
 
-void MoveList::CountCaseCombos()
+void MoveList::PrintCaseCombos()
 {
   int histd[LENCASE] = {0};
   int hista[LENCASE] = {0};
@@ -347,7 +347,7 @@ void MoveList::CountCaseCombos()
 }
 
 
-void MoveList::PrintCount()
+void MoveList::PrintCount() const
 {
   cout << "Number of list entries: " << numEntries << "\n";
 }
@@ -409,7 +409,7 @@ void MoveList::PrintMove(
 
 
 void MoveList::PrintMoveStats(
-  ostream& out)
+  ostream& out) const
 {
   SortEntry sortList[POOLSIZE];
   for (int i = 1; i < numEntries; i++)
@@ -430,7 +430,7 @@ void MoveList::PrintMoveStats(
 
 
 void MoveList::PrintListStats(
-  ostream& out)
+  ostream& out) const
 {
   int p = 0;
   int clist[1 << 14] = {0};

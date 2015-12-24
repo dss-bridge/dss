@@ -8,6 +8,7 @@ SOURCE_FILES 	=		\
         Stats.cpp               \
         DefList.cpp             \
         MoveList.cpp            \
+        SideMoveList.cpp        \
         Trick.cpp               \
         Segment.cpp             \
         TrickList.cpp           \
@@ -54,6 +55,9 @@ DefList.obj: Holding.h Header.h AltMatrix1D.h AltMatrix2D.h
 MoveList.obj: cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
 MoveList.obj: TrickList.h Segment.h Header.h AltMatrix1D.h AltMatrix2D.h
 MoveList.obj: Hash.h WholeMove.h misc.h
+SideMoveList.obj: cst.h SideMoveList.h Holding.h Trick.h DefList.h AltList.h
+SideMoveList.obj: TrickList.h Segment.h Header.h AltMatrix1D.h AltMatrix2D.h
+SideMoveList.obj: Hash.h misc.h
 Trick.obj: cst.h Trick.h Holding.h
 Segment.obj: cst.h Segment.h Trick.h Holding.h
 TrickList.obj: cst.h TrickList.h Segment.h Trick.h Holding.h Header.h
@@ -78,7 +82,7 @@ Twiddle.obj: cst.h MoveList.h Holding.h Trick.h DefList.h AltList.h
 Twiddle.obj: TrickList.h Segment.h Header.h AltMatrix1D.h AltMatrix2D.h
 Twiddle.obj: Hash.h WholeMove.h SimpleMoves.h Twiddle.h
 Dist.obj: Holding.h cst.h Trick.h DefList.h AltList.h TrickList.h Segment.h
-Dist.obj: Header.h AltMatrix1D.h AltMatrix2D.h SimpleMoves.h
+Dist.obj: Header.h AltMatrix1D.h AltMatrix2D.h SimpleMoves.h WholeMove.h
 WholeMove.obj: WholeMove.h DefList.h AltList.h TrickList.h Segment.h Trick.h
 WholeMove.obj: cst.h Holding.h Header.h AltMatrix1D.h AltMatrix2D.h
 misc.obj: misc.h
