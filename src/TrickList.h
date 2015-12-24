@@ -101,6 +101,9 @@ class TrickList
     bool operator >= (
       const Trick& trick) const;
 
+    cmpDetailType CompareToTrick (
+      const Trick& trick) const;
+
     cmpDetailType FixOrCompare(
       TrickList& lOther,
       fixType& fix1,

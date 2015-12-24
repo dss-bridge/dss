@@ -105,7 +105,8 @@ class AltMatrix2D
 
     bool CandList(
       const posType side,
-      bool use[]) const;
+      bool use[],
+      cmpDetailType& c) const;
 
     void Print(
       std::ostream& out,

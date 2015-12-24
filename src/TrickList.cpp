@@ -362,10 +362,21 @@ void TrickList::operator += (
 bool TrickList::operator >= (
   const Trick& trick) const
 {
+  // Will probably become obsolete.
   assert(len > 0);
   Trick ltrick;
   TrickList::GetFirstSummaryTrick(ltrick);
   return cmpDetailToGE[ltrick.Compare(trick)];
+}
+
+
+cmpDetailType TrickList::CompareToTrick(
+  const Trick& trick) const
+{
+  assert(len > 0);
+  Trick ltrick;
+  TrickList::GetFirstSummaryTrick(ltrick);
+  return ltrick.Compare(trick);
 }
 
 

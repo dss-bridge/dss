@@ -112,11 +112,49 @@ cmpDetailType AltList::Compare(
     return c;
 
   if (AltList::CompareMultiSide(QT_PARD, comp, aNew))
+  {
+    if (! AltList::CompareMultiSideNew(QT_PARD, comp, aNew))
+    {
+      cout << "posPARD\n";
+      AltList::Print(cout, "alt should be better");
+      aNew.Print(cout, "aNew should be worse");
+      cout << endl;
+      AltList::CompareMultiSideNew(QT_PARD, comp, aNew);
+      assert(false);
+    }
     return SDS_HEADER_PLAY_OLD_BETTER;
+  }
   else if (aNew.CompareMultiSide(QT_ACE, comp, * this))
+  {
+    if (! aNew.CompareMultiSideNew(QT_ACE, comp, * this))
+    {
+      cout << "posACE\n";
+      AltList::Print(cout, "alt should be worse");
+      aNew.Print(cout, "aNew should be better");
+      cout << endl;
+      assert(false);
+    }
     return SDS_HEADER_PLAY_NEW_BETTER;
+  }
   else
+  {
+    if (AltList::CompareMultiSideNew(QT_PARD, comp, aNew))
+    {
+      cout << "posPARD2\n";
+return SDS_HEADER_PLAY_OLD_BETTER;
+      AltList::Print(cout, "alt is better (new)");
+      aNew.Print(cout, "aNew is worse (new)");
+    }
+    if (aNew.CompareMultiSideNew(QT_ACE, comp, * this))
+    {
+      cout << "posACE2\n";
+return SDS_HEADER_PLAY_NEW_BETTER;
+      AltList::Print(cout, "alt is worse (new)");
+      aNew.Print(cout, "aNew is better (new)");
+      aNew.CompareMultiSideNew(QT_ACE, comp, * this);
+    }
     return c;
+  }
 }
 
 
@@ -635,13 +673,34 @@ bool AltList::CompareMulti(
 }
 
 
+cmpDetailType AltList::CompareMultiNew(
+  const TrickList& tref) const
+{
+  if (len < 2)
+    return SDS_HEADER_PLAY_DIFFERENT;
+
+  AltList aRed;
+  TrickList tlist = tref;
+  posType pstart = tlist.GetFirstStart();
+  if (pstart == QT_BOTH)
+    return SDS_HEADER_PLAY_DIFFERENT;
+
+  aRed.PunchOut(this, pstart);
+  if (aRed.len < 2)
+    return SDS_HEADER_PLAY_DIFFERENT;
+
+  return aRed.CompareMultiTrickList(tlist);
+}
+
+
 bool AltList::CompareMultiSide(
   const posType sideToLose,
   const AltMatrix2D& comp,
   const AltList& altToLose) const
 {
   bool use[SDS_MAX_ALT];
-  if (! comp.CandList(sideToLose, use))
+  cmpDetailType c;
+  if (! comp.CandList(sideToLose, use, c))
     return false;
 
   for (unsigned a = 0; a < altToLose.len; a++)
@@ -653,6 +712,31 @@ bool AltList::CompareMultiSide(
       return false;
   }
   return true;
+}
+
+
+bool AltList::CompareMultiSideNew(
+  const posType sideToLose,
+  const AltMatrix2D& comp,
+  const AltList& altToLose) const
+{
+  bool use[SDS_MAX_ALT];
+  cmpDetailType cRunning;
+  if (! comp.CandList(sideToLose, use, cRunning))
+    return false;
+
+  for (unsigned a = 0; a < altToLose.len; a++)
+  {
+    if (! use[a])
+      continue;
+
+    cmpDetailType c = AltList::CompareMultiNew(altToLose.list[a]);
+    if (c == SDS_HEADER_PLAY_DIFFERENT)
+      return false;
+    else
+      cRunning = cmpDetailMatrix[cRunning][c];
+  }
+  return cmpDetailToGE[cRunning];
 }
 
 
@@ -680,6 +764,33 @@ bool AltList::operator >= (
 }
 
 
+cmpDetailType AltList::CompareMultiTrickList(
+  TrickList& tlist)
+{
+  // Both AltList and tlist are modified in this call!
+  // They should be temporary to the caller.
+  // Returns true if AltList in totality is >= tlist,
+  // possibly using more than one trick list to do so.
+  // The comparison is done one segment at a time, then
+  // connecting up the segments.
+
+  unsigned int tlen = tlist.GetLength();
+
+  cmpDetailType cRunning = SDS_HEADER_SAME;
+  for (unsigned s = 0; s < tlen; s++)
+  {
+    cmpDetailType c = AltList::FrontIsGENew(tlist);
+    if (c == SDS_HEADER_PLAY_DIFFERENT)
+      return SDS_HEADER_PLAY_DIFFERENT;
+    cRunning = cmpDetailMatrix[cRunning][c];
+    
+    posType pend = tlist.ConnectFirst();
+    AltList::ConnectFirst(pend);
+  }
+  return cRunning;
+}
+
+
 bool AltList::FrontIsGE(
   const TrickList& tlist) const
 {
@@ -698,6 +809,33 @@ bool AltList::FrontIsGE(
 }
 
 
+cmpDetailType AltList::FrontIsGENew(
+  const TrickList& tlist) const
+{
+  // Uses same return values as below.
+
+  Trick htrick;
+  tlist.GetFirstSummaryTrick(htrick);
+  if (htrick.GetEnd() == QT_BOTH)
+  {
+    htrick.SetEnd(QT_ACE);
+    cmpDetailType ca = AltList::FrontIsGENew(htrick);
+
+    if (ca == SDS_HEADER_PLAY_DIFFERENT)
+      return SDS_HEADER_PLAY_DIFFERENT;
+
+    htrick.SetEnd(QT_PARD);
+    cmpDetailType cp = FrontIsGENew(htrick);
+    if (cp == SDS_HEADER_PLAY_DIFFERENT)
+      return SDS_HEADER_PLAY_DIFFERENT;
+
+    return cmpDetailMatrix[ca][cp];
+  }
+  else
+    return AltList::FrontIsGENew(htrick);
+}
+
+
 bool AltList::FrontIsGE(
   const Trick& trick) const
 {
@@ -707,6 +845,36 @@ bool AltList::FrontIsGE(
       return true;
   }
   return false;
+}
+
+
+cmpDetailType AltList::FrontIsGENew(
+  const Trick& trick) const
+{
+  // Only uses SDS_HEADER_SAME, SDS_HEADER_PLAY_OLD_BETTER,
+  // SDS_HEADER_RANK_NEW_BETTER, SDS_PLAY_DIFFERENT.
+
+  bool rankNewFlag = false;
+  for (unsigned a = 0; a < len; a++)
+  {
+    switch(list[a].CompareToTrick(trick))
+    {
+      case SDS_HEADER_PLAY_OLD_BETTER:
+        return SDS_HEADER_PLAY_OLD_BETTER;
+      case SDS_HEADER_SAME:
+      case SDS_HEADER_RANK_OLD_BETTER:
+        return SDS_HEADER_SAME;
+      case SDS_HEADER_RANK_NEW_BETTER:
+        rankNewFlag = true;
+        break;
+      case SDS_HEADER_PLAY_NEW_BETTER:
+      case SDS_HEADER_PLAY_DIFFERENT:
+      case SDS_HEADER_RANK_DIFFERENT:
+        break;
+    }
+  }
+  return (rankNewFlag ? SDS_HEADER_RANK_NEW_BETTER : 
+    SDS_HEADER_PLAY_DIFFERENT);
 }
 
 

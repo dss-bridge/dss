@@ -1,22 +1,5 @@
 A better CompareMultiSide
 -------------------------
-Note whether any of the already-beaten ones on loseSide were play
-losses.
-
-As soon as we get a diff or a play win the wrong way (for loseSide),
-we're done no matter what.
-
-Otherwise, if we get a rank win, make a note of the direction.
-
-If we get a play win the right way, make a note of it.
-
-Once we're done:
-If there was at least one play win the right way, that trumps rank loss.
-
-If not:  If there is a rank win the wrong way, then diff.
-Else OK.
-
-
 9, 92e5
 Issue is roughly that PB2K = PA2K or PP2K loses by play to PA1A+AP2T,
 and loses by rank to PA28+PP1-.  So overall def2 is worse than def1

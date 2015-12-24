@@ -374,8 +374,11 @@ cmpDetailType AltMatrix2D::CompareHard()
 
 bool AltMatrix2D::CandList(
   const posType sideToLose,
-  bool use[]) const
+  bool use[],
+  cmpDetailType& c) const
 {
+  c = SDS_HEADER_SAME;
+
   if (sideToLose == QT_ACE)
   {
     if (cval == SDS_HEADER_PLAY_DIFFERENT ||
@@ -391,7 +394,14 @@ bool AltMatrix2D::CandList(
         if (hasX[a][SDS_HEADER_SAME] ||
             hasX[a][SDS_HEADER_PLAY_NEW_BETTER] ||
             hasX[a][SDS_HEADER_RANK_NEW_BETTER])
+        {
+          // We're flipping directions after this.
+          if (hasX[a][SDS_HEADER_PLAY_NEW_BETTER])
+            c = SDS_HEADER_PLAY_OLD_BETTER;
+          else if (hasX[a][SDS_HEADER_RANK_OLD_BETTER])
+            c = cmpDetailMatrix[c][SDS_HEADER_RANK_OLD_BETTER];
           continue;
+        }
            
         usedFlag = true;
         use[a] = true;
@@ -416,7 +426,13 @@ bool AltMatrix2D::CandList(
         if (hasY[a][SDS_HEADER_SAME] ||
             hasY[a][SDS_HEADER_PLAY_OLD_BETTER] ||
             hasY[a][SDS_HEADER_RANK_OLD_BETTER])
+        {
+          if (hasY[a][SDS_HEADER_PLAY_OLD_BETTER])
+            c = SDS_HEADER_PLAY_OLD_BETTER;
+          else if (hasY[a][SDS_HEADER_RANK_OLD_BETTER])
+            c = cmpDetailMatrix[c][SDS_HEADER_RANK_OLD_BETTER];
           continue;
+        }
 
         usedFlag = true;
         use[a] = true;

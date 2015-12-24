@@ -68,7 +68,15 @@ class AltList
     bool CompareMulti(
       const TrickList& tref) const;
 
+    cmpDetailType CompareMultiNew(
+      const TrickList& tref) const;
+
     bool CompareMultiSide(
+      const posType sideToLose,
+      const AltMatrix2D& comp,
+      const AltList& altToLose) const;
+
+    bool CompareMultiSideNew(
       const posType sideToLose,
       const AltMatrix2D& comp,
       const AltList& altToLose) const;
@@ -76,10 +84,19 @@ class AltList
     bool operator >= (
       TrickList& tlist);
 
+    cmpDetailType CompareMultiTrickList(
+      TrickList& tlist);
+
     bool FrontIsGE(
       const TrickList& tlist) const;
 
     bool FrontIsGE(
+      const Trick& trick) const;
+
+    cmpDetailType FrontIsGENew(
+      const TrickList& tlist) const;
+
+    cmpDetailType FrontIsGENew(
       const Trick& trick) const;
 
     void ConnectFirst(
