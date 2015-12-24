@@ -58,12 +58,9 @@ void WholeMove::Add(
   {
     def1 = defMerged;
     def2.Reset();
-    // defMerged = def1;
   }
   else
   {
-    // def2 = res2;
-    // def2.Reset();
     defMerged.MergeSidesHard(res1, res2);
   }
 }
@@ -118,49 +115,22 @@ unsigned WholeMove::GetRankKey()
 
 unsigned WholeMove::GetMaxRank()
 {
-  Header& header = defMerged.GetHeader();
-  unsigned r = header.GetMaxRank();
-
   Header& header1 = def1.GetHeader();
   unsigned r1 = header1.GetMaxRank();
   if (def2.IsEmpty())
-  {
-    if (r != r1)
-    {
-      def1.Print(cout, "def1");
-      def2.Print(cout, "def2");
-      defMerged.Print(cout, "defMerged");
-      cout << "header\n";
-      header.Print();
-      cout << "header1\n";
-      header1.Print();
-      cout << "r " << r << " r1 " << r1 << endl;
-    }
-    assert(r == r1);
-  }
+    return r1;
   else
   {
     Header& header2 = def2.GetHeader();
     unsigned r2 = header2.GetMaxRank();
 
-    unsigned rr = Min(r1, r2);
-    if (r != rr)
-    {
-      def1.Print(cout, "def1");
-      def2.Print(cout, "def2");
-      defMerged.Print(cout, "defMerged");
-      cout << "header\n";
-      header.Print();
-      cout << "header1\n";
-      header1.Print();
-      cout << "header2\n";
-      header2.Print();
-      cout << "r " << r << " r1 " << r1 << " r2 " << r2 << endl;
-      // assert(r == rr);
-    }
+    // In very rare cases this differs from the maximum rank of
+    // defMerged:  AA1A + PA36 can lose to PA4T even though they
+    // are from different sides.  And there can be two AltLists
+    // that differ only in ranks; one later loses on ranks after
+    // a merge.
+    return Min(r1, r2);
   }
-
-  return r;
 }
 
 

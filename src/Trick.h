@@ -88,7 +88,7 @@ class Trick
       const bool lastFlag);
 
     bool ReduceBoth(
-      Trick& t1);
+      const Trick& t1);
 
     cmpDetailType Compare(
       const Trick& t1) const;

@@ -321,28 +321,17 @@ if (! singles[8][0x8af].defp)
             blocked = (bend == QT_ACE ? QT_PARD : QT_ACE);
             posType bstart = (btricks + rtricks > ctricks ? QT_BOTH : bend);
 
-            if (cend == QT_ACE &&
-                bstart == QT_BOTH && 
-                blocked == QT_PARD &&
-                ctricks <= btricks)
+            if (bstart == QT_BOTH &&
+                ctricks <= btricks &&
+                ((cend == QT_ACE && blocked == QT_PARD) ||
+                 (cend == QT_BOTH && blocked == QT_PARD) ||
+                 (cend == QT_BOTH && blocked == QT_ACE)))
             {
-              trick.Set(QT_PARD, QT_ACE, crank, 
+              if (hNew.GetMinDeclLength() == 1)
+                trick.Set(QT_PARD, QT_ACE, crank, 
                   static_cast<unsigned>(ctricks));
-            }
-            else if (cend == QT_BOTH &&
-                bstart == QT_BOTH &&
-                blocked == QT_PARD &&
-                ctricks <= btricks)
-            {
-              trick.Set(QT_PARD, QT_ACE, crank, 
-                  static_cast<unsigned>(ctricks));
-            }
-            else if (cend == QT_BOTH &&
-                bstart == QT_BOTH &&
-                blocked == QT_ACE &&
-                ctricks <= btricks)
-            {
-              trick.Set(QT_ACE, QT_PARD, crank, 
+              else
+                trick.Set(QT_BOTH, QT_BOTH, crank, 
                   static_cast<unsigned>(ctricks));
             }
             else
@@ -470,9 +459,8 @@ void CompareRecurse(
     cout << "CompareRecurse error: histogram " << histNo <<
       ", " << HIST_NAMES[histNo] << "\n";
     holding.Print(cout);
-    cout.flush();
     def.Print(cout);
-    cout.flush();
+    cout << "Actually solved\n";
     defCmp.Print(cout);
     cout.flush();
 

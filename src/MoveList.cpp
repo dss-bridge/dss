@@ -313,51 +313,10 @@ void MoveList::Print(
 }
 
 
-void MoveList::CountTrickCombos()
-{
-  int seen[LENTRICK] = {0};
-  int count = 0;
-
-  for (int n = 1; n < numEntries; n++)
-  {
-    unsigned maxt = list[n].whole.GetTrickKey();
-    if (seen[maxt])
-      continue;
-
-    count++;
-    seen[maxt] = 1;
-  }
-
-  cout << "Trick count: " << count << "\n";
-}
-
-
-void MoveList::CountRankCombos()
-{
-  int seen[LENRANK] = {0};
-  int count = 0;
-
-  for (int n = 1; n < numEntries; n++)
-  {
-    unsigned maxt = list[n].whole.GetRankKey();
-    if (seen[maxt])
-      continue;
-
-    count++;
-    seen[maxt] = 1;
-  }
-
-  cout << "Rank count: " << count << "\n";
-}
-
-
 void MoveList::CountCaseCombos()
 {
-  int seen[LENCASE] = {0};
   int histd[LENCASE] = {0};
   int hista[LENCASE] = {0};
-
-  int count = 0;
 
   for (int n = 1; n < numEntries; n++)
   {
@@ -366,17 +325,9 @@ void MoveList::CountCaseCombos()
     unsigned a = maxt >> 4;
     histd[d]++;
     hista[a]++;
-
-    if (seen[maxt])
-      continue;
-
-    count++;
-    seen[maxt] = 1;
   }
 
-  cout << "Case count: " << count << right << "\n";
-
-  cout << "Defense histogram\n";
+  cout << "Defense histogram\n" << right;
   for (int i = 0; i < LENCASE; i++)
   {
     if (histd[i])

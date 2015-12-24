@@ -359,17 +359,6 @@ void TrickList::operator += (
 }
 
 
-bool TrickList::operator >= (
-  const Trick& trick) const
-{
-  // Will probably become obsolete.
-  assert(len > 0);
-  Trick ltrick;
-  TrickList::GetFirstSummaryTrick(ltrick);
-  return cmpDetailToGE[ltrick.Compare(trick)];
-}
-
-
 cmpDetailType TrickList::CompareToTrick(
   const Trick& trick) const
 {
@@ -506,7 +495,6 @@ posType TrickList::ConnectFirst()
     // Must be a connector to the other side.
     list[0].SetEnd(QT_BOTH);
     return QT_BOTH;
-    // return QT_LHO;
   }
   
   len--;

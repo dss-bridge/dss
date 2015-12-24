@@ -98,9 +98,6 @@ class TrickList
     void operator += (
       const Holding& holding);
 
-    bool operator >= (
-      const Trick& trick) const;
-
     cmpDetailType CompareToTrick (
       const Trick& trick) const;
 

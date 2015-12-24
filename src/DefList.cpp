@@ -38,7 +38,7 @@ void DefList::Reset()
 }
 
 
-bool DefList::IsEmpty()
+bool DefList::IsEmpty() const
 {
   return (len == 0);
 }
@@ -160,7 +160,7 @@ void DefList::operator += (
 
 
 void DefList::operator += (
-  AltList& alt)
+  const AltList& alt)
 {
   // Adds an alternative to the current set of alternatives,
   // eliminating inferior ones (as seen from the defensive side).
@@ -214,7 +214,7 @@ void DefList::operator += (
 
 
 void DefList::operator += (
-  DefList& def2)
+  const DefList& def2)
 {
   // For the defense, we just concatenate the defenses.
 
@@ -245,7 +245,7 @@ void DefList::operator += (
 
 
 void DefList::operator *= (
-  DefList& def2)
+  const DefList& def2)
 {
   /*
      Need to make the "cross product" for declarer.
@@ -334,8 +334,8 @@ void DefList::operator *= (
 
 
 bool DefList::MergeSidesSoft(
-  DefList& def1,
-  DefList& def2)
+  const DefList& def1,
+  const DefList& def2)
 {
   if (def2.len == 0)
   {
@@ -411,8 +411,8 @@ bool DefList::MergeSidesSoft(
 
 
 void DefList::MergeSidesHard(
-  DefList& def1,
-  DefList& def2)
+  const DefList& def1,
+  const DefList& def2)
 {
   // The two defenses have different starting sides.
   // It is not clear that these should be merged.  Here we take

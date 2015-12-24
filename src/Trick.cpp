@@ -264,7 +264,7 @@ appendType Trick::Prepend(
 
 
 bool Trick::ReduceBoth(
-  Trick& t1)
+  const Trick& t1)
 {
   if (t1.trick.start == QT_BOTH &&
     t1.trick.end != QT_BOTH &&

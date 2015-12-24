@@ -163,7 +163,6 @@ void Header::MergeMax(const Header& newHeader)
   if (newHeader.maxTricks > maxTricks)
   {
     maxTricks = newHeader.maxTricks;
-    // maxRanks = newHeader.maxRanks;
 
     // Irrelevant, really.
     start = newHeader.start;
@@ -245,7 +244,6 @@ void Header::MergeMin(const Header& newHeader)
   if (newHeader.maxTricks < maxTricks)
   {
     maxTricks = newHeader.maxTricks;
-    // maxRanks = newHeader.maxRanks;
 
     // Irrelevant, really.
     start = newHeader.start;

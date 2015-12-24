@@ -28,7 +28,7 @@ class DefList
     bool headerDirty;
 
     void operator += (
-      AltList& alt);
+      const AltList& alt);
 
     void Purge(
       const std::vector<bool>& skip);
@@ -46,7 +46,7 @@ class DefList
 
     void Reset();
 
-    bool IsEmpty();
+    bool IsEmpty() const;
 
     bool Set1(
       const Trick& trick);
@@ -75,17 +75,19 @@ class DefList
     void operator += (
       const Holding& holding);
 
-    void operator += (DefList& def2);
+    void operator += (
+      const DefList& def2);
 
-    void operator *= (DefList& def2);
+    void operator *= (
+      const DefList& def2);
 
     bool MergeSidesSoft(
-      DefList& def1,
-      DefList& def2);
+      const DefList& def1,
+      const DefList& def2);
 
     void MergeSidesHard(
-      DefList& def1,
-      DefList& def2);
+      const DefList& def1,
+      const DefList& def2);
 
     void Print(
       std::ostream& out = std::cout,

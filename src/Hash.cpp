@@ -82,8 +82,8 @@ unsigned Hash::GetKey(
 
 void Hash::PrintCounts() const
 {
-  cout << "Trick hcount: " << keyMapNo-1 << "\n";
-  cout << "Rank hcount: " << rankMapNo-1 << "\n";
-  cout << "Case hcount: " << caseMapNo-1 << "\n";
-  cout << "RC hcount: " << rankCaseMapNo-1 << "\n";
+  cout << "Trick count: " << keyMapNo-1 << "\n";
+  cout << "Rank count: " << rankMapNo-1 << "\n";
+  cout << "Case count: " << caseMapNo-1 << "\n";
+  cout << "Rank-case count: " << rankCaseMapNo-1 << "\n";
 }

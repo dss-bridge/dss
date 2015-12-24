@@ -21,7 +21,7 @@
 #include "Hash.h"
 #include "WholeMove.h"
 
-#define POOLSIZE 16000
+#define POOLSIZE 15000
 #define POOLSIZE_AB 3000
 
 #define LENTRICK 4096
@@ -139,8 +139,6 @@ class MoveList
     void Print(
       const unsigned no);
 
-    void CountTrickCombos();
-    void CountRankCombos();
     void CountCaseCombos();
 
     void PrintCount();

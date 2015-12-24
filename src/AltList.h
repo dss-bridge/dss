@@ -65,10 +65,7 @@ class AltList
 
     void PurgeMulti();
 
-    bool CompareMulti(
-      const TrickList& tref) const;
-
-    cmpDetailType CompareMultiNew(
+    cmpDetailType CompareMulti(
       const TrickList& tref) const;
 
     bool CompareMultiSide(
@@ -76,27 +73,13 @@ class AltList
       const AltMatrix2D& comp,
       const AltList& altToLose) const;
 
-    bool CompareMultiSideNew(
-      const posType sideToLose,
-      const AltMatrix2D& comp,
-      const AltList& altToLose) const;
-
-    bool operator >= (
-      TrickList& tlist);
-
     cmpDetailType CompareMultiTrickList(
       TrickList& tlist);
 
-    bool FrontIsGE(
+    cmpDetailType FrontIsGE(
       const TrickList& tlist) const;
 
-    bool FrontIsGE(
-      const Trick& trick) const;
-
-    cmpDetailType FrontIsGENew(
-      const TrickList& tlist) const;
-
-    cmpDetailType FrontIsGENew(
+    cmpDetailType FrontIsGE(
       const Trick& trick) const;
 
     void ConnectFirst(
@@ -130,7 +113,8 @@ class AltList
       const Trick& trick20,
       const Trick& trick21);
 
-    void GetHeader(Header& header);
+    void GetHeader(
+      Header& header) const;
 
     unsigned GetLength() const;
 

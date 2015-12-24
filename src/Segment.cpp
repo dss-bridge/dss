@@ -32,7 +32,8 @@ void Segment::Reset()
 }
 
 
-bool Segment::Set1(const Trick& trick)
+bool Segment::Set1(
+  const Trick& trick)
 {
   len = 1;
   list[0] = trick;
@@ -118,7 +119,8 @@ unsigned int Segment::GetLength() const
 }
 
 
-void Segment::GetSummaryTrick(Trick& summaryTrick) const
+void Segment::GetSummaryTrick(
+  Trick& summaryTrick) const
 {
   if (len == 1)
   {
@@ -379,7 +381,8 @@ void Segment::PrependDeep(
 }
 
 
-void Segment::PrependFix(const bool lastFlag)
+void Segment::PrependFix(
+  const bool lastFlag)
 {
   if (list[1].trick.start == QT_PARD &&
       list[1].trick.end == QT_ACE &&
@@ -613,7 +616,7 @@ bool Segment::Fix11_OneB(
 
 
 bool Segment::Fix11_12(
-  Segment& seg2,
+  const Segment& seg2,
   fixType& fix1,
   fixType& fix2)
 {
@@ -655,8 +658,8 @@ bool Segment::Fix11_12(
   }
 
   Trick& t1 = list[0];
-  Trick& t20 = seg2.list[1];
-  Trick& t21 = seg2.list[0];
+  const Trick& t20 = seg2.list[1];
+  const Trick& t21 = seg2.list[0];
 
   // PB vs PA+BP will taken care of elsewhere:  The latter will
   // be followed by another segment, so will win.
@@ -740,7 +743,6 @@ bool Segment::Fix12(
       (t1.trick.cashing < t20.trick.cashing ||
       (t1.trick.cashing == t20.trick.cashing && 
        t1.trick.ranks <= t20.trick.ranks)))
-      // t1.trick.cashing <= t20.trick.cashing)
   {
     // AB / Ax+yz, PB / Px+yz, BB / Bx+yz
     // Note that BB turns into x-(not x), not just B-(not x).
