@@ -32,7 +32,7 @@ MoveList::MoveList()
     indexCountSide[1][key] = 0;
   }
 
-  for (int i = 0; i < POOLSIZE; i++)
+  for (int i = 0; i < POOLSIZE_AB; i++)
   {
     moveCountSide[0][i] = 0;
     moveCountSide[1][i] = 0;
@@ -60,18 +60,6 @@ unsigned MoveList::AddMoves(
   unsigned no = sideMerged.AddMoves(def, holding, newFlag);
   return no;
 }
-
-
-unsigned MoveList::AddMoves(
-  WholeMove& whole,
-  const Holding& holding, 
-  bool& newFlag)
-{
-  DefList def = whole.GetCombinedMove();
-  unsigned no = sideMerged.AddMoves(def, holding, newFlag);
-  return no;
-}
-
 
 
 unsigned MoveList::AddSideMove(
@@ -179,6 +167,22 @@ unsigned MoveList::AddMoves(
   const Holding& holding, 
   bool& newFlag)
 {
+  DefList def;
+  if (! def.MergeSidesSoft(defAB, defP))
+    def.MergeSidesHard(defAB, defP);
+
+  /*
+  unsigned d1, d2, dm, a;
+  defAB.GetHeader().GetAD(d1, a);
+  defP.GetHeader().GetAD(d2, a);
+  def.GetHeader().GetAD(dm, a);
+  if (d1*d2 != dm)
+    cout << "defMerged " << dm << " != " << d1 << " * " << d2 << "\n";
+  */
+
+  unsigned no = sideMerged.AddMoves(def, holding, newFlag);
+  return no;
+
 assert(false);
   bool newFlagAB = false;
   bool newFlagP = false;
@@ -192,7 +196,7 @@ assert(false);
     return MoveList::SetPairNo(noAB, noP);
   }
 
-  unsigned no = MoveList::PairToNo(noAB, noP);
+  no = MoveList::PairToNo(noAB, noP);
   assert(no > 0);
   return no;
 }

@@ -19,16 +19,9 @@
 #include "Holding.h"
 #include "DefList.h"
 #include "Hash.h"
-#include "WholeMove.h"
 #include "SideMoveList.h"
 
-#define POOLSIZE 15000
 #define POOLSIZE_AB 3000
-
-#define LENTRICK 4096
-#define LENRANK 65536
-#define LENCASE 4096
-#define LENRANKCASE 131072
 
 
 class MoveList
@@ -41,25 +34,11 @@ class MoveList
       unsigned noP;
     };
 
-    struct ListEntry
-    {
-      WholeMove * wholep;
-      int no;
-      ListEntry * next;
-    };
-
     struct ListEntrySide
     {
       DefList * defp;
       int no;
       ListEntrySide * next;
-    };
-
-    struct SuitListEntry
-    {
-      WholeMove whole;
-      int suitLengthExample;
-      int counterExample;
     };
 
     struct SuitListEntrySide
@@ -71,13 +50,13 @@ class MoveList
 
     SideMoveList sideMerged;
 
-    SuitListEntrySide listSide[2][POOLSIZE]; // _AB
+    SuitListEntrySide listSide[2][POOLSIZE_AB]; // _AB
 
     ListEntrySide * indexSide[2][ML_MAXKEY];
 
     int indexCountSide[2][ML_MAXKEY];
 
-    unsigned moveCountSide[2][POOLSIZE]; // _AB
+    unsigned moveCountSide[2][POOLSIZE_AB]; // _AB
 
     Hash hash;
 
@@ -85,7 +64,7 @@ class MoveList
     int numEntriesSide[2];
     int numEntriesNew;
 
-    unsigned noToSideNumbers[POOLSIZE][2];
+    unsigned noToSideNumbers[POOLSIZE_AB][2];
 
     std::map<std::string, unsigned> sideMap;
 
@@ -115,11 +94,6 @@ class MoveList
 
     unsigned AddMoves(
       DefList& sm, 
-      const Holding& holding,
-      bool& newFlag);
-
-    unsigned AddMoves(
-      WholeMove &whole,
       const Holding& holding,
       bool& newFlag);
 

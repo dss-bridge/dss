@@ -334,5 +334,13 @@ enum manualMoveType
   MANUAL_ALL = 2
 };
 
+struct singleType
+{
+  unsigned moveNo;
+  unsigned char declLen;
+  unsigned char minLen;
+  unsigned char oppLen;
+};
+
 #endif
 

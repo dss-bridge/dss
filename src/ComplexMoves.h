@@ -11,13 +11,14 @@
 #define SDS_COMPLEXMOVES_H
 
 #include "Holding.h"
-#include "WholeMove.h"
+#include "DefList.h"
 
 void MakeComplexMoves();
 
 void MakeComplexSingleMove(
   Holding& holding,
-  WholeMove& sp);
+  DefList& def1,
+  DefList& def2);
 
 void MakeComplexMovesParallel();
 

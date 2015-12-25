@@ -448,11 +448,14 @@ void CompareRecurse(
   const int histNo)
 {
 #ifdef DEBUG_SIMPLE
-  WholeMove wholeCmp;
   DefList& def = moveList.GetCombinedMove(moveNo);
 
-  MakeComplexSingleMove(holding, wholeCmp);
-  DefList& defCmp = wholeCmp.GetCombinedMove();
+  DefList defCmp1, defCmp2;
+  MakeComplexSingleMove(holding, defCmp1, defCmp2);
+
+  DefList defCmp;
+  if (! defCmp.MergeSidesSoft(defCmp1, defCmp2))
+    defCmp.MergeSidesHard(defCmp1, defCmp2);
 
   if (defCmp != def)
   {

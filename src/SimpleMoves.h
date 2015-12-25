@@ -10,7 +10,6 @@
 #ifndef SDS_SIMPLEMOVES_H
 #define SDS_SIMPLEMOVES_H
 
-#include "WholeMove.h"
 #include "Holding.h"
 
 

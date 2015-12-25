@@ -50,7 +50,8 @@ extern bool debugComplex;
 // Globals for multi-threading.
 Holding holdingList[SDS_MAXHOLDINGS];
 
-WholeMove wholeList[SDS_MAXHOLDINGS];
+DefList defList1[SDS_MAXHOLDINGS];
+DefList defList2[SDS_MAXHOLDINGS];
 
 int batchLen;
 
@@ -84,16 +85,19 @@ void DumpStatus(
   const char text[]);
 
 void DumpStatus(
-  WholeMove& whole,
+  DefList& def1,
+  DefList& def2,
   const char text[]);
 
 void DumpStatus(
-  WholeMove& whole,
+  DefList& def1,
+  DefList& def2,
   const char text[],
   const int val);
 
 void DumpStatus(
-  WholeMove& whole,
+  DefList& def1,
+  DefList& def2,
   const char text[],
   const int val1,
   const int val2);
@@ -132,12 +136,13 @@ void MakeComplexMoves()
 // cout << setw(2) << dlen << 
 // setw(3) << sl << " " << setw(3) << hex << c << dec << endl;
         holding.Set(sl, c);
-        WholeMove sm;
+        DefList def1, def2;
 
-        MakeComplexSingleMove(holding, sm);
+        MakeComplexSingleMove(holding, def1, def2);
 
         StartTimer();
-        singles[sl][c].moveNo = moveList.AddMoves(sm, holding, newFlag);
+        singles[sl][c].moveNo = moveList.AddMoves(def1, def2, 
+          holding, newFlag);
         EndTimer();
 
         histCount[HIST_COMPLEX][dlen]++;
@@ -159,12 +164,11 @@ void MakeComplexMoves()
 
 void MakeComplexSingleMove(
   Holding& holding,
-  WholeMove& whole)
+  DefList& def1,
+  DefList& def2)
 {
 holding.Print(cout);
 cout.flush();
-
-  DefList def1, def2;
 
   assert(holding.GetLength(QT_ACE) > 0);
   if (holding.GetLength(QT_PARD) == 0)
@@ -182,8 +186,6 @@ cout.flush();
     BestMoveAfterSide(holding, def2);
   }
 
-  whole.Add(def1, def2);
-
 
 #if 0
   int gl1 = holding.GetLength(QT_ACE);
@@ -193,7 +195,16 @@ cout.flush();
   // int s = holding.GetSuitLength();
   // int top = c >> (2*s - 8);
 
-  manualMoveType m = whole.GetManualType(gl);
+  unsigned t1 = def1.GetHeader().CheckManual();
+  unsigned t2 = def2.GetHeader().CheckManual();
+
+  manualMoveType m;
+  if (t1 == 0 || t2 == 0)
+    m = MANUAL_NONE;
+  else if (t1 < gl || t2 < gl)
+    m = MANUAL_SHORT;
+  else
+    m = MANUAL_LONG;
 
   // Suit doesn't cash (SHORT).
   // if (m == MANUAL_SHORT)
@@ -209,12 +220,14 @@ cout.flush();
 
   {
     holding.Print(cout);
-    whole.Print(cout);
+    def1.Print(cout);
+    cout << "-\n";
+    def2.Print(cout);
   }
 #endif
 
   if (debugComplex)
-    DumpStatus(whole, "MakeComplexSingleMove");
+    DumpStatus(def1, def2, "MakeComplexSingleMove");
 }
 
 
@@ -292,8 +305,8 @@ void MakeComplexMovesParallel()
         int sl = holdingList[i].GetSuitLength();
         int c = holdingList[i].GetCounter();
 
-        singles[sl][c].moveNo = moveList.AddMoves(wholeList[i], 
-          holdingList[i], newFlag);
+        singles[sl][c].moveNo = moveList.AddMoves(
+         defList1[i], defList2[i], holdingList[i], newFlag);
 
         histCount[HIST_COMPLEX][dlen]++;
         // Header& header = singles[sl][c].defp->GetHeader();
@@ -334,7 +347,7 @@ DWORD CALLBACK MakeComplexBatch(void *)
   int endNo = Min(batchLen, startNo + SDS_BATCHSIZE);
 
   for (int n = startNo; n < endNo; n++)
-    MakeComplexSingleMove(holdingList[n], wholeList[n]);
+    MakeComplexSingleMove(holdingList[n], defList1[n], defList2[n]);
 
   if (SetEvent(solveAllEvents[thid]) == 0)
     return 0;
@@ -389,7 +402,7 @@ void MakeComplexBatch(int thid)
   int endNo = Min(batchLen, startNo + SDS_BATCHSIZE);
 
   for (int n = startNo; n < endNo; n++)
-    MakeComplexSingleMove(&holdingList[n], &wholeList[n]);
+    MakeComplexSingleMove(&holdingList[n], &defList1[n], &defList2[n]);
 
   return 1;
 
@@ -557,18 +570,20 @@ bool BestMoveAfterPard(
       tmpHolding.Print(cout);
     }
 
-    WholeMove stmp;
+    DefList deftmp1, deftmp2;
       
     bool newFlag;
-    MakeComplexSingleMove(tmpHolding, stmp);
+    MakeComplexSingleMove(tmpHolding, deftmp1, deftmp2);
     int sl = tmpHolding.GetSuitLength();
     int c = tmpHolding.GetCounter();
     // TODO: Does tmpHolding really change in the invocation?
-    singles[sl][c].moveNo = moveList.AddMoves(stmp, tmpHolding, newFlag);
+    singles[sl][c].moveNo = moveList.AddMoves(
+      deftmp1, deftmp2, tmpHolding, newFlag);
 
     if (debugComplex)
     {
-      stmp.Print(cout);
+      deftmp1.Print(cout);
+      deftmp2.Print(cout);
       cout << "Done recursing\n";
     }
   }
@@ -609,24 +624,30 @@ void DumpStatus(
 
 
 void DumpStatus(
-  WholeMove& whole,
+  DefList& def1,
+  DefList& def2,
   const char text[])
 {
   cout << text << "\n";
-  whole.GetHeader().Print(cout);
-  whole.Print(cout);
+  def1.GetHeader().Print(cout);
+  def1.Print(cout);
+  def2.GetHeader().Print(cout);
+  def2.Print(cout);
   cout.flush();
 }
 
 
 void DumpStatus(
-  WholeMove& whole,
+  DefList& def1,
+  DefList& def2,
   const char text[],
   const int val)
 {
   cout << text << " " << val << "\n";
-  whole.GetHeader().Print();
-  whole.Print(cout);
+  def1.GetHeader().Print();
+  def1.Print(cout);
+  def2.GetHeader().Print();
+  def2.Print(cout);
   cout.flush();
 }
 
@@ -645,14 +666,17 @@ void DumpStatus(
 
 
 void DumpStatus(
-  WholeMove& whole,
+  DefList& def1,
+  DefList& def2,
   const char text[],
   const int val1,
   const int val2)
 {
   cout << text  << " " << val1 << " 0x" << hex << val2 << dec << "\n";
-  whole.GetHeader().Print();
-  whole.Print(cout);
+  def1.GetHeader().Print();
+  def1.Print(cout);
+  def2.GetHeader().Print();
+  def2.Print(cout);
   cout.flush();
 }
 

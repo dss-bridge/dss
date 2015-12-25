@@ -120,17 +120,16 @@ cout << "sizeof(bool) " << sizeof(bool) << "\n";
   holding.Print(cout);
   cout.flush();
 
-  WholeMove whole0;
+  DefList def1, def2;
 
   debugComplex = true;
   debugDefList = true;
   // debugAltList = false;
   debugAltList = true;
-  MakeComplexSingleMove(holding, whole0);
+  MakeComplexSingleMove(holding, def1, def2);
   cout << "Solving directly with no tables:\n";
-  whole0.Print();
-  Header hdr = whole0.GetHeader();
-  whole0.GetMaxRank();
+  def1.Print();
+  def2.Print();
 
   cout << "Looking up:\n";
 
@@ -194,9 +193,9 @@ debugAltList = true;
       moveList.Print(singles[suitLengthArg][counterArg].moveNo);
     else
     {
-      WholeMove whole;
+      DefList def1, def2;
 
-      MakeComplexSingleMove(holding2, whole);
+      MakeComplexSingleMove(holding2, def1, def2);
     }
   }
   else if (noOfCores > 1)

@@ -59,10 +59,6 @@ unsigned SideMoveList::AddMoves(
   const Holding& holding, 
   bool& newFlag)
 {
-  // WholeMove whole;
-  // whole.Add(def);
-  // return SideMoveList::AddMoves(whole, holding, newFlag);
-
   Header& hp = def.GetHeader();
   unsigned key = hash.GetKey(hp);
 
