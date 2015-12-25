@@ -61,7 +61,14 @@ void WholeMove::Add(
   }
   else
   {
+    // unsigned d1, d2, dm, a;
+    // def1.GetHeader().GetAD(d1, a);
+    // def2.GetHeader().GetAD(d2, a);
     defMerged.MergeSidesHard(res1, res2);
+    // defMerged.GetHeader().GetAD(dm, a);
+
+    // if (d1*d2 != dm)
+      // cout << "defMerged " << dm << " != " << d1 << " * " << d2 << "\n";
   }
 }
 

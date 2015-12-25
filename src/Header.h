@@ -66,6 +66,9 @@ class Header
     void MergeMin(
       const Header& newHeader);
 
+    void GetAD(
+      unsigned& d,
+      unsigned& asum) const;
     int GetTrickKey() const;
     int GetRankKey() const;
     unsigned GetMaxRank() const;

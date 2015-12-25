@@ -53,9 +53,17 @@ class SideMoveList
 
     int numEntries;
 
+    unsigned histD[SDS_MAX_DEF];
+    unsigned histAsum[SDS_MAX_DEF * SDS_MAX_ALT];
+
     void PrintMove(
       std::ostream& out,
       const int n);
+
+    void PrintList(
+      const unsigned hist[],
+      const unsigned l,
+      const char text[]) const;
 
   public:
 

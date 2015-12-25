@@ -272,6 +272,15 @@ void Header::MergeMin(const Header& newHeader)
 }
 
 
+void Header::GetAD(
+  unsigned& d,
+  unsigned& asum) const
+{
+  d = dCum;
+  asum = aCum;
+}
+
+
 unsigned Header::GetKeyNew() const
 {
   return (dCum-1) + (aCum << 4);

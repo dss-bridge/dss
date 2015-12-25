@@ -1,3 +1,11 @@
+defMerged shrinks
+-----------------
+There are a couple of places where we merge to less than the product
+of the two numbers of defenses:
+9, e4a5
+13, ea247f
+They can be found where MergeSidesHard is called.
+
 Ranks
 -----
 13, 38a47f

@@ -40,6 +40,12 @@ SideMoveList::SideMoveList()
     moveCount[i] = 0;
 
   numEntries = 1;
+
+  for (unsigned i = 0; i < SDS_MAX_DEF; i++)
+    histD[i] = 0;
+
+  for (unsigned i = 0; i < SDS_MAX_DEF * SDS_MAX_ALT; i++)
+    histAsum[i] = 0;
 }
 
 
@@ -113,6 +119,11 @@ unsigned SideMoveList::AddMoves(
   *(lp->defp) = def;
   lp->next = nullptr;
 
+  unsigned d, asum;
+  hp.GetAD(d, asum);
+  histD[d]++;
+  histAsum[asum]++;
+
   return lp->no;
 }
 
@@ -138,43 +149,33 @@ void SideMoveList::Print(
 }
 
 
-void SideMoveList::PrintCaseCombos()
+void SideMoveList::PrintList(
+  const unsigned hist[],
+  const unsigned l,
+  const char text[]) const
 {
-  int histd[SDS_MAX_DEF] = {0};
-  int hista[SDS_MAX_ALT] = {0};
-
-  for (int n = 1; n < numEntries; n++)
+  cout << text << "\n" << right;
+  for (unsigned i = 0; i < l; i++)
   {
-    unsigned maxt = list[n].def.GetHeader().GetKeyNew();
-    unsigned d = maxt & 0xf;
-    unsigned a = maxt >> 4;
-    histd[d]++;
-    hista[a]++;
-  }
-
-  cout << "Defense histogram\n" << right;
-  for (int i = 0; i < SDS_MAX_DEF; i++)
-  {
-    if (histd[i])
+    if (hist[i])
       cout << 
         setw(2) << i+1 <<
-        setw(10) << histd[i] << "\n";
+        setw(10) << hist[i] << "\n";
   }
+}
 
-  cout << "Alternatives histogram\n";
-  for (int i = 0; i < SDS_MAX_ALT; i++)
-  {
-    if (hista[i])
-      cout << 
-        setw(2) << i <<
-        setw(10) << hista[i] << "\n";
-  }
+
+void SideMoveList::PrintCaseCombos()
+{
+  SideMoveList::PrintList(histD, SDS_MAX_DEF, "Defenses");
+  SideMoveList::PrintList(histAsum, SDS_MAX_DEF * SDS_MAX_ALT, "Alts sum");
 }
 
 
 void SideMoveList::PrintCount() const
 {
-  cout << "Number of list entries: " << numEntries << "\n";
+  cout << "Number of list entries: " << 
+    numEntries << " (list size " << listLength << ")\n";
 }
 
 

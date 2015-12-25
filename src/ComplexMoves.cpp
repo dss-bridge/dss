@@ -186,49 +186,30 @@ cout.flush();
 
 
 #if 0
-  // Header& header = def.GetHeader();
-  // int tFullTrick = header.GetTrickKey();
-  // int tFullRank = header.GetRankKey();
-
-  unsigned tFullTrick = whole.GetTrickKey();
-  unsigned tFullRank = whole.GetRankKey();
-
-  int t1 = tFullTrick & 0xf;
-  int t2 = (tFullTrick >> 4) & 0xf;
-  int t3 = (tFullTrick >> 8) & 0xf;
-
-  int r1 = tFullRank & 0xf;
-  int r2 = (tFullRank >> 4) & 0xf;
-  int r3 = (tFullRank >> 8) & 0xf;
-
   int gl1 = holding.GetLength(QT_ACE);
   int gl2 = holding.GetLength(QT_PARD);
   int gl = Max(gl1, gl2);
-  int c = holding.GetCounter();
-  int s = holding.GetSuitLength();
-  int top = c >> (2*s - 8);
+  // int c = holding.GetCounter();
+  // int s = holding.GetSuitLength();
+  // int top = c >> (2*s - 8);
 
-  if (t1 == t2 && t1 == t3 && r1 == r2 && r1 == r3)
+  manualMoveType m = whole.GetManualType(gl);
+
+  // Suit doesn't cash (SHORT).
+  // if (m == MANUAL_SHORT)
+
+  // Suit cashes completely.  Same length ace-pard (EQUAL)
+  // if (m == MANUAL_ALL && gl1 == gl2)
+
+  // Suit cashes completely.  Not same length ace-pard (DIFF)
+  if (m == MANUAL_ALL && gl1 != gl2)
+
+  // Specialized: AKQJ with ace.
+  // if (top == 0)
+
   {
-    // Suit doesn't cash (SHORT).
-    // if (t1 < gl)
-
-    // Suit cashes completely.  Same length ace-pard (EQUAL)
-    // if (t1 == gl && gl1 == gl2)
-
-    // Suit cashes completely.  Not same length ace-pard (DIFF)
-    if (t1 == gl && gl1 != gl2)
-
-    // Specialized: Short
-    // if (t1 <= 2)
-
-    // Specialized: AKQJ with ace.
-    // if (top == 0)
-
-    {
-      holding.PrintNew(cout);
-      whole.Print(cout);
-    }
+    holding.Print(cout);
+    whole.Print(cout);
   }
 #endif
 
