@@ -79,7 +79,7 @@ unsigned SideMoveList::AddMoves(
   {
     while (lp)
     {
-      if (def == *(lp->defp))
+      if (def == list[lp->no].def)
       {
         moveCount[lp->no]++;
         return lp->no;
@@ -112,17 +112,17 @@ unsigned SideMoveList::AddMoves(
 
   moveCount[numEntries]++;
 
-  lp->no = numEntries;
   list[numEntries].suitLengthExample = holding.GetSuitLength();
   list[numEntries].counterExample = holding.GetCounter();
-  lp->defp = &list[numEntries++].def;
-  *(lp->defp) = def;
+  list[numEntries].def = def;
+  lp->no = numEntries;
   lp->next = nullptr;
+  numEntries++;
 
   unsigned d, asum;
   hp.GetAD(d, asum);
-  histD[d]++;
-  histAsum[asum]++;
+  histD[d-1]++;
+  histAsum[asum-1]++;
 
   return lp->no;
 }
@@ -197,7 +197,7 @@ void SideMoveList::PrintMoveListByKeys(
     if (lp == nullptr)
       continue;
 
-    lp->defp->GetHeader().PrintKey(fout, key);
+    list[lp->no].def.GetHeader().PrintKey(fout, key);
     fout << divider << "\n\n";
 
     while (lp)

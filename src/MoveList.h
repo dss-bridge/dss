@@ -20,6 +20,7 @@
 #include "DefList.h"
 #include "Hash.h"
 #include "WholeMove.h"
+#include "SideMoveList.h"
 
 #define POOLSIZE 15000
 #define POOLSIZE_AB 3000
@@ -68,16 +69,14 @@ class MoveList
       int counterExample;
     };
 
-    SuitListEntry list[POOLSIZE];
+    SideMoveList sideMerged;
+
     SuitListEntrySide listSide[2][POOLSIZE]; // _AB
 
-    ListEntry * index[ML_MAXKEY];
     ListEntrySide * indexSide[2][ML_MAXKEY];
 
-    int indexCount[ML_MAXKEY];
     int indexCountSide[2][ML_MAXKEY];
 
-    int moveCount[POOLSIZE];
     unsigned moveCountSide[2][POOLSIZE]; // _AB
 
     Hash hash;

@@ -20,7 +20,7 @@
 #include "DefList.h"
 #include "Hash.h"
 
-#define SIDEMOVE_CHUNK_SIZE 1000
+#define SIDEMOVE_CHUNK_SIZE 10
 
 
 class SideMoveList
@@ -29,7 +29,6 @@ class SideMoveList
 
     struct ListEntry
     {
-      DefList * defp;
       int no;
       ListEntry * next;
     };
@@ -55,10 +54,6 @@ class SideMoveList
 
     unsigned histD[SDS_MAX_DEF];
     unsigned histAsum[SDS_MAX_DEF * SDS_MAX_ALT];
-
-    void PrintMove(
-      std::ostream& out,
-      const int n);
 
     void PrintList(
       const unsigned hist[],
@@ -88,6 +83,10 @@ class SideMoveList
     void PrintCaseCombos();
 
     void PrintCount() const;
+
+    void PrintMove(
+      std::ostream& out,
+      const int n);
 
     void PrintMoveList(
       std::ostream& out = std::cout);
