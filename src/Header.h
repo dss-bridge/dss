@@ -73,6 +73,7 @@ class Header
     int GetRankKey() const;
     unsigned GetMaxRank() const;
     unsigned GetKeyNew() const;
+    unsigned CheckManual() const;
 
     void PrintKey(
       std::ostream& out,

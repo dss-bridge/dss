@@ -281,6 +281,18 @@ void Header::GetAD(
 }
 
 
+unsigned Header::CheckManual() const
+{
+  if (cashTricks[QT_ACE] == cashTricks[QT_PARD] &&
+      maxTricks == cashTricks[QT_ACE] &&
+      cashRanks[QT_ACE] == cashRanks[QT_PARD] &&
+      maxRanks == cashRanks[QT_ACE])
+    return maxTricks;
+  else
+    return 0;
+}
+
+
 unsigned Header::GetKeyNew() const
 {
   return (dCum-1) + (aCum << 4);

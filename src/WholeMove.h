@@ -57,6 +57,9 @@ class WholeMove
 
     unsigned GetMaxRank();
 
+    manualMoveType GetManualType(
+      const unsigned maxDeclLen);
+
     void Print(
       std::ostream& out = std::cout) const;
 

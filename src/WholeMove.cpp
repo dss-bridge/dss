@@ -120,6 +120,21 @@ unsigned WholeMove::GetRankKey()
 }
 
 
+manualMoveType WholeMove::GetManualType(
+  const unsigned maxDeclLen) 
+{
+  Header& header = defMerged.GetHeader();
+  unsigned t = header.CheckManual();
+
+  if (t == 0)
+    return MANUAL_NONE;
+  else if (t < maxDeclLen)
+    return MANUAL_SHORT;
+  else
+    return MANUAL_ALL;
+}
+
+
 unsigned WholeMove::GetMaxRank()
 {
   Header& header1 = def1.GetHeader();

@@ -327,5 +327,12 @@ const char HIST_NAMES[HIST_SIZE][10] =
   "General"
 };
 
+enum manualMoveType
+{
+  MANUAL_NONE = 0,
+  MANUAL_SHORT = 1,
+  MANUAL_ALL = 2
+};
+
 #endif
 
