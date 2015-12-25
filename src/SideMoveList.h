@@ -20,7 +20,7 @@
 #include "DefList.h"
 #include "Hash.h"
 
-#define SIDEMOVE_CHUNK_SIZE 10
+#define SIDEMOVE_CHUNK_SIZE 1000
 
 
 class SideMoveList
@@ -55,6 +55,12 @@ class SideMoveList
     unsigned histD[SDS_MAX_DEF];
     unsigned histAsum[SDS_MAX_DEF * SDS_MAX_ALT];
 
+    void PrintMoveStats(
+      std::ostream& out = std::cout) const;
+
+    void PrintHashStats(
+      std::ostream& out = std::cout) const;
+    
     void PrintList(
       const unsigned hist[],
       const unsigned l,
@@ -67,7 +73,7 @@ class SideMoveList
     ~SideMoveList();
 
     unsigned AddMoves(
-      DefList& sm, 
+      DefList& def, 
       const Holding& holding,
       bool& newFlag);
 
@@ -80,13 +86,9 @@ class SideMoveList
     void Print(
       const unsigned no) const;
 
-    void PrintCaseCombos();
-
-    void PrintCount() const;
-
     void PrintMove(
       std::ostream& out,
-      const int n);
+      const int no);
 
     void PrintMoveList(
       std::ostream& out = std::cout);
@@ -94,13 +96,12 @@ class SideMoveList
     void PrintMoveListByKeys(
       std::ostream& out = std::cout);
 
-    void PrintMoveStats(
-      std::ostream& out = std::cout) const;
+    void PrintLists(
+      std::ostream& out,
+      const std::string text) const;
 
-    void PrintListStats(
-      std::ostream& out = std::cout) const;
-    
-    void PrintHashCounts() const;
+    void PrintStats(
+      const std::string text) const;
 };
 
 #endif

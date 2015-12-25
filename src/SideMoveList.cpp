@@ -145,36 +145,6 @@ void SideMoveList::Print(
 }
 
 
-void SideMoveList::PrintList(
-  const unsigned hist[],
-  const unsigned l,
-  const char text[]) const
-{
-  cout << text << "\n" << right;
-  for (unsigned i = 0; i < l; i++)
-  {
-    if (hist[i])
-      cout << 
-        setw(2) << i+1 <<
-        setw(10) << hist[i] << "\n";
-  }
-}
-
-
-void SideMoveList::PrintCaseCombos()
-{
-  SideMoveList::PrintList(histD, SDS_MAX_DEF, "Defenses");
-  SideMoveList::PrintList(histAsum, SDS_MAX_DEF * SDS_MAX_ALT, "Alts sum");
-}
-
-
-void SideMoveList::PrintCount() const
-{
-  cout << "Number of list entries: " << 
-    numEntries << " (list size " << listLength << ")\n";
-}
-
-
 void SideMoveList::PrintMoveList(
   ostream& out)
 {
@@ -251,7 +221,7 @@ void SideMoveList::PrintMoveStats(
 }
 
 
-void SideMoveList::PrintListStats(
+void SideMoveList::PrintHashStats(
   ostream& out) const
 {
   int p = 0;
@@ -299,7 +269,52 @@ void SideMoveList::PrintListStats(
 }
 
 
-void SideMoveList::PrintHashCounts() const
+void SideMoveList::PrintList(
+  const unsigned hist[],
+  const unsigned l,
+  const char text[]) const
 {
-  hash.PrintCounts();
+  cout << text << "\n" << right;
+  for (unsigned i = 0; i < l; i++)
+  {
+    if (hist[i])
+      cout << 
+        setw(2) << i+1 <<
+        setw(10) << hist[i] << "\n";
+  }
 }
+
+
+void SideMoveList::PrintLists(
+  ostream& out,
+  const string text) const
+{
+  if (numEntries == 1)
+    return;
+
+  out << text << "\n";
+  SideMoveList::PrintMoveStats(out);
+
+  out << text << "\n";
+  SideMoveList::PrintHashStats(out);
+}
+
+
+void SideMoveList::PrintStats(
+  const string text) const
+{
+  if (numEntries == 1)
+    return;
+
+  cout << text << "\n";
+  hash.PrintCounts();
+
+  cout << text << "\n";
+  SideMoveList::PrintList(histD, SDS_MAX_DEF, "Defenses");
+  SideMoveList::PrintList(histAsum, SDS_MAX_DEF * SDS_MAX_ALT, "Alts sum");
+
+  cout << text << "\n";
+  cout << "Number of list entries: " << 
+    numEntries << " (list size " << listLength << ")\n";
+}
+

@@ -204,16 +204,8 @@ debugAltList = true;
 
     cout << "noOfCores " << noOfCores << "\n";
     MakeComplexMovesParallel();
-    cout.flush();
-    moveList.PrintMoveListByKeys(fout);
-    cout.flush();
-    fout.flush();
-    moveList.PrintMoveStats(fout);
-    cout.flush();
-    fout.flush();
-    moveList.PrintListStats(fout);
-    cout.flush();
-    fout.flush();
+    moveList.PrintMoveList(fout);
+    moveList.PrintLists(fout);
   }
   else
   {
@@ -221,20 +213,13 @@ debugAltList = true;
     MakeMovesSimple();
 
     MakeComplexMoves();
-    moveList.PrintMoveListByKeys(fout);
-    cout.flush();
-    fout.flush();
-    moveList.PrintMoveStats(fout);
-    cout.flush();
-    fout.flush();
-    moveList.PrintListStats(fout);
-    cout.flush();
-    fout.flush();
+    moveList.PrintMoveList(fout);
+    moveList.PrintLists(fout);
   }
 
-  moveList.PrintHashCounts();
-  moveList.PrintCaseCombos();
+  moveList.PrintStats();
   cout.flush();
+  fout.flush();
 
   FreeLists();
 

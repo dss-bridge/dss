@@ -11,17 +11,16 @@
 #define SDS_MOVELIST_H
 
 #include <iostream>
-#include <iomanip>
+// #include <iomanip>
 #include <string>
+#include <vector>
 #include <map>
 
-#include "cst.h"
 #include "Holding.h"
 #include "DefList.h"
-#include "Hash.h"
 #include "SideMoveList.h"
 
-#define POOLSIZE_AB 3000
+#define MOVE_CHUNK_SIZE 1000
 
 
 class MoveList
@@ -30,61 +29,28 @@ class MoveList
 
     struct MoveNumberStruct
     {
-      unsigned noAB;
-      unsigned noP;
+      unsigned noComb;
+      unsigned no1;
+      unsigned no2;
     };
 
-    struct ListEntrySide
-    {
-      DefList * defp;
-      int no;
-      ListEntrySide * next;
-    };
+    SideMoveList sideComb;
+    SideMoveList sideList1;
+    SideMoveList sideList2;
 
-    struct SuitListEntrySide
-    {
-      DefList def;
-      int suitLengthExample;
-      int counterExample;
-    };
+    std::vector<MoveNumberStruct> noToComponents;
+    unsigned noLen;
+    unsigned noCount;
 
-    SideMoveList sideMerged;
-
-    SuitListEntrySide listSide[2][POOLSIZE_AB]; // _AB
-
-    ListEntrySide * indexSide[2][ML_MAXKEY];
-
-    int indexCountSide[2][ML_MAXKEY];
-
-    unsigned moveCountSide[2][POOLSIZE_AB]; // _AB
-
-    Hash hash;
-
-    int numEntries;
-    int numEntriesSide[2];
-    int numEntriesNew;
-
-    unsigned noToSideNumbers[POOLSIZE_AB][2];
-
-    std::map<std::string, unsigned> sideMap;
+    std::map<std::string, unsigned> compMap;
 
     unsigned PairToNo(
-      const unsigned noAB,
-      const unsigned noP);
+      const MoveNumberStruct& mnos);
 
-    unsigned SetPairNo(
-      const unsigned noAB,
-      const unsigned noP);
+    void SetPairNo(
+      const MoveNumberStruct& mnos);
 
-    unsigned AddSideMove(
-      DefList& defSide,
-      const Holding& holding,
-      const unsigned side,
-      bool& newFlag);
-      
-    void PrintMove(
-      std::ostream& out,
-      const int n);
+    void Extend();
 
   public:
 
@@ -93,28 +59,24 @@ class MoveList
     ~MoveList();
 
     unsigned AddMoves(
-      DefList& sm, 
+      DefList& def, 
       const Holding& holding,
       bool& newFlag);
 
     unsigned AddMoves(
-      DefList& defAB, 
-      DefList& defP, 
+      DefList& def1, 
+      DefList& def2, 
       const Holding& holding,
       bool& newFlag);
 
     unsigned GetMaxRank(
       const unsigned no);
 
-    DefList& GetCombinedMove(
+    DefList GetCombinedMove(
       const unsigned no);
 
     void Print(
       const unsigned no) const;
-
-    void PrintCaseCombos();
-
-    void PrintCount() const;
 
     void PrintMoveList(
       std::ostream& out = std::cout);
@@ -122,13 +84,10 @@ class MoveList
     void PrintMoveListByKeys(
       std::ostream& out = std::cout);
 
-    void PrintMoveStats(
-      std::ostream& out = std::cout) const;
-
-    void PrintListStats(
-      std::ostream& out = std::cout) const;
+    void PrintStats() const;
     
-    void PrintHashCounts() const;
+    void PrintLists(
+      std::ostream& out = std::cout) const;
 };
 
 #endif

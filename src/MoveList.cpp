@@ -19,31 +19,16 @@ using namespace std;
 #include "MoveList.h"
 #include "misc.h"
 
+#define MOVE_CHUNK_SIZE 1000
 
 
 MoveList::MoveList()
 {
-  for (int key = 0; key < ML_MAXKEY; key++)
-  {
-    indexSide[0][key] = nullptr;
-    indexSide[1][key] = nullptr;
+  noToComponents.clear();
 
-    indexCountSide[0][key] = 0;
-    indexCountSide[1][key] = 0;
-  }
-
-  for (int i = 0; i < POOLSIZE_AB; i++)
-  {
-    moveCountSide[0][i] = 0;
-    moveCountSide[1][i] = 0;
-    noToSideNumbers[i][0] = 0;
-    noToSideNumbers[i][1] = 0;
-  }
-
-  numEntries = 1;
-  numEntriesNew = 1;
-  numEntriesSide[0] = 1;
-  numEntriesSide[0] = 1;
+  noLen = MOVE_CHUNK_SIZE;
+  noToComponents.resize(MOVE_CHUNK_SIZE);
+  noCount = 1;
 }
 
 
@@ -52,112 +37,42 @@ MoveList::~MoveList()
 }
 
 
+void MoveList::Extend()
+{
+  noLen += MOVE_CHUNK_SIZE;
+  noToComponents.resize(noLen);
+}
+
+
 unsigned MoveList::AddMoves(
   DefList& def, 
   const Holding& holding, 
   bool& newFlag)
 {
-  unsigned no = sideMerged.AddMoves(def, holding, newFlag);
-  return no;
-}
+  unsigned no = sideComb.AddMoves(def, holding, newFlag);
+  unsigned ret;
 
-
-unsigned MoveList::AddSideMove(
-  DefList& defSide,
-  const Holding& holding, 
-  const unsigned side,
-  bool& newFlag)
-{
-assert(false);
-  if (defSide.IsEmpty())
-    return 0;
-
-  Header& hp = defSide.GetHeader();
-  unsigned key = hash.GetKey(hp);
-
-  ListEntrySide * lp = indexSide[side][key];
-  newFlag = false;
-
-  if (lp == nullptr)
-  {
-    indexSide[side][key] = new ListEntrySide;
-    lp = indexSide[side][key];
-    newFlag = true;
-  }
-  else
-  {
-    while (lp)
-    {
-      if (defSide == *(lp->defp))
-      {
-        moveCountSide[side][lp->no]++;
-        return lp->no;
-      }
-
-      if (! lp->next)
-      {
-        lp->next = new ListEntrySide;
-        newFlag = true;
-        lp = lp->next;
-        break;
-      }
-      lp = lp->next;
-    }
-  }
+  MoveNumberStruct mnos;
+  mnos.noComb = no;
+  mnos.no1 = 0;
+  mnos.no2 = 0;
 
   if (newFlag)
-    indexCountSide[side][key]++;
+  {
+    if (noCount == noLen)
+      MoveList::Extend();
 
-  moveCountSide[side][numEntriesSide[side]]++;
-
-  lp->no = numEntriesSide[side];
-  listSide[side][numEntriesSide[side]].suitLengthExample = holding.GetSuitLength();
-  listSide[side][numEntriesSide[side]].counterExample = holding.GetCounter();
-  lp->defp = &listSide[side][numEntriesSide[side]++].def;
-  *(lp->defp) = defSide;
-  lp->next = nullptr;
-
-  return lp->no;
-}
-
-
-unsigned MoveList::PairToNo(
-  const unsigned noAB,
-  const unsigned noP)
-{
-assert(false);
-  string strAB = static_cast<ostringstream *>
-    (&(ostringstream() << noAB))->str();
-  string strP = static_cast<ostringstream *>
-    (&(ostringstream() << noP))->str();
-  string str = strAB + '.' + strP;
-
-  map<string, unsigned>::iterator it = sideMap.find(str);
-  if (it == sideMap.end())
-    return 0;
+    noToComponents[noCount] = mnos;
+    MoveList::SetPairNo(mnos);
+    ret = noCount++;
+  }
   else
-    return sideMap[str];
-}
+  {
+    ret = MoveList::PairToNo(mnos);
+    assert(ret > 0);
+  }
 
-
-unsigned MoveList::SetPairNo(
-  const unsigned noAB,
-  const unsigned noP)
-{
-assert(false);
-  // Concatenate to string, put in map
-  // Also put in noToSideNumbers
-  //
-
-  string strAB = static_cast<ostringstream *>
-    (&(ostringstream() << noAB))->str();
-  string strP = static_cast<ostringstream *>
-    (&(ostringstream() << noP))->str();
-  string str = strAB + '.' + strP;
-
-  unsigned no = numEntriesNew++;
-  sideMap[str] = no;
-  return no;
+  return ret;
 }
 
 
@@ -167,9 +82,45 @@ unsigned MoveList::AddMoves(
   const Holding& holding, 
   bool& newFlag)
 {
+  MoveNumberStruct mnos;
   DefList def;
-  if (! def.MergeSidesSoft(defAB, defP))
+  unsigned ret;
+
+  if (def.MergeSidesSoft(defAB, defP))
+    return MoveList::AddMoves(def, holding, newFlag);
+  else
+  {
+    // For now.
+
     def.MergeSidesHard(defAB, defP);
+    return MoveList::AddMoves(def, holding, newFlag);
+
+    bool newFlag1 = false;
+    bool newFlag2 = false;
+
+    mnos.noComb = 0;
+    mnos.no1 = sideList1.AddMoves(defAB, holding, newFlag1);
+    mnos.no2 = sideList1.AddMoves(defP, holding, newFlag2);
+
+    if (newFlag1 || newFlag2)
+    {
+      newFlag = true;
+
+      if (noCount == noLen)
+        MoveList::Extend();
+
+      noToComponents[noCount] = mnos;
+      MoveList::SetPairNo(mnos);
+      ret = noCount++;
+    }
+    else
+    {
+      newFlag = false;
+      ret = MoveList::PairToNo(mnos);
+      assert(ret > 0);
+    }
+  }
+  return ret;
 
   /*
   unsigned d1, d2, dm, a;
@@ -179,99 +130,110 @@ unsigned MoveList::AddMoves(
   if (d1*d2 != dm)
     cout << "defMerged " << dm << " != " << d1 << " * " << d2 << "\n";
   */
+}
 
-  unsigned no = sideMerged.AddMoves(def, holding, newFlag);
-  return no;
 
-assert(false);
-  bool newFlagAB = false;
-  bool newFlagP = false;
+#define u2s(x) static_cast<ostringstream *>(&(ostringstream() << (x)))->str()
 
-  unsigned noAB = MoveList::AddSideMove(defAB, holding, 0, newFlagAB);
-  unsigned noP = MoveList::AddSideMove(defAB, holding, 1, newFlagP);
+unsigned MoveList::PairToNo(
+  const MoveNumberStruct& mnos)
+{
+  string str = u2s(mnos.noComb) + '.' + u2s(mnos.no1) + '.' + u2s(mnos.no2);
+  map<string, unsigned>::iterator it = compMap.find(str);
+  if (it == compMap.end())
+    return 0;
+  else
+    return compMap[str];
+}
 
-  if (newFlagAB || newFlagP)
-  {
-    newFlag = true;
-    return MoveList::SetPairNo(noAB, noP);
-  }
 
-  no = MoveList::PairToNo(noAB, noP);
-  assert(no > 0);
-  return no;
+void MoveList::SetPairNo(
+  const MoveNumberStruct& mnos)
+{
+  string str = u2s(mnos.noComb) + '.' + u2s(mnos.no1) + '.' + u2s(mnos.no2);
+  compMap[str] = noCount;
 }
 
 
 unsigned MoveList::GetMaxRank(
   const unsigned no)
 {
-  return sideMerged.GetMaxRank(no);
+  if (noToComponents[no].noComb)
+    return sideComb.GetMaxRank(noToComponents[no].noComb);
+  else
+  {
+    // Very rare differences from merged move rank.
+    unsigned n1 = sideList1.GetMaxRank(noToComponents[no].no1);
+    unsigned n2 = sideList2.GetMaxRank(noToComponents[no].no2);
+    return Min(n1, n2);
+  }
 }
 
 
-DefList& MoveList::GetCombinedMove(
+DefList MoveList::GetCombinedMove(
   const unsigned no)
 {
-  return sideMerged.GetMove(no);
+  if (noToComponents[no].noComb)
+    return sideComb.GetMove(noToComponents[no].noComb);
+  else
+  {
+    DefList def1 = sideList1.GetMove(noToComponents[no].no1);
+    DefList def2 = sideList2.GetMove(noToComponents[no].no2);
+    DefList defMerged;
+    defMerged.MergeSidesHard(def1, def2);
+    return defMerged;
+  }
 }
 
 
 void MoveList::Print(
   const unsigned no) const
 {
-  sideMerged.Print(no);
-}
-
-
-void MoveList::PrintCaseCombos()
-{
-  sideMerged.PrintCaseCombos();
-}
-
-
-void MoveList::PrintCount() const
-{
-  sideMerged.PrintCount();
+  if (noToComponents[no].noComb)
+    sideComb.Print(noToComponents[no].noComb);
+  else
+  {
+    sideList1.Print(noToComponents[no].no1);
+    sideList2.Print(noToComponents[no].no2);
+  }
 }
 
 
 void MoveList::PrintMoveList(
   ostream& out)
 {
-  sideMerged.PrintMoveList(out);
+  for (unsigned i = 1; i < noCount; i++)
+  {
+    if (noToComponents[i].noComb)
+      sideComb.PrintMove(out, noToComponents[i].noComb);
+    else
+    {
+      sideList1.PrintMove(out, noToComponents[i].no1);
+      sideList2.PrintMove(out, noToComponents[i].no2);
+    }
+  }
 }
 
 
 void MoveList::PrintMoveListByKeys(
   ostream& fout)
 {
-  sideMerged.PrintMoveListByKeys(fout);
+  sideComb.PrintMoveListByKeys(fout);
 }
 
 
-void MoveList::PrintMove(
-  ostream& out,
-  const int n)
-{
-  sideMerged.PrintMove(out, n);
-}
-
-
-void MoveList::PrintMoveStats(
+void MoveList::PrintLists(
   ostream& out) const
 {
-  sideMerged.PrintMoveStats(out);
+  sideComb.PrintLists(out, "Combined");
+  sideList1.PrintLists(out, "Side 1");
+  sideList2.PrintLists(out, "Side 2");
 }
 
 
-void MoveList::PrintListStats(
-  ostream& out) const
+void MoveList::PrintStats() const
 {
-  sideMerged.PrintListStats(out);
-}
-
-
-void MoveList::PrintHashCounts() const
-{
-  sideMerged.PrintHashCounts();
+  sideComb.PrintStats("Combined");
+  sideList1.PrintStats("Side 1");
+  sideList2.PrintStats("Side 2");
 }
