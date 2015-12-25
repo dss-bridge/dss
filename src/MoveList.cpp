@@ -44,6 +44,35 @@ void MoveList::Extend()
 }
 
 
+unsigned MoveList::Update(
+  const MoveNumberStruct& mnos,
+  const bool newFlag,
+  const unsigned ret)
+{
+  unsigned r;
+  if (newFlag)
+  {
+    if (noCount == noLen)
+      MoveList::Extend();
+
+    noToComponents[noCount] = mnos;
+    MoveList::SetPairNo(mnos);
+    r = noCount++;
+  }
+  else if (ret)
+  {
+    // Small optimization in order not to search twice sometimes.
+    r = ret;
+  }
+  else
+  {
+    r = MoveList::PairToNo(mnos);
+    assert(r > 0);
+  }
+  return r;
+}
+
+
 unsigned MoveList::AddMoves(
   DefList& def, 
   const Holding& holding, 
@@ -57,22 +86,7 @@ unsigned MoveList::AddMoves(
   mnos.no1 = 0;
   mnos.no2 = 0;
 
-  if (newFlag)
-  {
-    if (noCount == noLen)
-      MoveList::Extend();
-
-    noToComponents[noCount] = mnos;
-    MoveList::SetPairNo(mnos);
-    ret = noCount++;
-  }
-  else
-  {
-    ret = MoveList::PairToNo(mnos);
-    assert(ret > 0);
-  }
-
-  return ret;
+  return MoveList::Update(mnos, newFlag);
 }
 
 
@@ -90,8 +104,6 @@ unsigned MoveList::AddMoves(
     return MoveList::AddMoves(def, holding, newFlag);
   else
   {
-    // For now.
-
     def.MergeSidesHard(defAB, defP);
     return MoveList::AddMoves(def, holding, newFlag);
 
@@ -100,27 +112,15 @@ unsigned MoveList::AddMoves(
 
     mnos.noComb = 0;
     mnos.no1 = sideList1.AddMoves(defAB, holding, newFlag1);
-    mnos.no2 = sideList1.AddMoves(defP, holding, newFlag2);
-
-    if (newFlag1 || newFlag2)
-    {
+    mnos.no2 = sideList2.AddMoves(defP, holding, newFlag2);
+   
+    if (newFlag1 || newFlag2 || ! (ret = MoveList::PairToNo(mnos)))
       newFlag = true;
-
-      if (noCount == noLen)
-        MoveList::Extend();
-
-      noToComponents[noCount] = mnos;
-      MoveList::SetPairNo(mnos);
-      ret = noCount++;
-    }
     else
-    {
       newFlag = false;
-      ret = MoveList::PairToNo(mnos);
-      assert(ret > 0);
-    }
+
+    return MoveList::Update(mnos, newFlag, ret);
   }
-  return ret;
 
   /*
   unsigned d1, d2, dm, a;

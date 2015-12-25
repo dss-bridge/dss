@@ -11,7 +11,6 @@
 #define SDS_MOVELIST_H
 
 #include <iostream>
-// #include <iomanip>
 #include <string>
 #include <vector>
 #include <map>
@@ -19,8 +18,6 @@
 #include "Holding.h"
 #include "DefList.h"
 #include "SideMoveList.h"
-
-#define MOVE_CHUNK_SIZE 1000
 
 
 class MoveList
@@ -43,6 +40,11 @@ class MoveList
     unsigned noCount;
 
     std::map<std::string, unsigned> compMap;
+
+    unsigned Update(
+      const MoveNumberStruct& mnos,
+      const bool newFlag,
+      const unsigned ret = 0);
 
     unsigned PairToNo(
       const MoveNumberStruct& mnos);
